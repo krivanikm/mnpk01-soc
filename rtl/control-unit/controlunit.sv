@@ -8,12 +8,13 @@
 module controlunit (
     input clk,
     input rst,
-    input [7:0] rom_data,
+    input [15:0] rom_data,
     output reg pc_inc,
     output reg write_reg_en,
     output reg [3:0] reg_addr,
     output reg write_temp_from_reg,
-    output reg high_b
+    output reg high_b,
+    output reg 
 );
 
     reg [3:0] bytes_to_fetch;
@@ -45,32 +46,25 @@ module controlunit (
 
             case (state)
                 S_FETCH: begin  
-                    ir             <= rom_data;  
+                    ir             <= rom_data[15:12];  
                     state          <= S_DECODE;
-                    bytes_to_fetch <= 0;
                 end
                 
                 S_DECODE: begin  
                     if (ir == `OP_MVI) begin
                         state          <= S_COLLECT;
-                        bytes_to_fetch <= 2; // MVI potrebuje 2 ďalšie bajty (registre a dáta)
                     end else begin
-                        state <= S_FETCH;    // NOP alebo neznáma inštrukcia -> reštart cyklu
+                        state <= S_FETCH;
                     end
                 end
                 
                 S_COLLECT: begin
-                    if (ir == `OP_MVI && bytes_to_fetch == 2) begin
-                        bytes_to_fetch <= bytes_to_fetch - 1'b1;
+                    if (ir == `OP_MVI) begin
                         pc_inc         <= 1;
-                        reg_addr       <= rom_data[3:0]; // Uložíme cieľový register
+                        reg_addr       <= rom_data[3:0];
                         state          <= S_COLLECT;
                     end
-                    else if (ir == `OP_MVI && bytes_to_fetch == 1) begin
-                        pc_inc       <= 1;
-                        write_reg_en <= 1; // Zapneme zápis na konci inštrukcie
-                        state        <= S_FETCH;   // Inštrukcia hotová, ideme na ďalšiu
-                    end
+                    if(ir = )
                 end
                 
                 default: state <= S_FETCH;
@@ -78,4 +72,4 @@ module controlunit (
         end
     end
      
-endmodule
+endmodule 
