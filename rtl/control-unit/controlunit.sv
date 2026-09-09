@@ -1,9 +1,9 @@
-`define OP_NOP   8'h00
-`define OP_MVI   8'h01
-`define OP_MOV   8'h02
-`define OP_MVIB  8'h03
-`define OP_LOAD  8'h04
-`define OP_STORE 8'h05
+`define OP_NOP   4'h0
+`define OP_MVI   4'h1
+`define OP_MOV   4'h2
+`define OP_MVIB  4'h3
+`define OP_LOAD  4'h4
+`define OP_STORE 4'h5
 
 module controlunit (
     input  wire        clk,
@@ -25,7 +25,7 @@ module controlunit (
     } state_t;
 
     state_t   state;
-    reg [7:0] ir;
+    reg [3:0] ir;        // Zmenené na 4-bit, keďže opcode má 4 bity
     reg [3:0] bytes_to_fetch;  
     reg [7:0] temp_reg;
 
@@ -35,7 +35,7 @@ module controlunit (
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             state               <= S_FETCH;
-            ir                  <= 8'h00;
+            ir                  <= 4'h0;
             bytes_to_fetch      <= 4'h0;
             pc_inc              <= 1'b0;
             write_reg_en        <= 1'b0;
@@ -52,7 +52,7 @@ module controlunit (
 
             case (state)
                 S_FETCH: begin
-                    ir     <= rom_data[15:8];   
+                    ir     <= rom_data[15:12];  // Opcode je v horných 4 bitoch
                     pc_inc <= 1'b1;
                     state  <= S_DECODE;
                 end
@@ -63,7 +63,7 @@ module controlunit (
 
                         `OP_MOV: begin
                             write_reg_en <= 1'b1;
-                            reg_addr     <= rom_data[7:4];
+                            reg_addr     <= rom_data[11:8]; // Register adresa na [11:8]
                             state        <= S_FETCH;
                         end
 
@@ -77,8 +77,8 @@ module controlunit (
 
                 S_COLLECT: begin
                     write_reg_en <= 1'b1;
-                    reg_addr     <= rom_data[15:12];
-                    reg_data     <= rom_data[11:4];
+                    reg_addr     <= rom_data[11:8];   // Adresa registra z [11:8]
+                    reg_data     <= rom_data[7:0];    // Plných 8 bitov dát z dolného bytu [7:0]
                     pc_inc       <= 1'b1;
                     state        <= S_FETCH;       
                     case(ir)
