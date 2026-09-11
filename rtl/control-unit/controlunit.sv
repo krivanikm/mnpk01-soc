@@ -9,6 +9,7 @@ module controlunit (
     input  wire        clk,
     input  wire        rst,
     input  wire [15:0] rom_data,
+    input wire [7:0] reg_read_data,
     output reg         pc_inc,
     output reg         write_reg_en,
     output reg  [3:0]  reg_addr,
@@ -18,13 +19,27 @@ module controlunit (
     output reg [1:0]   state_out
 );
 
-    typedef enum reg [1:0] {
-        S_FETCH   = 2'b00,
-        S_DECODE  = 2'b01,
-        S_COLLECT = 2'b10
-    } state_t;
+    typedef enum reg [3:0] {
+    S_FETCH,
+    S_DECODE,
 
-    state_t   state;
+    S_MVI_WRITE,
+
+    S_MOV_READ,
+    S_MOV_LATCH,
+    S_MOV_WRITE,
+
+    S_LOAD_ADDR,
+    S_LOAD_WAIT,
+    S_LOAD_WRITE,
+
+    S_STORE_ADDR,
+    S_STORE_READ,
+    S_STORE_WRITE
+    }state_t;
+
+    state_t state;
+
     reg [3:0] ir;        // Zmenené na 4-bit, keďže opcode má 4 bity
     reg [3:0] bytes_to_fetch;  
     reg [7:0] temp_reg;
@@ -43,39 +58,35 @@ module controlunit (
             reg_data            <= 8'h00;
             write_temp_from_reg <= 1'b0;
             high_b              <= 1'b0;
+            temp_reg <= 8'h00;
         end else begin
             // predvolené hodnoty - pulzné signály trvajú 1 takt
             pc_inc              <= 1'b0;
             write_reg_en        <= 1'b0;
             write_temp_from_reg <= 1'b0;
             high_b              <= 1'b0;
+        end
 
             case (state)
                 S_FETCH: begin
                     ir     <= rom_data[15:12];  // Opcode je v horných 4 bitoch
-                    pc_inc <= 1'b1;
                     state  <= S_DECODE;
                 end
 
                 S_DECODE: begin
                     case (ir)
-                        `OP_MVI, `OP_MVIB: state <= S_COLLECT;
-
-                        `OP_MOV: begin
-                            write_reg_en <= 1'b1;
-                            reg_addr     <= rom_data[11:8]; // Register adresa na [11:8]
-                            state        <= S_FETCH;
-                        end
-
-                        `OP_LOAD, `OP_STORE: begin
-                            state <= S_FETCH;
-                        end
-
+                        `OP_MVI, `OP_MVIB: state <= S_MVI_WRITE;
+                        `OP_MOV:begin
+                            reg_addr<= rom_data[7:4];
+                            state <= S_MOV_LATCH;
+                            end
+                        `OP_LOAD: state <= S_LOAD_ADDR; 
+                        `OP_STORE: state <= S_STORE_ADDR;
                         default: state <= S_FETCH; 
                     endcase
                 end
 
-                S_COLLECT: begin
+                S_MVI_WRITE: begin
                     write_reg_en <= 1'b1;
                     reg_addr     <= rom_data[11:8];   // Adresa registra z [11:8]
                     reg_data     <= rom_data[7:0];    // Plných 8 bitov dát z dolného bytu [7:0]
@@ -87,6 +98,18 @@ module controlunit (
                         end
                         default: high_b <= 1'b0;
                     endcase
+                    state        <= S_FETCH;
+                end
+                S_MOV_LATCH: begin
+                    temp_reg <= reg_read_data;
+                    reg_addr <= rom_data[11:8];
+                    state <= S_MOV_WRITE;
+                end
+                S_MOV_WRITE: begin
+                    write_reg_en <= 1;
+                    pc_inc <= 1;
+                    reg_data <= temp_reg;
+                    state <= S_FETCH;
                 end
 
                 default: state <= S_FETCH;

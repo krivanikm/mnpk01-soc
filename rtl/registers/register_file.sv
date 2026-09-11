@@ -13,7 +13,7 @@ integer i;
 
 assign q_out = high_b ? regfile[addr][15:8] : regfile[addr][7:0];
 
-always @(posedge clk or negedge rst_n) begin
+always @(posedge clk or posedge rst_n) begin
     if (!rst_n) begin
         for (i = 0; i < 16; i = i + 1)
             regfile[i] <= 16'h0000;
