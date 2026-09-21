@@ -65,7 +65,6 @@ module controlunit (
             write_reg_en        <= 1'b0;
             write_temp_from_reg <= 1'b0;
             high_b              <= 1'b0;
-        end
 
             case (state)
                 S_FETCH: begin
