@@ -74,7 +74,10 @@ module controlunit (
 
                 S_DECODE: begin
                     case (ir)
-                        `OP_MVI, `OP_MVIB: state <= S_MVI_WRITE;
+                        `OP_MVI, `OP_MVIB:begin 
+                            state <= S_MVI_WRITE;
+                            pc_inc <= 1;
+                            end
                         `OP_MOV:begin
                             reg_addr<= rom_data[7:4];
                             state <= S_MOV_LATCH;
@@ -89,7 +92,6 @@ module controlunit (
                     write_reg_en <= 1'b1;
                     reg_addr     <= rom_data[11:8];   // Adresa registra z [11:8]
                     reg_data     <= rom_data[7:0];    // Plných 8 bitov dát z dolného bytu [7:0]
-                    pc_inc       <= 1'b1;
                     state        <= S_FETCH;       
                     case(ir)
                         `OP_MVIB: begin
@@ -103,10 +105,10 @@ module controlunit (
                     temp_reg <= reg_read_data;
                     reg_addr <= rom_data[11:8];
                     state <= S_MOV_WRITE;
+                    pc_inc <= 1;
                 end
                 S_MOV_WRITE: begin
                     write_reg_en <= 1;
-                    pc_inc <= 1;
                     reg_data <= temp_reg;
                     state <= S_FETCH;
                 end
