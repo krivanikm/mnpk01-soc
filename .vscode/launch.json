@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/cimbo/mnpk01-soc/rtl/registers",
-      "program": "/home/cimbo/mnpk01-soc/rtl/registers/build/Debug/outDebug",
+      "cwd": "${workspaceFolder}/rtl/registers",
+      "program": "${workspaceFolder}/rtl/registers/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

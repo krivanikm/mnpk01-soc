@@ -1,9 +1,9 @@
 module programcounter (
-    input clk,
-    input rst,
-    input pc_inc,
-    input pc_load,
-    input [15:0] d_in,
+    input wire clk,
+    input wire rst,
+    input wire pc_inc,
+    input wire pc_load,
+    input wire [15:0] d_in,
     output reg [15:0] pc
 );
     always @(posedge clk or posedge rst) begin

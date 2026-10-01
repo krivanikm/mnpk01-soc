@@ -1,0 +1,10 @@
+# Verilator build výstupy
+obj_dir/
+build/
+*.o
+*.a
+*.d
+
+# simulácie
+*.vcd
+*.fst

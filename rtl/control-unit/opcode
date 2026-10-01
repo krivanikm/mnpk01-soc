@@ -1,6 +1,31 @@
-8h0 = NOP                                   OK 
-8h01 = MVI  //Move immidiate 8-bit          OK 8h01 register_addr data
-8h02 = MOV  //Move                          OK 8h02 register_addr register_addr
-8h03 = MVIB //Move immidiate 16-bit         OK 8h03 register_addr data dadta
-8h04 = LOAD //Move from memory to register  OK 8H04 register_addr ram_addrL ram_addrH
-8h05 = STORE//Move from register to memory  OK 8h05 ram_addrL ram_addrH register_addr
+FORMÁT INŠTRUKCIE (16-bit slovo, 1 inštrukcia = 1 slovo v ROM)
+
+ 15    12 11     8 7      4 3      0
++--------+--------+--------+--------+
+| opcode |  reg   |   data / operand |
++--------+--------+--------+--------+
+
+opcode = [15:12]   reg = [11:8] (r0..r15)   data = [7:0]
+Register file: 16 registrov x 16 bit, zapisuje sa po bajtoch (high_b = horný bajt)
+
+
+OPCODE  MENO   FORMÁT                          ČO ROBÍ                          TAKTY  STAV
+0x0     NOP    0000 xxxx xxxx xxxx             nič, PC++                        3      OK
+0x1     MVI    0001 rrrr dddd dddd             r[7:0]  = d                      3      OK
+0x2     MOV    0010 rrrr ssss xxxx             r[7:0]  = s[7:0]  (r = cieľ)     4      OK
+0x3     MVIB   0011 rrrr dddd dddd             r[15:8] = d  (horný bajt)        3      OK
+0x4     LOAD   ?                               pamäť -> register                       ROZPRACOVANÉ
+0x5     STORE  ?                               register -> pamäť                       ROZPRACOVANÉ
+0x6     JMP    ?                               skok                                    ROZPRACOVANÉ
+0x7-0xF        voľné (ALU volanie ako syscall, podmienené skoky, HLT, ...)  neznámy opcode = NOP
+
+16-bit konštanta do registra = MVI (dolný bajt) + MVIB (horný bajt):
+    MVI  r2, 0xAA   -> 0x12AA
+    MVIB r2, 0x55   -> 0x3255   => r2 = 0x55AA
+
+PRAVIDLO ČASOVANIA (kombinačná ROM):
+pc_inc je registrovaný => PC sa posunie až takt po stave, ktorý nastavil pc_inc <= 1.
+Preto sa pc_inc musí nastaviť najneskôr jeden stav PRED návratom do S_FETCH,
+inak S_FETCH načíta tú istú inštrukciu znova (preto NOP ide cez S_NOP).
+S_FETCH a S_DECODE čítajú rom_data priamo, takže pri synchrónnej BRAM (1 takt
+oneskorenie) to nebude fungovať bez čakacieho stavu - otestuj: ./Vsystem_top sync

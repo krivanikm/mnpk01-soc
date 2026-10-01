@@ -4,7 +4,7 @@ module system_top (
     input  wire [15:0] rom_data,
     
     // Výstupy pre C++ testbench
-    output wire [1:0]  state_out,
+    output wire [3:0]  state_out,
     output wire        pc_inc,
     output wire        write_reg_en,
     output wire [3:0]  reg_addr,
@@ -35,6 +35,7 @@ module system_top (
         .clk(clk),
         .rst(rst),
         .rom_data(rom_data),
+        .reg_read_data(w_reg_q_out),
         .pc_inc(w_pc_inc),
         .write_reg_en(w_write_reg_en),
         .reg_addr(w_reg_addr),
