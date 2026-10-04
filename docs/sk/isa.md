@@ -44,6 +44,6 @@ MVIB R2, 0x55   ; 0x3255  -> R2[15:8] = 0x55   => R2 = 0x55AA
 
 | Opcode | Meno | Formát | Čo robí |
 |---|---|---|---|
-| `0x4` | ALU | `0100 aaaa bbbb dddd` | `Rd = Ra (operácia z R1) Rb` – pozri [ALU](alu.html) |
+| `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd = Ra (operácia z R1) Rb` – pozri [ALU](alu.html) |
 
 Ďalšie inštrukcie (skoky, práca s pamäťou, vstup/výstup) sú vo fáze návrhu.

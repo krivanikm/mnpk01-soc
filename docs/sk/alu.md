@@ -45,12 +45,12 @@ ale programátor ho vopred uloží do registra **R1** – podobne ako sa pri sys
 v operačnom systéme ukladá číslo služby do registra.
 
 ```
-ALU    0100 aaaa bbbb dddd      Rd = Ra (operácia R1[3:0]) Rb
+ALU    0111 aaaa bbbb dddd      Rd = Ra (operácia R1[3:0]) Rb
 ```
 
 | Bity | Význam |
 |---|---|
-| `[15:12]` | opcode `0100` |
+| `[15:12]` | opcode `0111` |
 | `[11:8]` | prvý operand Ra |
 | `[7:4]` | druhý operand Rb |
 | `[3:0]` | cieľový register Rd |
@@ -61,7 +61,7 @@ ALU    0100 aaaa bbbb dddd      Rd = Ra (operácia R1[3:0]) Rb
 MVI  R1, ADD      ; 0x1100   R1 = 0x00 (kód ADD)
 MVI  R2, 59       ; 0x123B
 MVI  R3, 49       ; 0x1331
-ALU  R2, R3, R4   ; 0x4234   R4 = 59 + 49 = 108
+ALU  R2, R3, R4   ; 0x7234   R4 = 59 + 49 = 108
 ```
 
 ### Prečo takto

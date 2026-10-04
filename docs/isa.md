@@ -43,6 +43,6 @@ MVIB R2, 0x55   ; 0x3255  -> R2[15:8] = 0x55   => R2 = 0x55AA
 
 | Opcode | Name | Format | Operation |
 |---|---|---|---|
-| `0x4` | ALU | `0100 aaaa bbbb dddd` | `Rd = Ra (operation from R1) Rb` – see [ALU](alu.html) |
+| `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd = Ra (operation from R1) Rb` – see [ALU](alu.html) |
 
 Further instructions (jumps, memory access, input/output) are being designed.

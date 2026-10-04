@@ -19,7 +19,6 @@
         output reg [15:0]  pc_addr,
         output reg         write_reg_en,
         output reg  [3:0]  reg_addr,
-        output reg         write_temp_from_reg,
         output reg  [7:0]  reg_data,        // dáta pre zápis do registra
         output reg         high_b,
         output wire [3:0]  state_out
@@ -32,19 +31,9 @@
 
         S_MVI_WRITE,
 
-        S_MOV_READ,
         S_MOV_LATCH,
         S_MOV_WRITE,
 
-        S_LOAD_ADDR,
-        S_LOAD_WAIT,
-        S_LOAD_WRITE,
-
-        S_STORE_ADDR,
-        S_STORE_READ,
-        S_STORE_WRITE,
-
-        S_PC_ADDR_REG_READ,
         S_PC_ADDR_LOAD
 
 
@@ -52,9 +41,8 @@
 
         state_t state;
 
-        reg [15:0] ir;
-        reg [3:0] bytes_to_fetch;  
-        reg [15:0] temp_reg;
+        reg [15:0] ir; 
+        reg [7:0] temp_reg;
 
         // Prepojenie vnútorného stavu na výstup pre testbench
         assign state_out = state;
@@ -63,19 +51,16 @@
             if (rst) begin
                 state               <= S_FETCH;
                 ir                  <= 16'h0000;
-                bytes_to_fetch      <= 4'h0;
                 pc_inc              <= 1'b0;
                 write_reg_en        <= 1'b0;
                 reg_addr            <= 4'h0;
                 reg_data            <= 8'h00;
-                write_temp_from_reg <= 1'b0;
                 high_b              <= 1'b0;
-                temp_reg <= 16'h00;
+                temp_reg <= 8'h00;
             end else begin
                 // predvolené hodnoty - pulzné signály trvajú 1 takt
                 pc_inc              <= 1'b0;
                 write_reg_en        <= 1'b0;
-                write_temp_from_reg <= 1'b0;
                 high_b              <= 1'b0;
 
                 case (state)
@@ -132,11 +117,6 @@
                         reg_data <= temp_reg[7:0];
                         state <= S_FETCH;
                     end
-                    S_PC_ADDR_REG_READ: begin 
-                        reg_addr<= ir[11:8];
-                        temp_reg[7:0] <= reg_read_data;
-                    end
-
                     default: state <= S_FETCH;
                 endcase
             end

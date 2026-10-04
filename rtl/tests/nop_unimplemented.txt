@@ -1,4 +1,5 @@
 # NOP a zatiaľ neimplementované inštrukcie sa nesmú zaseknúť ani pokaziť ďalšiu inštrukciu.
+1101    ; MVI r1, 1
 0000    ; NOP
 1202    ; MVI r2, 2
 4000    ; LOAD  (zatiaľ ako NOP)

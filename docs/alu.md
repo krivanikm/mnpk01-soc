@@ -44,12 +44,12 @@ the programmer stores it in register **R1** beforehand, similar to how an operat
 takes the service number in a register.
 
 ```
-ALU    0100 aaaa bbbb dddd      Rd = Ra (operation R1[3:0]) Rb
+ALU    0111 aaaa bbbb dddd      Rd = Ra (operation R1[3:0]) Rb
 ```
 
 | Bits | Meaning |
 |---|---|
-| `[15:12]` | opcode `0100` |
+| `[15:12]` | opcode `0111` |
 | `[11:8]` | first operand Ra |
 | `[7:4]` | second operand Rb |
 | `[3:0]` | destination register Rd |
@@ -60,7 +60,7 @@ ALU    0100 aaaa bbbb dddd      Rd = Ra (operation R1[3:0]) Rb
 MVI  R1, ADD      ; 0x1100   R1 = 0x00 (ADD code)
 MVI  R2, 59       ; 0x123B
 MVI  R3, 49       ; 0x1331
-ALU  R2, R3, R4   ; 0x4234   R4 = 59 + 49 = 108
+ALU  R2, R3, R4   ; 0x7234   R4 = 59 + 49 = 108
 ```
 
 ### Why this design

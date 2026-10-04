@@ -17,7 +17,6 @@ module system_top (
     wire        w_pc_inc;
     wire        w_write_reg_en;
     wire [3:0]  w_reg_addr;
-    wire        w_write_temp_from_reg;
     wire [7:0]  w_reg_data;
     wire        w_high_b;
     wire [7:0]  w_reg_q_out;
@@ -39,7 +38,6 @@ module system_top (
         .pc_inc(w_pc_inc),
         .write_reg_en(w_write_reg_en),
         .reg_addr(w_reg_addr),
-        .write_temp_from_reg(w_write_temp_from_reg),
         .reg_data(w_reg_data),
         .high_b(w_high_b),
         .state_out(state_out)
