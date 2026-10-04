@@ -82,13 +82,13 @@
                     S_FETCH: begin
                         ir     <= rom_data;
                         state  <= S_DECODE;
+                        pc_inc <=1;
                     end
 
                     S_DECODE: begin
                         case (ir[15:12])
                             `OP_MVI, `OP_MVIB:begin 
                                 state <= S_MVI_WRITE;
-                                pc_inc <= 1;
                                 end
                             `OP_MOV:begin
                                 reg_addr<= ir[7:4];
@@ -98,11 +98,9 @@
                             `OP_STORE: state <= S_STORE_ADDR;
                             `OP_JMP:begin 
                                 state <= S_PC_ADDR_LOAD;
-                                pc_inc <= 1;
                             end
-                            default:begin // NOP + neznámy opcode: PC++ a prázdny takt, kým sa PC posunie
+                            default:begin // NOP + neznámy opcode: prázdny takt, kým sa PC posunie
                                 state <= S_NOP;
-                                pc_inc <= 1;
                             end
                         endcase
                     end
@@ -128,7 +126,6 @@
                         temp_reg[7:0] <= reg_read_data;
                         reg_addr <= ir[11:8];
                         state <= S_MOV_WRITE;
-                        pc_inc <= 1;
                     end
                     S_MOV_WRITE: begin
                         write_reg_en <= 1;

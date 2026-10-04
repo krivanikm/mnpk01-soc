@@ -23,9 +23,13 @@ OPCODE  MENO   FORMÁT                          ČO ROBÍ                       
     MVI  r2, 0xAA   -> 0x12AA
     MVIB r2, 0x55   -> 0x3255   => r2 = 0x55AA
 
-PRAVIDLO ČASOVANIA (kombinačná ROM):
-pc_inc je registrovaný => PC sa posunie až takt po stave, ktorý nastavil pc_inc <= 1.
-Preto sa pc_inc musí nastaviť najneskôr jeden stav PRED návratom do S_FETCH,
-inak S_FETCH načíta tú istú inštrukciu znova (preto NOP ide cez S_NOP).
-S_FETCH a S_DECODE čítajú rom_data priamo, takže pri synchrónnej BRAM (1 takt
-oneskorenie) to nebude fungovať bez čakacieho stavu - otestuj: ./Vsystem_top sync
+PRAVIDLO ČASOVANIA (synchrónna BRAM, 1 takt oneskorenie):
+S_FETCH uloží celú inštrukciu do ir a hneď nastaví pc_inc <= 1. Ďalšie stavy čítajú
+už len ir, takže pamäť medzitým načítava ďalšiu inštrukciu:
+    takt 1  S_FETCH      ir <= rom_data, pc_inc <= 1
+    takt 2  S_DECODE     PC sa na konci taktu posunie
+    takt 3  vykonanie    BRAM na konci taktu zachytí novú adresu
+    takt 4  S_FETCH      rom_data je platné
+=> pc_inc sa nastavuje IBA v S_FETCH a každá inštrukcia musí mať aspoň 3 takty
+   (preto NOP ide cez S_NOP). Funguje s kombinačnou ROM aj BRAM:
+   ./Vsystem_top a ./Vsystem_top sync
