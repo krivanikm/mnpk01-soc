@@ -1,0 +1,13 @@
+# NOP a zatiaľ neimplementované inštrukcie sa nesmú zaseknúť ani pokaziť ďalšiu inštrukciu.
+0000    ; NOP
+1202    ; MVI r2, 2
+4000    ; LOAD  (zatiaľ ako NOP)
+1303    ; MVI r3, 3
+5000    ; STORE (zatiaľ ako NOP)
+1404    ; MVI r4, 4
+6000    ; JMP   (zatiaľ ako NOP)
+1505    ; MVI r5, 5
+0000    ; NOP
+0000    ; NOP
+1606    ; MVI r6, 6
+expect r1=1 r2=2 r3=3 r4=4 r5=5 r6=6

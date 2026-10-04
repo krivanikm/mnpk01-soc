@@ -94,10 +94,10 @@
                                 reg_addr<= ir[7:4];
                                 state <= S_MOV_LATCH;
                                 end
-                            `OP_LOAD: state <= S_LOAD_ADDR; 
-                            `OP_STORE: state <= S_STORE_ADDR;
+                            `OP_LOAD: state <= S_NOP; 
+                            `OP_STORE: state <= S_NOP;
                             `OP_JMP:begin 
-                                state <= S_PC_ADDR_LOAD;
+                                state <= S_NOP;
                             end
                             default:begin // NOP + neznámy opcode: prázdny takt, kým sa PC posunie
                                 state <= S_NOP;

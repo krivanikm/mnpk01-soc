@@ -1,0 +1,12 @@
+FORMÁT TESTU (jeden súbor = jeden program)
+
+  12AA            ; inštrukcia: 4 hex číslice, jedna na riadok, od adresy 0
+  3255            ; komentár začína ; alebo #
+  expect r2=0x55AA r5=0xAA     ; očakávaný obsah registrov na konci (celých 16 bitov)
+  expect pc=2                  ; voliteľné: PC na konci (predvolené = za poslednou inštrukciou)
+
+- Register, ktorý nie je v "expect", musí byť na konci 0 -> odhalí aj zápis tam, kam nemal.
+- Program končí, keď CU chce načítať inštrukciu za koncom programu.
+- Každý test sa spustí s kombinačnou ROM aj so synchrónnou (ako BRAM).
+
+Spustenie (v rtl/):   make test        alebo   make test V=1   (výpis po taktoch)

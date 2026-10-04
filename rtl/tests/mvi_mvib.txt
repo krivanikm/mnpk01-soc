@@ -1,0 +1,10 @@
+# 16-bit konštanty, krajné registre r0 a r15, prepísanie hodnoty
+1034    ; MVI  r0, 0x34
+3012    ; MVIB r0, 0x12     -> r0 = 0x1234
+1FFF    ; MVI  r15, 0xFF
+3F80    ; MVIB r15, 0x80    -> r15 = 0x80FF
+1711    ; MVI  r7, 0x11
+1722    ; MVI  r7, 0x22     -> prepíše dolný bajt
+37AB    ; MVIB r7, 0xAB     -> r7 = 0xAB22
+3900    ; MVIB r9, 0x00     -> zápis nuly, r9 ostane 0
+expect r0=0x1234 r7=0xAB22 r15=0x80FF
