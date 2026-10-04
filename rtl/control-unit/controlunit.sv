@@ -52,7 +52,7 @@
 
         state_t state;
 
-        reg [3:0] ir;        // Zmenené na 4-bit, keďže opcode má 4 bity
+        reg [15:0] ir;
         reg [3:0] bytes_to_fetch;  
         reg [15:0] temp_reg;
 
@@ -62,7 +62,7 @@
         always @(posedge clk or posedge rst) begin
             if (rst) begin
                 state               <= S_FETCH;
-                ir                  <= 4'h0;
+                ir                  <= 16'h0000;
                 bytes_to_fetch      <= 4'h0;
                 pc_inc              <= 1'b0;
                 write_reg_en        <= 1'b0;
@@ -80,18 +80,18 @@
 
                 case (state)
                     S_FETCH: begin
-                        ir     <= rom_data[15:12];  // Opcode je v horných 4 bitoch
+                        ir     <= rom_data;
                         state  <= S_DECODE;
                     end
 
                     S_DECODE: begin
-                        case (ir)
+                        case (ir[15:12])
                             `OP_MVI, `OP_MVIB:begin 
                                 state <= S_MVI_WRITE;
                                 pc_inc <= 1;
                                 end
                             `OP_MOV:begin
-                                reg_addr<= rom_data[7:4];
+                                reg_addr<= ir[7:4];
                                 state <= S_MOV_LATCH;
                                 end
                             `OP_LOAD: state <= S_LOAD_ADDR; 
@@ -113,10 +113,10 @@
 
                     S_MVI_WRITE: begin
                         write_reg_en <= 1'b1;
-                        reg_addr     <= rom_data[11:8];   // Adresa registra z [11:8]
-                        reg_data     <= rom_data[7:0];    // Plných 8 bitov dát z dolného bytu [7:0]
+                        reg_addr     <= ir[11:8];   // Adresa registra z [11:8]
+                        reg_data     <= ir[7:0];    // Plných 8 bitov dát z dolného bytu [7:0]
                         state        <= S_FETCH;       
-                        case(ir)
+                        case(ir[15:12])
                             `OP_MVIB: begin
                                 high_b <= 1'b1;
                             end
@@ -126,7 +126,7 @@
                     end
                     S_MOV_LATCH: begin
                         temp_reg[7:0] <= reg_read_data;
-                        reg_addr <= rom_data[11:8];
+                        reg_addr <= ir[11:8];
                         state <= S_MOV_WRITE;
                         pc_inc <= 1;
                     end
@@ -136,7 +136,7 @@
                         state <= S_FETCH;
                     end
                     S_PC_ADDR_REG_READ: begin 
-                        reg_addr<= rom_data[11:8];
+                        reg_addr<= ir[11:8];
                         temp_reg[7:0] <= reg_read_data;
                     end
 
