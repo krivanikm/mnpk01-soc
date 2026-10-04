@@ -3,6 +3,8 @@
 ![Status](https://img.shields.io/badge/Status-Development-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-GPLv3-green?style=for-the-badge)
 
+📖 **Documentation:** [krivanikm.github.io/mnpk01-soc](https://krivanikm.github.io/mnpk01-soc/) (English / Slovenčina)
+
 ## 📌 Project Overview
 **MNPK01-System** is a 8-bit microcomputer architecture, engineered from the silicon level up to the physical PCB. Developed as a comprehensive graduation thesis, this project bridges the gap between Hardware Description Languages (HDL) and physical hardware implementation.
 
@@ -12,7 +14,7 @@ The core mission of the MNPK01 is to demonstrate a **complete vertical integrati
 
 ## 🏗 System Architecture
 
-The heart of the MNPK-01 is a modular **Resource Handler-centric** design. By utilizing a centralized bus management system, the architecture eliminates data contention and provides a streamlined path for 8-bit operations with 16-bit addressing capabilities.
+The MNPK-01 uses a Harvard architecture with an 8-bit data path and 16-bit addressing. The **Control Unit** drives every block directly – the register file, the ALU, data memory and I/O – with no separate bus-management unit in between. The ALU is used in a syscall-like way: the operation code is stored in register **R1** and a single `ALU Ra, Rb, Rd` instruction executes it.
 
 ### Integrated System Map
 ```mermaid
@@ -34,27 +36,27 @@ graph TD
     BRAM -->|16-bit Instruction| CU[CONTROL UNIT]
 
     subgraph Execution_Core [Processing Core]
-        RH[RESOURCE HANDLER / BUS]
         REGS[REGISTER FILE]
         ALU[ALU - Arithmetic Logic Unit]
-        
-        RH <-->|Data Path| REGS
-        RH <-->|Data Path| ALU
+
+        REGS -->|Operands Ra, Rb| ALU
+        REGS -.->|R1: ALU Opcode| ALU
+        ALU -->|Result to Rd| REGS
     end
 
     %% Control Signals
     CU -->|Jump Logic| PC
-    CU ---|Master Control Bus| RH
     CU -.->|Write Enable| REGS
-    CU -.->|ALU Opcode| ALU
     ALU -.->|Flags: Z/C| CU
 
     %% Peripherals
-    RH <-->|Memory Interface| RAM[RAM - Data Memory]
-    RH <-->|I/O Interface| IO[I/O PORTS]
+    REGS <-->|Memory Interface| RAM[RAM - Data Memory]
+    REGS <-->|I/O Interface| IO[I/O PORTS]
+    CU -.->|Read / Write| RAM
+    CU -.->|Read / Write| IO
 
     %% Applying Styles
     class CU control;
     class FLASH,BRAM,RAM,REGS storage;
     class ALU compute;
-    class RH,PC routing;
+    class PC routing;

@@ -1,0 +1,376 @@
+/* Rovnaký vizuál ako krivanikm.github.io */
+
+:root {
+  --bg: #0c0d0c;
+  --bg-2: #111312;
+  --bg-3: #08090a;
+  --line: #22241f;
+  --text: #e8e6df;
+  --soft: #c8c6bf;
+  --mute: #7a7c75;
+  --accent: #b4ff39;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.mute {
+  color: var(--mute);
+}
+
+/* --- NAVIGÁCIA --- */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(12, 13, 12, 0.92);
+  backdrop-filter: blur(8px);
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  color: var(--text);
+}
+
+.brand:hover {
+  text-decoration: none;
+}
+
+.brand .dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.crumb {
+  color: var(--mute);
+}
+
+.crumb a {
+  color: var(--text);
+}
+
+.lang-switch {
+  margin-left: auto;
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lang-switch a,
+.lang-switch span {
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--mute);
+}
+
+.lang-switch a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.lang-switch .on {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* --- ROZLOŽENIE --- */
+
+.layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 28px;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 56px;
+}
+
+.side {
+  position: sticky;
+  top: 70px;
+  align-self: start;
+  padding-top: 56px;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.kicker {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 16px;
+}
+
+.side nav {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--line);
+}
+
+.side nav a {
+  color: var(--mute);
+  padding: 7px 0 7px 14px;
+  margin-left: -1px;
+  border-left: 1px solid transparent;
+}
+
+.side nav a:hover {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.side nav a.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+
+.side nav .n {
+  color: var(--line);
+  margin-right: 10px;
+}
+
+.side nav a.active .n {
+  color: var(--accent);
+}
+
+.side-links {
+  margin-top: 28px;
+  font-size: 12px;
+}
+
+/* --- OBSAH --- */
+
+.doc {
+  padding: 48px 0 80px;
+  min-width: 0;
+}
+
+.doc h1,
+.doc h2,
+.doc h3 {
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.doc h1 {
+  font-size: 44px;
+  margin: 0 0 28px;
+}
+
+.doc h2 {
+  font-size: 28px;
+  margin: 56px 0 18px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.doc h3 {
+  font-size: 20px;
+  margin: 36px 0 12px;
+}
+
+.doc p,
+.doc li {
+  color: var(--soft);
+}
+
+.doc strong {
+  color: var(--text);
+}
+
+.doc ul {
+  padding-left: 20px;
+}
+
+.doc li {
+  margin-bottom: 6px;
+}
+
+.doc li::marker {
+  color: var(--accent);
+}
+
+/* --- KÓD --- */
+
+.doc code {
+  font-family: monospace;
+  font-size: 0.88em;
+  color: var(--accent);
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.doc pre {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.doc pre code {
+  color: #bdbcb6;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* --- TABUĽKY --- */
+
+.doc table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 18px 0 28px;
+  font-size: 14px;
+}
+
+.doc th,
+.doc td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.doc th {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: normal;
+  text-transform: uppercase;
+  color: var(--mute);
+  border-bottom-color: var(--mute);
+}
+
+.doc td {
+  color: var(--soft);
+}
+
+.doc tr:hover td {
+  background: var(--bg-2);
+}
+
+/* --- FOOTER --- */
+
+footer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 26px 28px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--mute);
+}
+
+/* --- MOBIL --- */
+
+@media (max-width: 800px) {
+  .nav {
+    padding: 14px 16px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 0 16px;
+  }
+
+  .side {
+    position: static;
+    padding-top: 24px;
+  }
+
+  .side nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-left: 0;
+    gap: 6px;
+  }
+
+  .side nav a {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 12px;
+    margin: 0;
+  }
+
+  .side nav a.active {
+    border-color: var(--accent);
+  }
+
+  .side nav .n,
+  .side-links,
+  .side .kicker {
+    display: none;
+  }
+
+  .doc {
+    padding-top: 28px;
+  }
+
+  .doc h1 {
+    font-size: 32px;
+  }
+
+  .doc h2 {
+    font-size: 24px;
+  }
+
+  footer {
+    padding: 22px 16px;
+  }
+}
+
+.doc td code {
+  white-space: nowrap;
+}

@@ -1,0 +1,70 @@
+{%- if page.lang == "sk" -%}
+  {%- assign sk = true -%}
+  {%- assign root = "/sk/" -%}
+  {%- assign other = page.url | remove_first: "/sk" -%}
+{%- else -%}
+  {%- assign sk = false -%}
+  {%- assign root = "/" -%}
+  {%- assign other = page.url | prepend: "/sk" -%}
+{%- endif -%}
+<!doctype html>
+<html lang="{% if sk %}sk{% else %}en{% endif %}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title }} · MNPK-01</title>
+  <meta name="description" content="{{ site.description }}">
+  <link rel="alternate" hreflang="{% if sk %}en{% else %}sk{% endif %}" href="{{ other | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/docs.css' | relative_url }}">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="https://krivanikm.github.io/">
+      <span class="dot"></span>
+      <span>matus<span class="mute">.krivanik</span></span>
+    </a>
+    <span class="crumb">/ <a href="{{ root | relative_url }}">mnpk-01</a></span>
+    <div class="lang-switch">
+      {%- if sk -%}
+      <span class="on">SK</span><a href="{{ other | relative_url }}">EN</a>
+      {%- else -%}
+      <a href="{{ other | relative_url }}">SK</a><span class="on">EN</span>
+      {%- endif -%}
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="side">
+      <div class="kicker">{% if sk %}dokumentácia{% else %}documentation{% endif %}</div>
+      <nav>
+        {%- if sk -%}
+          {%- assign items = "index:Úvod,architecture:Architektúra,isa:Inštrukčná sada,alu:ALU,simulation:Simulácia" | split: "," -%}
+        {%- else -%}
+          {%- assign items = "index:Home,architecture:Architecture,isa:Instruction set,alu:ALU,simulation:Simulation" | split: "," -%}
+        {%- endif -%}
+        {%- for item in items -%}
+          {%- assign parts = item | split: ":" -%}
+          {%- if parts[0] == "index" -%}
+            {%- assign href = root -%}
+          {%- else -%}
+            {%- assign href = root | append: parts[0] | append: ".html" -%}
+          {%- endif -%}
+          <a href="{{ href | relative_url }}"{% if page.url == href %} class="active"{% endif %}><span class="n">{{ forloop.index0 | prepend: "0" }}</span>{{ parts[1] }}</a>
+        {%- endfor -%}
+      </nav>
+      <div class="side-links">
+        <a href="https://github.com/krivanikm/mnpk01-soc">github →</a>
+      </div>
+    </aside>
+
+    <main class="doc">
+      {{ content }}
+    </main>
+  </div>
+
+  <footer>
+    <div>© 2026 Matúš Krivánik — MNPK-01</div>
+    <div class="mute">GPLv3</div>
+  </footer>
+</body>
+</html>

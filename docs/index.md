@@ -1,0 +1,32 @@
+---
+title: Home
+---
+
+# MNPK-01
+
+**MNPK-01** is an 8-bit microcomputer designed from the logic level in SystemVerilog all the way to a physical printed circuit board.
+The goal of the project is to cover the whole chain of computer design: a custom instruction set architecture (ISA), its hardware
+implementation, verification by simulation, deployment on an FPGA and finally a custom PCB.
+
+## Key parameters
+
+| Parameter | Value |
+|---|---|
+| Data width | 8 bits |
+| Address width | 16 bits |
+| Instruction width | 16 bits (1 instruction = 1 word) |
+| Registers | 16 × 16 bits (R0 – R15), written byte by byte |
+| Architecture | Harvard – separate program and data memory |
+| Program storage | FPGA BRAM, loaded from external SPI flash at boot |
+
+## Project status
+
+| Part | Status |
+|---|---|
+| ALU | done, exhaustively tested for all input combinations |
+| Register file | done |
+| Program counter | done (not yet connected in `system_top`) |
+| Control unit | in progress – NOP, MVI, MVIB, MOV work |
+| ALU instruction (via register R1) | designed |
+| Jumps, LOAD/STORE, RAM, I/O | being designed |
+| FPGA, PCB | planned |
