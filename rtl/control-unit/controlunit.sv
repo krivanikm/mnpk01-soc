@@ -5,6 +5,8 @@
     `define OP_LOAD  4'h4
     `define OP_STORE 4'h5
     `define OP_JMP   4'h6
+    `define OP_ALU   4'h7
+    
 
     module controlunit (
         input  wire        clk,
@@ -13,7 +15,10 @@
         input wire [7:0] reg_read_data,
         input wire z_flag,
         input wire c_flag,
-        input wire n_flag,    
+        input wire n_flag,
+        input wire [7:0] alu_result,
+        input wire [3:0] alu_op,
+        output reg [7:0] alu_a,
         output reg         pc_inc,
         output reg         pc_load,
         output reg [15:0]  pc_addr,
@@ -34,8 +39,10 @@
         S_MOV_LATCH,
         S_MOV_WRITE,
 
-        S_PC_ADDR_LOAD
+        S_PC_ADDR_LOAD,
 
+        S_ALU_A,
+        S_ALU_B
 
         }state_t;
 
@@ -43,6 +50,7 @@
 
         reg [15:0] ir; 
         reg [7:0] temp_reg;
+        reg [2:0] flags;
 
         // Prepojenie vnútorného stavu na výstup pre testbench
         assign state_out = state;
@@ -57,6 +65,8 @@
                 reg_data            <= 8'h00;
                 high_b              <= 1'b0;
                 temp_reg <= 8'h00;
+                flags               <= 3'b000;
+                alu_a               <=8'h00;
             end else begin
                 // predvolené hodnoty - pulzné signály trvajú 1 takt
                 pc_inc              <= 1'b0;
@@ -79,6 +89,10 @@
                                 reg_addr<= ir[7:4];
                                 state <= S_MOV_LATCH;
                                 end
+                            `OP_ALU: begin
+                                reg_addr <= ir[11:8];
+                                state <= S_ALU_A;
+                             end
                             `OP_LOAD: state <= S_NOP; 
                             `OP_STORE: state <= S_NOP;
                             `OP_JMP:begin 
@@ -117,6 +131,23 @@
                         reg_data <= temp_reg[7:0];
                         state <= S_FETCH;
                     end
+                    S_ALU_A: begin 
+                        alu_a <= reg_read_data;
+                        reg_addr <= ir[7:4];
+                        state <= S_ALU_B;
+                    end
+                    S_ALU_B: begin
+                        flags[2]<= z_flag;
+                        flags[1]<= c_flag;
+                        flags[0]<= n_flag;
+                        if (alu_op != 4'b1011) begin
+                            write_reg_en <= 1;
+                            reg_addr <= ir[3:0];
+                            reg_data <= alu_result;
+                        end
+                        state <= S_FETCH;
+
+                     end
                     default: state <= S_FETCH;
                 endcase
             end

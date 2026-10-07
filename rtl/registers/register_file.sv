@@ -5,13 +5,16 @@ module register_file(
     input wire high_b,
     input wire [7:0] d_in,
     input wire write_en,
-    output [7:0] q_out
+    output [7:0] q_out,
+    output [3:0] r1_out
 );
 
 reg [15:0] regfile [15:0];
 integer i;
 
 assign q_out = high_b ? regfile[addr][15:8] : regfile[addr][7:0];
+assign r1_out = regfile[4'b0001][3:0];
+
 
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin

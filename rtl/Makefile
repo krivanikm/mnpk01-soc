@@ -3,7 +3,7 @@
 #   make test V=1    s výpisom po taktoch
 #   make clean
 
-SRC   = control-unit/controlunit.sv registers/register_file.sv system_top.sv
+SRC   = control-unit/controlunit.sv registers/register_file.sv alu/alu.sv system_top.sv
 TB    = tb_full_system.cpp
 BUILD = build
 BIN   = $(BUILD)/Vsystem_top
