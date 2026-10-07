@@ -1,0 +1,8 @@
+# Cieľ je zároveň zdroj (Rd = Ra, Rd = Rb)
+1100    ; MVI R1, 0      (ADD)
+120A    ; MVI R2, 10
+7222    ; ALU R2, R2, R2 -> 20
+7222    ; ALU R2, R2, R2 -> 40 = 0x28
+1301    ; MVI R3, 1
+7233    ; ALU R2, R3, R3 -> 40 + 1 = 41 = 0x29
+expect r1=0 r2=0x28 r3=0x29

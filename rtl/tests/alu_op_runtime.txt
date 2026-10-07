@@ -1,0 +1,8 @@
+# Operácia vypočítaná za behu: ALU zapíše výsledok do R1 a tým zmení ďalšiu operáciu
+1100    ; MVI R1, 0      (ADD)
+1204    ; MVI R2, 4
+7231    ; ALU R2, R3, R1 -> R1 = 4 + 0 = 4 (AND)
+150F    ; MVI R5, 0x0F
+163C    ; MVI R6, 0x3C
+7567    ; ALU R5, R6, R7 -> teraz AND: 0x0F & 0x3C = 0x0C
+expect r1=4 r2=4 r5=0x0F r6=0x3C r7=0x0C

@@ -73,3 +73,25 @@ ALU  R2, R3, R4   ; 0x7234   R4 = 59 + 49 = 108
 - **V slučke sa R1 nastaví iba raz**, pred slučkou.
 
 R1 je preto vyhradený na kód operácie a pred použitím inštrukcie `ALU` musí byť nastavený.
+
+## Realizácia v hardvéri
+
+Bity `R1[3:0]` idú z register file **priamo drôtom** na vstup `op` ALU – register file má na to samostatný
+výstup `r1_out`. ALU teda vždy vidí aktuálny obsah R1 a na prečítanie operácie netreba žiadny takt navyše.
+
+Register file má jeden 8-bitový čítací port, preto control unit číta operandy postupne:
+
+| Takt | Stav | Čo sa deje |
+|---|---|---|
+| 1 | `S_FETCH` | načítanie inštrukcie, PC + 1 |
+| 2 | `S_DECODE` | adresa registra ← Ra |
+| 3 | `S_ALU_A` | Ra sa uloží do registra `alu_a` (operand A), adresa registra ← Rb |
+| 4 | `S_ALU_B` | ALU dostane A = uložený Ra, B = Rb priamo z register file, výsledok je hotový v tom istom takte (ALU je kombinačná); pripraví sa zápis do Rd a flagy |
+
+Výsledok sa zapíše do `Rd[7:0]` na ďalšej hrane hodín, horný bajt Rd sa nemení.
+Flagy Z, C, N si control unit uloží po každej inštrukcii `ALU`.
+
+- **CMP** (`1011`) iba nastaví flagy a do Rd **nezapisuje**.
+- Unárne operácie (INC, DEC, NOT, SHL, SHR, ROL, PASS, CLR) ignorujú Rb.
+- Rd môže byť ten istý register ako Ra alebo Rb (`ALU R2, R2, R2` zdvojnásobí R2).
+- Rd môže byť dokonca **R1** – ALU tak vypočíta kód operácie pre ďalšiu inštrukciu `ALU`.

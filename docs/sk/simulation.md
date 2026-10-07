@@ -16,31 +16,55 @@ a porovná výsledok aj flagy s očakávanou hodnotou vypočítanou v C++.
 
 ## Test celého systému
 
-Súbor: `rtl/tb_full_system.cpp`
+Súbory: `rtl/tb_full_system.cpp`, `rtl/tests/*.txt`
 
-Spustí krátky program a kontroluje, či sa do registrov zapísali správne hodnoty v správnom poradí.
-Program counter a pamäť programu zatiaľ emuluje samotný testbench.
-
-```
-0x12AA   MVI  R2, 0xAA
-0x3255   MVIB R2, 0x55
-0x2520   MOV  R5, R2
-0x110F   MVI  R1, 0x0F
-0x0000   NOP
-0x1333   MVI  R3, 0x33
-```
-
-Preklad a spustenie (v priečinku `rtl/`):
+Každý test je krátky program vo vlastnom textovom súbore spolu s očakávaným výsledkom:
 
 ```
-verilator --cc control-unit/controlunit.sv registers/register_file.sv system_top.sv \
-    --exe tb_full_system.cpp --build --top system_top \
-    -Wno-EOFNEWLINE -Wno-UNUSEDSIGNAL -Wno-UNDRIVEN -Wno-DECLFILENAME
-./obj_dir/Vsystem_top          # kombinačná pamäť programu
-./obj_dir/Vsystem_top sync     # synchrónna pamäť (ako BRAM vo FPGA)
+1100    ; MVI R1, 0      (ADD)
+123B    ; MVI R2, 59
+1331    ; MVI R3, 49
+7234    ; ALU R2, R3, R4
+expect r2=59 r3=49 r4=108
 ```
 
-| Režim | Výsledok |
+Testbench program nahrá, spustí a na konci porovná **skutočný obsah všetkých 16 registrov**
+s očakávanými hodnotami. Register, ktorý nie je uvedený, musí byť 0 – odhalí sa tak aj zápis do zlého registra.
+Kontroluje aj konečnú hodnotu PC a zastaví program, ktorý sa zasekne.
+
+Každý test sa spustí v **oboch režimoch pamäte**:
+
+| Režim | Správanie |
 |---|---|
-| kombinačná pamäť | všetky testy prejdú |
-| synchrónna pamäť (BRAM) | zatiaľ nefunguje – control unit potrebuje čakací stav pri načítaní inštrukcie |
+| kombinačná | inštrukcia je k dispozícii okamžite |
+| synchrónna (BRAM) | ako skutočná bloková pamäť vo FPGA: dáta prídu takt po adrese |
+
+Program counter a pamäť programu zatiaľ emuluje testbench.
+
+### Testy
+
+| Test | Čo overuje |
+|---|---|
+| `basic` | MVI, MVIB, MOV, NOP spolu |
+| `mvi_mvib` | 16-bitové konštanty, registre R0 a R15, prepísanie hodnoty |
+| `mov` | MOV kopíruje iba dolný bajt, reťazenie, MOV sám na seba |
+| `nop_unimplemented` | NOP a zatiaľ neimplementované inštrukcie procesor nezaseknú |
+| `alu_add` | 59 + 49 = 108 |
+| `alu_ops` | SUB, AND, OR, XOR, zmena operácie v R1 medzi inštrukciami |
+| `alu_sub_borrow` | odčítanie pod nulu, odčítanie do nuly |
+| `alu_cmp` | CMP nezapisuje do Rd |
+| `alu_rd_eq_src` | cieľ je ten istý register ako zdroj |
+| `alu_unary` | INC, DEC, NOT, SHL, SHR, ROL, PASS, CLR |
+| `alu_high_byte` | ALU mení iba dolný bajt |
+| `alu_op_runtime` | ALU zapíše do R1 a tým vyberie ďalšiu operáciu |
+
+### Spustenie
+
+V priečinku `rtl/`:
+
+```
+make test        # všetky testy, oba režimy pamäte
+make test V=1    # s výpisom po taktoch
+```
+
+Aktuálny výsledok: **12/12 testov prejde** v oboch režimoch.

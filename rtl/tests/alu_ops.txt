@@ -1,0 +1,12 @@
+# Rôzne operácie, kód operácie v R1 sa mení medzi inštrukciami
+1101    ; MVI R1, 1      (SUB)
+1264    ; MVI R2, 0x64   (100)
+131E    ; MVI R3, 0x1E   (30)
+7234    ; ALU R2, R3, R4 -> 100 - 30 = 70 = 0x46
+1104    ; MVI R1, 4      (AND)
+7235    ; ALU R2, R3, R5 -> 0x64 & 0x1E = 0x04
+1105    ; MVI R1, 5      (OR)
+7236    ; ALU R2, R3, R6 -> 0x64 | 0x1E = 0x7E
+1106    ; MVI R1, 6      (XOR)
+7237    ; ALU R2, R3, R7 -> 0x64 ^ 0x1E = 0x7A
+expect r1=6 r2=0x64 r3=0x1E r4=0x46 r5=0x04 r6=0x7E r7=0x7A

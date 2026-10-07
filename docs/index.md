@@ -26,7 +26,7 @@ implementation, verification by simulation, deployment on an FPGA and finally a 
 | ALU | done, exhaustively tested for all input combinations |
 | Register file | done |
 | Program counter | done (not yet connected in `system_top`) |
-| Control unit | in progress – NOP, MVI, MVIB, MOV work |
-| ALU instruction (via register R1) | designed |
+| Control unit | in progress – NOP, MVI, MVIB, MOV and ALU work, also with FPGA BRAM |
+| ALU instruction (via register R1) | done, 12 automated tests pass |
 | Jumps, LOAD/STORE, RAM, I/O | being designed |
 | FPGA, PCB | planned |

@@ -24,6 +24,7 @@ lang: sk
 ```
 
 Control unit riadi všetky bloky priamo, nie je medzi nimi žiadna zbernicová jednotka.
+ALU berie kód operácie priamo z registra R1 (pozri [ALU](alu.html)).
 
 ## Program counter
 
@@ -54,6 +55,7 @@ Súbor: `rtl/registers/register_file.sv`
 | `d_in[7:0]` | vstup | zapisovaný bajt |
 | `write_en` | vstup | zápis na nábežnej hrane hodín |
 | `q_out[7:0]` | výstup | čítaný bajt (kombinačne, hneď po zmene adresy) |
+| `r1_out[3:0]` | výstup | `R1[3:0]`, ide priamo do ALU ako kód operácie |
 
 ## Control unit
 
@@ -73,9 +75,21 @@ S_FETCH -> S_DECODE -> stavy vykonania -> S_FETCH
 | `S_MVI_WRITE` | zápis konštanty do registra (MVI aj MVIB) |
 | `S_MOV_LATCH` | prečítanie zdrojového registra do pomocného registra |
 | `S_MOV_WRITE` | zápis do cieľového registra |
+| `S_ALU_A` | uloženie operandu Ra, výber Rb |
+| `S_ALU_B` | zápis výsledku ALU do Rd (okrem CMP), uloženie flagov |
 
 ### Pravidlo časovania
 
-`pc_inc` je registrovaný výstup, takže PC sa posunie až takt po stave, ktorý ho nastavil.
-Preto sa `pc_inc` musí nastaviť najneskôr jeden stav **pred** návratom do `S_FETCH`, inak by sa načítala
-tá istá inštrukcia znova.
+Pamäť programu vo FPGA (BRAM) je synchrónna: dáta pre novú adresu prídu až o takt neskôr.
+`S_FETCH` preto uloží celú inštrukciu do inštrukčného registra a hneď nastaví `pc_inc`;
+ďalšie stavy už používajú len inštrukčný register, takže pamäť medzitým načítava ďalšiu inštrukciu:
+
+| Takt | Stav | |
+|---|---|---|
+| 1 | `S_FETCH` | inštrukcia → inštrukčný register, `pc_inc` = 1 |
+| 2 | `S_DECODE` | PC sa na konci taktu posunie |
+| 3 | vykonanie | pamäť na konci taktu zachytí novú adresu |
+| 4 | `S_FETCH` | ďalšia inštrukcia je platná |
+
+Pravidlo: `pc_inc` sa nastavuje **iba** v `S_FETCH` a každá inštrukcia trvá **aspoň 3 takty**
+(preto NOP ide cez `S_NOP`).

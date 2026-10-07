@@ -28,8 +28,9 @@ Každá inštrukcia je jedno 16-bitové slovo:
 | `0x1` | MVI | `0001 rrrr dddd dddd` | `r[7:0] = d` | 3 |
 | `0x2` | MOV | `0010 rrrr ssss xxxx` | `r[7:0] = s[7:0]` | 4 |
 | `0x3` | MVIB | `0011 rrrr dddd dddd` | `r[15:8] = d` | 3 |
+| `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd[7:0] = Ra (operácia z R1) Rb` – pozri [ALU](alu.html) | 4 |
 
-Neznámy opcode sa správa ako NOP.
+Opcode `0x4` (LOAD), `0x5` (STORE) a `0x6` (JMP) sú rezervované; kým nie sú implementované, správajú sa – rovnako ako neznámy opcode – ako NOP.
 
 ### 16-bitová konštanta
 
@@ -40,10 +41,6 @@ MVI  R2, 0xAA   ; 0x12AA  -> R2[7:0]  = 0xAA
 MVIB R2, 0x55   ; 0x3255  -> R2[15:8] = 0x55   => R2 = 0x55AA
 ```
 
-## Navrhované inštrukcie
+## Plánované inštrukcie
 
-| Opcode | Meno | Formát | Čo robí |
-|---|---|---|---|
-| `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd = Ra (operácia z R1) Rb` – pozri [ALU](alu.html) |
-
-Ďalšie inštrukcie (skoky, práca s pamäťou, vstup/výstup) sú vo fáze návrhu.
+Skoky (`0x6`), práca s pamäťou (`0x4`, `0x5`) a vstup/výstup sú vo fáze návrhu.

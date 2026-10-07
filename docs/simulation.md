@@ -15,31 +15,55 @@ and compares both the result and the flags with the expected values computed in 
 
 ## Full system test
 
-File: `rtl/tb_full_system.cpp`
+Files: `rtl/tb_full_system.cpp`, `rtl/tests/*.txt`
 
-Runs a short program and checks that the correct values were written to the registers in the correct order.
-The program counter and program memory are emulated by the testbench for now.
-
-```
-0x12AA   MVI  R2, 0xAA
-0x3255   MVIB R2, 0x55
-0x2520   MOV  R5, R2
-0x110F   MVI  R1, 0x0F
-0x0000   NOP
-0x1333   MVI  R3, 0x33
-```
-
-Build and run (in the `rtl/` directory):
+Every test is a short program in its own text file together with the expected result:
 
 ```
-verilator --cc control-unit/controlunit.sv registers/register_file.sv system_top.sv \
-    --exe tb_full_system.cpp --build --top system_top \
-    -Wno-EOFNEWLINE -Wno-UNUSEDSIGNAL -Wno-UNDRIVEN -Wno-DECLFILENAME
-./obj_dir/Vsystem_top          # combinational program memory
-./obj_dir/Vsystem_top sync     # synchronous memory (like FPGA BRAM)
+1100    ; MVI R1, 0      (ADD)
+123B    ; MVI R2, 59
+1331    ; MVI R3, 49
+7234    ; ALU R2, R3, R4
+expect r2=59 r3=49 r4=108
 ```
 
-| Mode | Result |
+The testbench loads the program, runs it and at the end compares the **actual contents of all 16 registers**
+with the expected values. A register that is not listed must be 0, so a write to a wrong register is caught too.
+It also checks the final PC and stops a program that gets stuck.
+
+Every test runs in **both memory modes**:
+
+| Mode | Behaviour |
 |---|---|
-| combinational memory | all tests pass |
-| synchronous memory (BRAM) | does not work yet – the control unit needs a wait state when fetching an instruction |
+| combinational | the instruction is available immediately |
+| synchronous (BRAM) | like real FPGA block RAM: data arrive one cycle after the address |
+
+The program counter and program memory are still emulated by the testbench for now.
+
+### Tests
+
+| Test | What it checks |
+|---|---|
+| `basic` | MVI, MVIB, MOV, NOP together |
+| `mvi_mvib` | 16-bit constants, registers R0 and R15, overwriting a value |
+| `mov` | MOV copies only the low byte, chaining, MOV to itself |
+| `nop_unimplemented` | NOP and not yet implemented instructions do not hang the CPU |
+| `alu_add` | 59 + 49 = 108 |
+| `alu_ops` | SUB, AND, OR, XOR, operation in R1 changed between instructions |
+| `alu_sub_borrow` | subtraction below zero, subtraction to zero |
+| `alu_cmp` | CMP does not write to Rd |
+| `alu_rd_eq_src` | destination equal to a source register |
+| `alu_unary` | INC, DEC, NOT, SHL, SHR, ROL, PASS, CLR |
+| `alu_high_byte` | ALU changes only the low byte |
+| `alu_op_runtime` | the ALU writes into R1 and so selects the next operation |
+
+### Running
+
+In the `rtl/` directory:
+
+```
+make test        # all tests, both memory modes
+make test V=1    # with a cycle-by-cycle trace
+```
+
+Current result: **12/12 tests pass** in both modes.

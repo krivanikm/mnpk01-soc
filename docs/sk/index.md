@@ -27,7 +27,7 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | ALU | hotová, otestovaná pre všetky kombinácie vstupov |
 | Register file | hotový |
 | Program counter | hotový (zatiaľ nie je zapojený v `system_top`) |
-| Control unit | rozpracovaná – fungujú NOP, MVI, MVIB, MOV |
-| ALU inštrukcia (cez register R1) | navrhnutá |
+| Control unit | rozpracovaná – fungujú NOP, MVI, MVIB, MOV a ALU, aj s BRAM vo FPGA |
+| ALU inštrukcia (cez register R1) | hotová, prechádza 12 automatických testov |
 | Skoky, LOAD/STORE, RAM, I/O | v návrhu |
 | FPGA, plošný spoj | plánované |

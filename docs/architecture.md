@@ -23,6 +23,7 @@ title: Architecture
 ```
 
 The control unit drives all blocks directly, there is no bus-management unit between them.
+The ALU takes its operation code straight from register R1 (see [ALU](alu.html)).
 
 ## Program counter
 
@@ -53,6 +54,7 @@ File: `rtl/registers/register_file.sv`
 | `d_in[7:0]` | input | byte to write |
 | `write_en` | input | write on the rising clock edge |
 | `q_out[7:0]` | output | byte read (combinational, valid right after the address changes) |
+| `r1_out[3:0]` | output | `R1[3:0]`, wired straight to the ALU as the operation code |
 
 ## Control unit
 
@@ -72,9 +74,21 @@ S_FETCH -> S_DECODE -> execute states -> S_FETCH
 | `S_MVI_WRITE` | constant is written to a register (both MVI and MVIB) |
 | `S_MOV_LATCH` | source register is read into a temporary register |
 | `S_MOV_WRITE` | value is written to the destination register |
+| `S_ALU_A` | operand Ra is stored, Rb is selected |
+| `S_ALU_B` | ALU result is written to Rd (except CMP), flags are stored |
 
 ### Timing rule
 
-`pc_inc` is a registered output, so the PC advances one cycle after the state that set it.
-That is why `pc_inc` must be set at least one state **before** returning to `S_FETCH`, otherwise
-the same instruction would be fetched again.
+The program memory in the FPGA (BRAM) is synchronous: data for a new address arrive one cycle later.
+`S_FETCH` therefore stores the whole instruction in the instruction register and immediately sets `pc_inc`;
+the following states only use the instruction register, so the memory fetches the next instruction in the meantime:
+
+| Cycle | State | |
+|---|---|---|
+| 1 | `S_FETCH` | instruction → instruction register, `pc_inc` = 1 |
+| 2 | `S_DECODE` | PC advances at the end of the cycle |
+| 3 | execute | the memory latches the new address at the end of the cycle |
+| 4 | `S_FETCH` | the next instruction is valid |
+
+Rule: `pc_inc` is set **only** in `S_FETCH` and every instruction takes **at least 3 cycles**
+(that is why NOP goes through `S_NOP`).

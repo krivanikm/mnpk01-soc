@@ -27,8 +27,9 @@ Every instruction is a single 16-bit word:
 | `0x1` | MVI | `0001 rrrr dddd dddd` | `r[7:0] = d` | 3 |
 | `0x2` | MOV | `0010 rrrr ssss xxxx` | `r[7:0] = s[7:0]` | 4 |
 | `0x3` | MVIB | `0011 rrrr dddd dddd` | `r[15:8] = d` | 3 |
+| `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd[7:0] = Ra (operation from R1) Rb` – see [ALU](alu.html) | 4 |
 
-An unknown opcode behaves like NOP.
+Opcodes `0x4` (LOAD), `0x5` (STORE) and `0x6` (JMP) are reserved; until they are implemented they – like any unknown opcode – behave like NOP.
 
 ### 16-bit constant
 
@@ -39,10 +40,6 @@ MVI  R2, 0xAA   ; 0x12AA  -> R2[7:0]  = 0xAA
 MVIB R2, 0x55   ; 0x3255  -> R2[15:8] = 0x55   => R2 = 0x55AA
 ```
 
-## Proposed instructions
+## Planned instructions
 
-| Opcode | Name | Format | Operation |
-|---|---|---|---|
-| `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd = Ra (operation from R1) Rb` – see [ALU](alu.html) |
-
-Further instructions (jumps, memory access, input/output) are being designed.
+Jumps (`0x6`), memory access (`0x4`, `0x5`) and input/output are being designed.
