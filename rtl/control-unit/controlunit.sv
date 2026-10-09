@@ -38,10 +38,12 @@
         S_MOV_LATCH,
         S_MOV_WRITE,
 
-        S_PC_ADDR_LOAD,
-
         S_ALU_A,
-        S_ALU_B
+        S_ALU_B,
+
+        S_JMP,
+        S_JMP_WAIT1,
+        S_JMP_WAIT2
 
         }state_t;
 
@@ -49,7 +51,23 @@
 
         reg [15:0] ir; 
         reg [15:0] temp_reg;
-        reg [2:0] flags;
+        reg [2:0] flags;            // [2] = Z, [1] = C, [0] = N
+
+        // Platí podmienka skoku? Podmienka je v ir[11:8] (JMP 0110 cccc rrrr xxxx).
+        reg cond_ok;
+
+        always @(*) begin
+            case (ir[11:8])
+                4'b0000: cond_ok = 1'b1;        // JMP  – vždy
+                4'b0001: cond_ok = flags[2];    // JZ   – Z = 1  (po CMP: a == b)
+                4'b0010: cond_ok = !flags[2];   // JNZ  – Z = 0  (po CMP: a != b)
+                4'b0011: cond_ok = flags[1];    // JC   – C = 1  (po CMP: a >  b)
+                4'b0100: cond_ok = !flags[1];   // JNC  – C = 0  (po CMP: a <= b)
+                4'b0101: cond_ok = flags[0];    // JN   – N = 1  (po CMP: a <  b)
+                4'b0110: cond_ok = !flags[0];   // JNN  – N = 0  (po CMP: a >= b)
+                default: cond_ok = 1'b0;        // neznáma podmienka – neskáč
+            endcase
+        end
 
         // Prepojenie vnútorného stavu na výstup pre testbench
         assign state_out = state;
@@ -65,10 +83,14 @@
                 temp_reg            <= 16'h0000;
                 flags               <= 3'b000;
                 alu_a               <= 16'h0000;
+                pc_load             <= 1'b0;
+                pc_addr             <= 16'h0;
             end else begin
                 // predvolené hodnoty - pulzné signály trvajú 1 takt
                 pc_inc              <= 1'b0;
                 write_reg_en        <= 2'b00;
+                pc_load             <= 1'b0;
+                pc_addr             <= 16'h0;
 
                 case (state)
                     S_FETCH: begin
@@ -93,7 +115,8 @@
                             `OP_LOAD: state <= S_NOP; 
                             `OP_STORE: state <= S_NOP;
                             `OP_JMP:begin 
-                                state <= S_NOP;
+                                state <= S_JMP;
+                                reg_addr <= ir[7:4];
                             end
                             default:begin // NOP + neznámy opcode: prázdny takt, kým sa PC posunie
                                 state <= S_NOP;
@@ -141,6 +164,25 @@
                         state <= S_FETCH;
 
                      end
+                     S_JMP:begin
+                        if(cond_ok)begin
+                            pc_addr <= reg_read_data;
+                            pc_load <= 1;
+                            state <= S_JMP_WAIT1;
+                        end
+                        else begin
+                            state <= S_FETCH;
+                        end
+                     end
+                     S_JMP_WAIT1: begin
+                        state <= S_JMP_WAIT2;
+                     end
+                     S_JMP_WAIT2:begin
+                        state <= S_FETCH;
+                     end
+
+
+
                     default: state <= S_FETCH;
                 endcase
             end

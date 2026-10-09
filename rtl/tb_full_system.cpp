@@ -13,8 +13,7 @@
 //   kombinačná   rom_data = rom[pc] okamžite
 //   sync         ako FPGA BRAM: adresa sa zachytí na hrane, dáta prídu o takt neskôr
 //
-// PC zatiaľ emuluje testbench (rovnako ako programcounter.v: PC++ na hrane, keď pc_inc = 1).
-// Keď bude PC v system_top, stačí čítať PC z neho namiesto premennej pc.
+// PC je v hardvéri (programcounter.v v system_top), testbench z neho len číta adresu pre ROM.
 
 #include <verilated.h>
 #include "Vsystem_top.h"
@@ -113,7 +112,6 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
         return (a >= 0 && a < (int)t.rom.size()) ? t.rom[a] : 0x0000;   // mimo programu = NOP
     };
 
-    int pc = 0;
     uint16_t rom_reg = rom_at(0);
 
     // reset
@@ -129,7 +127,9 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
     // Na hrane tohto taktu sa ešte zapíše výsledok poslednej inštrukcie
     // (write_reg_en je registrovaný), preto sa končí až po nej.
     int cycle = 0;
+    int pc = 0;
     for (; cycle < MAX_CYCLES; cycle++) {
+        pc = top->pc;
         top->rom_data = sync_rom ? rom_reg : rom_at(pc);
         top->eval();
 
@@ -140,13 +140,12 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
                         cycle, pc, top->rom_data, top->state_out, top->pc_inc,
                         (top->write_reg_en >> 1) & 1, top->write_reg_en & 1, top->reg_addr, top->reg_data);
 
-        bool inc = top->pc_inc;
         top->clk = 1; top->eval();
         rom_reg = rom_at(pc);          // BRAM zachytí adresu, ktorá bola pred hranou
-        if (inc) pc++;
         top->clk = 0; top->eval();
         if (done) break;
     }
+    pc = top->pc;
 
     bool ok = true;
     const char* mode = sync_rom ? "sync" : "komb";

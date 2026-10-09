@@ -1,0 +1,11 @@
+# Slučka: 6 x 7 = 42 opakovaným sčítaním. JNZ reaguje na Z zo SUB (nie z CMP).
+1307    ;  0  MVI R3, 7      čo sčítavam
+1406    ;  1  MVI R4, 6      počítadlo
+1501    ;  2  MVI R5, 1
+1E04    ;  3  MVI R14, 4     adresa začiatku slučky
+1100    ;  4  slučka: MVI R1, ADD
+7322    ;  5  ALU R3, R2, R2   R2 = R2 + 7
+1101    ;  6  MVI R1, SUB
+7454    ;  7  ALU R4, R5, R4   R4 = R4 - 1, Z = 1 pri nule
+62E0    ;  8  JNZ R14        kým R4 != 0
+expect r1=1 r2=42 r3=7 r5=1 r14=4

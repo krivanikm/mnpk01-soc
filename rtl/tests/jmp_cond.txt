@@ -1,0 +1,48 @@
+# Všetky podmienky po CMP, každá raz skočí a raz nie.
+# Skok, ktorý sa vykoná, preskočí  MVI R9, 0xFF  -> R9 musí ostať 0.
+# Skok, ktorý sa nevykoná, pustí ďalej  MVI Rx, 1  -> R10 – R13 musia byť 1.
+110B    ;  0  MVI R1, CMP
+1205    ;  1  MVI R2, 5
+1305    ;  2  MVI R3, 5
+1407    ;  3  MVI R4, 7
+# --- 5 == 5:  Z=1 C=0 N=0
+7230    ;  4  CMP R2, R3
+1E08    ;  5  MVI R14, 8
+61E0    ;  6  JZ  R14        skočí
+19FF    ;  7  MVI R9, 0xFF
+1E0B    ;  8  MVI R14, 11
+62E0    ;  9  JNZ R14        neskočí
+1A01    ; 10  MVI R10, 1
+# --- 7 > 5:  Z=0 C=1 N=0
+7420    ; 11  CMP R4, R2
+1E0F    ; 12  MVI R14, 15
+63E0    ; 13  JC  R14        skočí
+19FF    ; 14  MVI R9, 0xFF
+1E12    ; 15  MVI R14, 18
+64E0    ; 16  JNC R14        neskočí
+1B01    ; 17  MVI R11, 1
+# --- 5 < 7:  Z=0 C=0 N=1
+7240    ; 18  CMP R2, R4
+1E16    ; 19  MVI R14, 22
+65E0    ; 20  JN  R14        skočí
+19FF    ; 21  MVI R9, 0xFF
+1E19    ; 22  MVI R14, 25
+66E0    ; 23  JNN R14        neskočí
+1C01    ; 24  MVI R12, 1
+1E1C    ; 25  MVI R14, 28
+64E0    ; 26  JNC R14        skočí (C=0)
+19FF    ; 27  MVI R9, 0xFF
+1E1F    ; 28  MVI R14, 31
+62E0    ; 29  JNZ R14        skočí (Z=0)
+19FF    ; 30  MVI R9, 0xFF
+# --- 7 > 5 znova:  N=0
+1E23    ; 31  MVI R14, 35
+7420    ; 32  CMP R4, R2
+66E0    ; 33  JNN R14        skočí (N=0)
+19FF    ; 34  MVI R9, 0xFF
+# --- neznáma podmienka 0111 nesmie skočiť nikdy
+1E26    ; 35  MVI R14, 38
+67E0    ; 36  J?  R14        neskočí
+1D01    ; 37  MVI R13, 1
+0000    ; 38  NOP
+expect r1=0x0B r2=5 r3=5 r4=7 r10=1 r11=1 r12=1 r13=1 r14=38

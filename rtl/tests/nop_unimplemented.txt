@@ -1,4 +1,4 @@
-# NOP a zatiaľ neimplementované inštrukcie sa nesmú zaseknúť ani pokaziť ďalšiu inštrukciu.
+# NOP a zatiaľ neimplementované inštrukcie (LOAD, STORE) sa nesmú zaseknúť ani pokaziť ďalšiu inštrukciu.
 1101    ; MVI r1, 1
 0000    ; NOP
 1202    ; MVI r2, 2
@@ -6,7 +6,7 @@
 1303    ; MVI r3, 3
 5000    ; STORE (zatiaľ ako NOP)
 1404    ; MVI r4, 4
-6000    ; JMP   (zatiaľ ako NOP)
+0000    ; NOP   (pôvodne JMP – ten už je implementovaný, testuje ho jmp_*)
 1505    ; MVI r5, 5
 0000    ; NOP
 0000    ; NOP

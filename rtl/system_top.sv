@@ -8,7 +8,9 @@ module system_top (
     output wire [1:0]  write_reg_en,
     output wire [3:0]  reg_addr,
     output wire [15:0] reg_data,
-    output wire [15:0] reg_q_out
+    output wire [15:0] reg_q_out,
+    output wire [15:0] pc
+     
 );
 
     // Vnútorné prepojenia
@@ -24,6 +26,8 @@ module system_top (
     wire        w_z_flag;
     wire        w_c_flag;
     wire        w_n_flag;
+    wire        w_pc_load;
+    wire [15:0] w_pc_addr;
 
     // Prepojenie na výstupy pre C++
     assign pc_inc       = w_pc_inc;
@@ -48,7 +52,9 @@ module system_top (
         .write_reg_en(w_write_reg_en),
         .reg_addr(w_reg_addr),
         .reg_data(w_reg_data),
-        .state_out(state_out)
+        .state_out(state_out),
+        .pc_load(w_pc_load),
+        .pc_addr(w_pc_addr)
     );
 
     // Instancia Register File
@@ -72,5 +78,14 @@ module system_top (
         .c_flag(w_c_flag),
         .n_flag(w_n_flag)
     );
+    programcounter programcounter_inst(
+        .clk(clk),
+        .rst(rst),
+        .pc_inc(w_pc_inc),
+        .pc_load(w_pc_load),
+        .d_in(w_pc_addr),
+        .pc(pc)
+    );
+
 
 endmodule

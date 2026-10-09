@@ -1,0 +1,11 @@
+# Nepodmienený JMP dopredu aj dozadu. R9 = 0xFF by znamenalo, že sa vykonala preskočená inštrukcia.
+1E05    ;  0  MVI R14, 5
+60E0    ;  1  JMP R14        -> 5 (dopredu)
+1201    ;  2  MVI R2, 1      (sem sa vráti skok dozadu)
+1E08    ;  3  MVI R14, 8
+60E0    ;  4  JMP R14        -> 8
+1E02    ;  5  MVI R14, 2
+60E0    ;  6  JMP R14        -> 2 (dozadu)
+19FF    ;  7  MVI R9, 0xFF   preskočené
+1303    ;  8  MVI R3, 3
+expect r2=1 r3=3 r14=8

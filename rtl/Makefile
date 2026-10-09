@@ -5,7 +5,7 @@
 #   make schematics  RTL schémy (Yosys) do docs/assets/schematics/
 #   make clean
 
-SRC   = control-unit/controlunit.sv registers/register_file.sv alu/alu.sv system_top.sv
+SRC   = control-unit/controlunit.sv registers/register_file.sv alu/alu.sv system_top.sv program-counter/programcounter.v
 TB    = tb_full_system.cpp
 BUILD = build
 BIN   = $(BUILD)/Vsystem_top
@@ -29,9 +29,9 @@ alu: $(ALU_BIN)
 	./$(ALU_BIN)
 
 SCHEM = ../docs/assets/schematics
-YOSYS_READ = read_verilog -sv $(SRC); read_verilog program-counter/programcounter.v
+YOSYS_READ = read_verilog -sv $(SRC)
 
-schematics: $(SRC) program-counter/programcounter.v
+schematics: $(SRC)
 	mkdir -p $(SCHEM)
 	for m in system_top alu register_file controlunit; do \
 	  yosys -q -p "$(YOSYS_READ); prep -top system_top; opt -full; clean -purge; show -format svg -stretch -width -prefix $(SCHEM)/$$m $$m"; \
