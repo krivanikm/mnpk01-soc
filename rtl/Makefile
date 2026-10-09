@@ -2,6 +2,7 @@
 #   make test        preloží a spustí všetky testy v tests/
 #   make test V=1    s výpisom po taktoch
 #   make alu         samostatný test ALU (hraničné + náhodné hodnoty)
+#   make schematics  RTL schémy (Yosys) do docs/assets/schematics/
 #   make clean
 
 SRC   = control-unit/controlunit.sv registers/register_file.sv alu/alu.sv system_top.sv
@@ -27,7 +28,19 @@ $(ALU_BIN): alu/alu.sv alu/sim_main.cpp
 alu: $(ALU_BIN)
 	./$(ALU_BIN)
 
+SCHEM = ../docs/assets/schematics
+YOSYS_READ = read_verilog -sv $(SRC); read_verilog program-counter/programcounter.v
+
+schematics: $(SRC) program-counter/programcounter.v
+	mkdir -p $(SCHEM)
+	for m in system_top alu register_file controlunit; do \
+	  yosys -q -p "$(YOSYS_READ); prep -top system_top; opt -full; clean -purge; show -format svg -stretch -width -prefix $(SCHEM)/$$m $$m"; \
+	done
+	yosys -q -p "$(YOSYS_READ); prep -top programcounter; show -format svg -stretch -width -prefix $(SCHEM)/programcounter programcounter"
+	yosys -q -p "$(YOSYS_READ); prep -top system_top -flatten; opt -full; clean -purge; show -format svg -stretch -width -prefix $(SCHEM)/cpu_full system_top"
+	rm -f $(SCHEM)/*.dot
+
 clean:
 	rm -rf $(BUILD) obj_dir
 
-.PHONY: test alu clean
+.PHONY: test alu schematics clean

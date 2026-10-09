@@ -93,3 +93,16 @@ Pamäť programu vo FPGA (BRAM) je synchrónna: dáta pre novú adresu prídu a�
 
 Pravidlo: `pc_inc` sa nastavuje **iba** v `S_FETCH` a každá inštrukcia trvá **aspoň 3 takty**
 (preto NOP ide cez `S_NOP`).
+
+## Schémy
+
+RTL schémy vygenerované nástrojom Yosys (`make schematics` v `rtl/`). SVG – otvor v prehliadači a priblíž.
+
+| Schéma | Obsah |
+|---|---|
+| [Celý procesor](../assets/schematics/cpu_full.svg) | control unit, register file a ALU spojené do jednej schémy |
+| [system_top](../assets/schematics/system_top.svg) | ako sú bloky prepojené |
+| [ALU](../assets/schematics/alu.svg) | |
+| [Register file](../assets/schematics/register_file.svg) | |
+| [Control unit](../assets/schematics/controlunit.svg) | |
+| [Program counter](../assets/schematics/programcounter.svg) | |
