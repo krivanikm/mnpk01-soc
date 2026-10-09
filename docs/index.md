@@ -25,10 +25,11 @@ implementation, verification by simulation, deployment on an FPGA and finally a 
 |---|---|
 | ALU | done, 16-bit, 14 operations, ~40 million checks (edge and random values) |
 | Register file | done |
-| Program counter | done (being connected in `system_top` together with JMP) |
-| Control unit | in progress – NOP, MVI, MVIB, MOV and ALU work (16-bit), also with FPGA BRAM |
-| ALU instruction (via register R1) | done, 13 automated tests pass |
-| Jumps (JMP + conditions) | in progress |
+| Program counter | done, connected in `system_top` |
+| Control unit | in progress – NOP, MVI, MVIB, MOV, ALU and JMP work, also with FPGA BRAM |
+| ALU instruction (via register R1) | done |
+| Jumps (JMP + 6 conditions) | done – loops and decisions work |
+| Automated tests | 16/16 pass in both memory modes |
 | LOAD/STORE, RAM, I/O, assembler | planned |
-| Synthesis (Yosys) | design fits a Tang Nano 9K with ~15 % of its LUTs, see [Schematics](schematics.html) |
+| Synthesis (Yosys) | design fits a Tang Nano 9K with ~16 % of its LUTs, see [Schematics](schematics.html) |
 | FPGA, PCB | planned |

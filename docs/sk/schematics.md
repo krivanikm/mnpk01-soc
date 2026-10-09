@@ -13,7 +13,7 @@ Každá schéma je SVG, takže ostane ostrá pri akomkoľvek priblížení.
 
 <figure class="schem">
   <div class="sv" data-src="{{ '/assets/schematics/system_top.svg' | relative_url }}" data-alt="schéma system_top"></div>
-  <figcaption><b>system_top</b> – ako sú prepojené control unit, register file a ALU. Všimni si <code>r1_out</code>, ktorý ide priamo do vstupu <code>op</code> ALU.</figcaption>
+  <figcaption><b>system_top</b> – ako sú prepojené control unit, register file, ALU a program counter. Všimni si <code>r1_out</code>, ktorý ide priamo do vstupu <code>op</code> ALU.</figcaption>
 </figure>
 
 <figure class="schem">
@@ -47,10 +47,10 @@ Syntéza pre Gowin GW1NR-9 (Tang Nano 9K) nástrojom Yosys `synth_gowin`:
 
 | Zdroj | Procesor | Tang Nano 9K | Využitie |
 |---|---|---|---|
-| Klopné obvody | 347 | 6 480 | ~5 % |
-| LUT | 1 296 | 8 640 | ~15 % |
+| Klopné obvody | 367 | 6 480 | ~6 % |
+| LUT | 1 405 | 8 640 | ~16 % |
 
 Väčšinu zaberá register file: 256 bitov stavu a 16-bitový multiplexer 1 zo 16.
-Z počtu LUT je asi 730 iba konštantných pomocných vstupov pre široké multiplexery, ktoré Yosys pre Gowin pridáva; skutočnej logiky je asi 330 LUT.
+Väčšina z ~920 jednovstupových LUT sú iba konštantné pomocné vstupy pre široké multiplexery, ktoré Yosys pre Gowin pridáva; skutočnej logiky (LUT2 – LUT4) je asi 480 LUT.
 
 <script src="{{ '/assets/js/schem.js' | relative_url }}?v=1.3"></script>

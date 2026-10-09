@@ -99,7 +99,7 @@ The register file has a single 16-bit read port, so the control unit reads the t
 | 4 | `S_ALU_B` | ALU gets A = stored Ra, B = Rb straight from the register file, the result is ready in the same cycle (the ALU is combinational); the write to Rd and the flags are prepared |
 
 The whole 16-bit result is written to Rd on the next clock edge (`write_reg_en = 11`).
-The flags Z, C, N are stored in the control unit after every `ALU` instruction.
+The flags Z, C, N are stored in the control unit after every `ALU` instruction; conditional jumps use them (see [Jumps](isa.html#jumps)).
 
 - **CMP** (`1011`) only sets the flags and **does not write** to Rd.
 - Unary operations (INC, DEC, NOT, SHL, SHR, ROL, PASS, CLR) ignore Rb.

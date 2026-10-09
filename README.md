@@ -62,7 +62,7 @@ graph TD
     class PC routing;
 ```
 
-> Data memory (RAM), I/O and the jump logic in the map above are still being designed – see the status below.
+> Data memory (RAM) and I/O in the map above are still being designed – see the status below.
 
 ---
 
@@ -72,10 +72,11 @@ graph TD
 |---|---|
 | ALU (16-bit, 14 operations) | ✅ done – ~40 million checks |
 | Register file (16 × 16-bit) | ✅ done |
-| Control unit: NOP, MVI, MVIB, MOV, ALU | ✅ done – 13/13 system tests, also with synchronous FPGA BRAM |
-| Program counter | ✅ done, being connected together with JMP |
-| JMP + conditional jumps | 🔨 in progress |
-| LOAD/STORE, RAM, I/O, assembler | 📋 planned |
+| Control unit: NOP, MVI, MVIB, MOV, ALU, JMP | ✅ done – 16/16 system tests, also with synchronous FPGA BRAM |
+| Program counter | ✅ done, connected in `system_top` |
+| JMP + 6 conditional jumps | ✅ done – loops and decisions |
+| LOAD/STORE, RAM | 🔨 next |
+| I/O, assembler | 📋 planned |
 | FPGA (Tang Nano 9K), PCB | 📋 planned |
 
 ## 🚀 Running the simulation

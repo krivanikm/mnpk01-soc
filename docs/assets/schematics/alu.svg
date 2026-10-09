@@ -24,7 +24,7 @@
 <polyline fill="none" stroke="black" points="291.1,-842.87 316.85,-842.87"/>
 <text xml:space="preserve" text-anchor="middle" x="303.97" y="-825.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="316.85,-818.37 316.85,-867.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-846.07" font-family="Times,serif" font-size="14.00">$29</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-846.07" font-family="Times,serif" font-size="14.00">$33</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-829.57" font-family="Times,serif" font-size="14.00">$add</text>
 <polyline fill="none" stroke="black" points="359.1,-818.37 359.1,-867.37"/>
 <text xml:space="preserve" text-anchor="middle" x="371.97" y="-838.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -44,7 +44,7 @@
 <polyline fill="none" stroke="black" points="160.97,-627.87 186.72,-627.87"/>
 <text xml:space="preserve" text-anchor="middle" x="173.85" y="-610.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="186.72,-603.37 186.72,-652.37"/>
-<text xml:space="preserve" text-anchor="middle" x="207.85" y="-631.07" font-family="Times,serif" font-size="14.00">$32</text>
+<text xml:space="preserve" text-anchor="middle" x="207.85" y="-631.07" font-family="Times,serif" font-size="14.00">$36</text>
 <text xml:space="preserve" text-anchor="middle" x="207.85" y="-614.57" font-family="Times,serif" font-size="14.00">$and</text>
 <polyline fill="none" stroke="black" points="228.97,-603.37 228.97,-652.37"/>
 <text xml:space="preserve" text-anchor="middle" x="241.85" y="-623.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -64,7 +64,7 @@
 <polyline fill="none" stroke="black" points="163.97,-506.87 189.72,-506.87"/>
 <text xml:space="preserve" text-anchor="middle" x="176.85" y="-489.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="189.72,-482.37 189.72,-531.37"/>
-<text xml:space="preserve" text-anchor="middle" x="207.85" y="-510.07" font-family="Times,serif" font-size="14.00">$41</text>
+<text xml:space="preserve" text-anchor="middle" x="207.85" y="-510.07" font-family="Times,serif" font-size="14.00">$45</text>
 <text xml:space="preserve" text-anchor="middle" x="207.85" y="-493.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="225.97,-482.37 225.97,-531.37"/>
 <text xml:space="preserve" text-anchor="middle" x="238.85" y="-502.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -84,7 +84,7 @@
 <polyline fill="none" stroke="black" points="163.97,-1266.87 189.72,-1266.87"/>
 <text xml:space="preserve" text-anchor="middle" x="176.85" y="-1249.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="189.72,-1242.37 189.72,-1291.37"/>
-<text xml:space="preserve" text-anchor="middle" x="207.85" y="-1270.07" font-family="Times,serif" font-size="14.00">$38</text>
+<text xml:space="preserve" text-anchor="middle" x="207.85" y="-1270.07" font-family="Times,serif" font-size="14.00">$42</text>
 <text xml:space="preserve" text-anchor="middle" x="207.85" y="-1253.57" font-family="Times,serif" font-size="14.00">$gt</text>
 <polyline fill="none" stroke="black" points="225.97,-1242.37 225.97,-1291.37"/>
 <text xml:space="preserve" text-anchor="middle" x="238.85" y="-1262.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -102,7 +102,7 @@
 <polygon fill="none" stroke="black" points="421.22,-730.37 421.22,-771.37 546.47,-771.37 546.47,-730.37 421.22,-730.37"/>
 <text xml:space="preserve" text-anchor="middle" x="434.1" y="-746.07" font-family="Times,serif" font-size="14.00">A</text>
 <polyline fill="none" stroke="black" points="446.97,-730.37 446.97,-771.37"/>
-<text xml:space="preserve" text-anchor="middle" x="483.85" y="-754.07" font-family="Times,serif" font-size="14.00">$752</text>
+<text xml:space="preserve" text-anchor="middle" x="483.85" y="-754.07" font-family="Times,serif" font-size="14.00">$827</text>
 <text xml:space="preserve" text-anchor="middle" x="483.85" y="-737.57" font-family="Times,serif" font-size="14.00">$logic_not</text>
 <polyline fill="none" stroke="black" points="520.72,-730.37 520.72,-771.37"/>
 <text xml:space="preserve" text-anchor="middle" x="533.6" y="-746.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -122,7 +122,7 @@
 <polyline fill="none" stroke="black" points="163.97,-947.87 189.72,-947.87"/>
 <text xml:space="preserve" text-anchor="middle" x="176.85" y="-930.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="189.72,-923.37 189.72,-972.37"/>
-<text xml:space="preserve" text-anchor="middle" x="207.85" y="-951.07" font-family="Times,serif" font-size="14.00">$42</text>
+<text xml:space="preserve" text-anchor="middle" x="207.85" y="-951.07" font-family="Times,serif" font-size="14.00">$46</text>
 <text xml:space="preserve" text-anchor="middle" x="207.85" y="-934.57" font-family="Times,serif" font-size="14.00">$lt</text>
 <polyline fill="none" stroke="black" points="225.97,-923.37 225.97,-972.37"/>
 <text xml:space="preserve" text-anchor="middle" x="238.85" y="-943.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -140,7 +140,7 @@
 <polygon fill="none" stroke="black" points="438.1,-226.37 438.1,-267.37 529.6,-267.37 529.6,-226.37 438.1,-226.37"/>
 <text xml:space="preserve" text-anchor="middle" x="450.97" y="-242.07" font-family="Times,serif" font-size="14.00">A</text>
 <polyline fill="none" stroke="black" points="463.85,-226.37 463.85,-267.37"/>
-<text xml:space="preserve" text-anchor="middle" x="483.85" y="-250.07" font-family="Times,serif" font-size="14.00">$35</text>
+<text xml:space="preserve" text-anchor="middle" x="483.85" y="-250.07" font-family="Times,serif" font-size="14.00">$39</text>
 <text xml:space="preserve" text-anchor="middle" x="483.85" y="-233.57" font-family="Times,serif" font-size="14.00">$not</text>
 <polyline fill="none" stroke="black" points="503.85,-226.37 503.85,-267.37"/>
 <text xml:space="preserve" text-anchor="middle" x="516.72" y="-242.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -160,7 +160,7 @@
 <polyline fill="none" stroke="black" points="163.97,-733.87 189.72,-733.87"/>
 <text xml:space="preserve" text-anchor="middle" x="176.85" y="-716.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="189.72,-709.37 189.72,-758.37"/>
-<text xml:space="preserve" text-anchor="middle" x="207.85" y="-737.07" font-family="Times,serif" font-size="14.00">$33</text>
+<text xml:space="preserve" text-anchor="middle" x="207.85" y="-737.07" font-family="Times,serif" font-size="14.00">$37</text>
 <text xml:space="preserve" text-anchor="middle" x="207.85" y="-720.57" font-family="Times,serif" font-size="14.00">$or</text>
 <polyline fill="none" stroke="black" points="225.97,-709.37 225.97,-758.37"/>
 <text xml:space="preserve" text-anchor="middle" x="238.85" y="-729.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -274,7 +274,7 @@
 <polyline fill="none" stroke="black" points="1135.83,-468.87 1161.58,-468.87"/>
 <text xml:space="preserve" text-anchor="middle" x="1148.7" y="-451.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="1161.58,-444.37 1161.58,-493.37"/>
-<text xml:space="preserve" text-anchor="middle" x="1182.33" y="-472.07" font-family="Times,serif" font-size="14.00">$27</text>
+<text xml:space="preserve" text-anchor="middle" x="1182.33" y="-472.07" font-family="Times,serif" font-size="14.00">$31</text>
 <text xml:space="preserve" text-anchor="middle" x="1182.33" y="-455.57" font-family="Times,serif" font-size="14.00">$sub</text>
 <polyline fill="none" stroke="black" points="1203.08,-444.37 1203.08,-493.37"/>
 <text xml:space="preserve" text-anchor="middle" x="1215.95" y="-464.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -294,7 +294,7 @@
 <polyline fill="none" stroke="black" points="160.97,-1016.87 186.72,-1016.87"/>
 <text xml:space="preserve" text-anchor="middle" x="173.85" y="-999.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="186.72,-992.37 186.72,-1041.37"/>
-<text xml:space="preserve" text-anchor="middle" x="207.85" y="-1020.07" font-family="Times,serif" font-size="14.00">$26</text>
+<text xml:space="preserve" text-anchor="middle" x="207.85" y="-1020.07" font-family="Times,serif" font-size="14.00">$30</text>
 <text xml:space="preserve" text-anchor="middle" x="207.85" y="-1003.57" font-family="Times,serif" font-size="14.00">$add</text>
 <polyline fill="none" stroke="black" points="228.97,-992.37 228.97,-1041.37"/>
 <text xml:space="preserve" text-anchor="middle" x="241.85" y="-1012.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -314,7 +314,7 @@
 <polyline fill="none" stroke="black" points="161.72,-801.87 187.47,-801.87"/>
 <text xml:space="preserve" text-anchor="middle" x="174.6" y="-784.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="187.47,-777.37 187.47,-826.37"/>
-<text xml:space="preserve" text-anchor="middle" x="207.85" y="-805.07" font-family="Times,serif" font-size="14.00">$34</text>
+<text xml:space="preserve" text-anchor="middle" x="207.85" y="-805.07" font-family="Times,serif" font-size="14.00">$38</text>
 <text xml:space="preserve" text-anchor="middle" x="207.85" y="-788.57" font-family="Times,serif" font-size="14.00">$xor</text>
 <polyline fill="none" stroke="black" points="228.22,-777.37 228.22,-826.37"/>
 <text xml:space="preserve" text-anchor="middle" x="241.1" y="-797.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -342,7 +342,7 @@
 <polyline fill="none" stroke="black" points="937.45,-1241.62 963.2,-1241.62"/>
 <text xml:space="preserve" text-anchor="middle" x="950.33" y="-1224.32" font-family="Times,serif" font-size="14.00">S</text>
 <polyline fill="none" stroke="black" points="963.2,-1217.12 963.2,-1290.62"/>
-<text xml:space="preserve" text-anchor="middle" x="986.95" y="-1257.07" font-family="Times,serif" font-size="14.00">$754</text>
+<text xml:space="preserve" text-anchor="middle" x="986.95" y="-1257.07" font-family="Times,serif" font-size="14.00">$829</text>
 <text xml:space="preserve" text-anchor="middle" x="986.95" y="-1240.57" font-family="Times,serif" font-size="14.00">$mux</text>
 <polyline fill="none" stroke="black" points="1010.7,-1217.12 1010.7,-1290.62"/>
 <text xml:space="preserve" text-anchor="middle" x="1023.58" y="-1248.82" font-family="Times,serif" font-size="14.00">Y</text>
@@ -429,7 +429,7 @@
 <polyline fill="none" stroke="black" points="272.72,-1543.87 298.47,-1543.87"/>
 <text xml:space="preserve" text-anchor="middle" x="285.6" y="-1526.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="298.47,-1519.37 298.47,-1568.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1547.07" font-family="Times,serif" font-size="14.00">$62_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1547.07" font-family="Times,serif" font-size="14.00">$71_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-1530.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="377.47,-1519.37 377.47,-1568.37"/>
 <text xml:space="preserve" text-anchor="middle" x="390.35" y="-1539.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -447,7 +447,7 @@
 <polygon fill="none" stroke="black" points="773.2,-2104.37 773.2,-2145.37 903.7,-2145.37 903.7,-2104.37 773.2,-2104.37"/>
 <text xml:space="preserve" text-anchor="middle" x="786.08" y="-2120.07" font-family="Times,serif" font-size="14.00">A</text>
 <polyline fill="none" stroke="black" points="798.95,-2104.37 798.95,-2145.37"/>
-<text xml:space="preserve" text-anchor="middle" x="838.45" y="-2128.07" font-family="Times,serif" font-size="14.00">$63_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="838.45" y="-2128.07" font-family="Times,serif" font-size="14.00">$72_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="838.45" y="-2111.57" font-family="Times,serif" font-size="14.00">$logic_not</text>
 <polyline fill="none" stroke="black" points="877.95,-2104.37 877.95,-2145.37"/>
 <text xml:space="preserve" text-anchor="middle" x="890.83" y="-2120.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -467,7 +467,7 @@
 <polyline fill="none" stroke="black" points="272.72,-1453.87 298.47,-1453.87"/>
 <text xml:space="preserve" text-anchor="middle" x="285.6" y="-1436.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="298.47,-1429.37 298.47,-1478.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1457.07" font-family="Times,serif" font-size="14.00">$67_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1457.07" font-family="Times,serif" font-size="14.00">$76_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-1440.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="377.47,-1429.37 377.47,-1478.37"/>
 <text xml:space="preserve" text-anchor="middle" x="390.35" y="-1449.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -487,7 +487,7 @@
 <polyline fill="none" stroke="black" points="272.72,-562.87 298.47,-562.87"/>
 <text xml:space="preserve" text-anchor="middle" x="285.6" y="-545.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="298.47,-538.37 298.47,-587.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-566.07" font-family="Times,serif" font-size="14.00">$68_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-566.07" font-family="Times,serif" font-size="14.00">$77_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-549.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="377.47,-538.37 377.47,-587.37"/>
 <text xml:space="preserve" text-anchor="middle" x="390.35" y="-558.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -507,7 +507,7 @@
 <polyline fill="none" stroke="black" points="272.72,-1823.87 298.47,-1823.87"/>
 <text xml:space="preserve" text-anchor="middle" x="285.6" y="-1806.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="298.47,-1799.37 298.47,-1848.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1827.07" font-family="Times,serif" font-size="14.00">$69_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1827.07" font-family="Times,serif" font-size="14.00">$78_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-1810.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="377.47,-1799.37 377.47,-1848.37"/>
 <text xml:space="preserve" text-anchor="middle" x="390.35" y="-1819.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -527,7 +527,7 @@
 <polyline fill="none" stroke="black" points="921.7,-1640.87 947.45,-1640.87"/>
 <text xml:space="preserve" text-anchor="middle" x="934.58" y="-1623.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="947.45,-1616.37 947.45,-1665.37"/>
-<text xml:space="preserve" text-anchor="middle" x="986.95" y="-1644.07" font-family="Times,serif" font-size="14.00">$70_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="986.95" y="-1644.07" font-family="Times,serif" font-size="14.00">$79_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="986.95" y="-1627.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="1026.45,-1616.37 1026.45,-1665.37"/>
 <text xml:space="preserve" text-anchor="middle" x="1039.33" y="-1636.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -547,7 +547,7 @@
 <polyline fill="none" stroke="black" points="272.72,-1914.87 298.47,-1914.87"/>
 <text xml:space="preserve" text-anchor="middle" x="285.6" y="-1897.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="298.47,-1890.37 298.47,-1939.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1918.07" font-family="Times,serif" font-size="14.00">$71_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1918.07" font-family="Times,serif" font-size="14.00">$80_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-1901.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="377.47,-1890.37 377.47,-1939.37"/>
 <text xml:space="preserve" text-anchor="middle" x="390.35" y="-1910.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -567,7 +567,7 @@
 <polyline fill="none" stroke="black" points="272.72,-1391.87 298.47,-1391.87"/>
 <text xml:space="preserve" text-anchor="middle" x="285.6" y="-1374.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="298.47,-1367.37 298.47,-1416.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1395.07" font-family="Times,serif" font-size="14.00">$72_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1395.07" font-family="Times,serif" font-size="14.00">$81_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-1378.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="377.47,-1367.37 377.47,-1416.37"/>
 <text xml:space="preserve" text-anchor="middle" x="390.35" y="-1387.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -587,7 +587,7 @@
 <polyline fill="none" stroke="black" points="272.72,-1336.87 298.47,-1336.87"/>
 <text xml:space="preserve" text-anchor="middle" x="285.6" y="-1319.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="298.47,-1312.37 298.47,-1361.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1340.07" font-family="Times,serif" font-size="14.00">$73_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1340.07" font-family="Times,serif" font-size="14.00">$82_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-1323.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="377.47,-1312.37 377.47,-1361.37"/>
 <text xml:space="preserve" text-anchor="middle" x="390.35" y="-1332.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -607,7 +607,7 @@
 <polyline fill="none" stroke="black" points="272.72,-1711.87 298.47,-1711.87"/>
 <text xml:space="preserve" text-anchor="middle" x="285.6" y="-1694.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="298.47,-1687.37 298.47,-1736.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1715.07" font-family="Times,serif" font-size="14.00">$74_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1715.07" font-family="Times,serif" font-size="14.00">$83_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-1698.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="377.47,-1687.37 377.47,-1736.37"/>
 <text xml:space="preserve" text-anchor="middle" x="390.35" y="-1707.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -627,7 +627,7 @@
 <polyline fill="none" stroke="black" points="272.72,-1620.87 298.47,-1620.87"/>
 <text xml:space="preserve" text-anchor="middle" x="285.6" y="-1603.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="298.47,-1596.37 298.47,-1645.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1624.07" font-family="Times,serif" font-size="14.00">$75_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-1624.07" font-family="Times,serif" font-size="14.00">$84_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-1607.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="377.47,-1596.37 377.47,-1645.37"/>
 <text xml:space="preserve" text-anchor="middle" x="390.35" y="-1616.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -647,7 +647,7 @@
 <polyline fill="none" stroke="black" points="272.72,-2063.87 298.47,-2063.87"/>
 <text xml:space="preserve" text-anchor="middle" x="285.6" y="-2046.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="298.47,-2039.37 298.47,-2088.37"/>
-<text xml:space="preserve" text-anchor="middle" x="337.97" y="-2067.07" font-family="Times,serif" font-size="14.00">$76_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="337.97" y="-2067.07" font-family="Times,serif" font-size="14.00">$85_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="337.97" y="-2050.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="377.47,-2039.37 377.47,-2088.37"/>
 <text xml:space="preserve" text-anchor="middle" x="390.35" y="-2059.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -667,7 +667,7 @@
 <polyline fill="none" stroke="black" points="921.7,-1768.87 947.45,-1768.87"/>
 <text xml:space="preserve" text-anchor="middle" x="934.58" y="-1751.57" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="947.45,-1744.37 947.45,-1793.37"/>
-<text xml:space="preserve" text-anchor="middle" x="986.95" y="-1772.07" font-family="Times,serif" font-size="14.00">$77_CMP0</text>
+<text xml:space="preserve" text-anchor="middle" x="986.95" y="-1772.07" font-family="Times,serif" font-size="14.00">$86_CMP0</text>
 <text xml:space="preserve" text-anchor="middle" x="986.95" y="-1755.57" font-family="Times,serif" font-size="14.00">$eq</text>
 <polyline fill="none" stroke="black" points="1026.45,-1744.37 1026.45,-1793.37"/>
 <text xml:space="preserve" text-anchor="middle" x="1039.33" y="-1764.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -691,7 +691,7 @@
 <polygon fill="none" stroke="black" points="597.21,-606.37 597.21,-647.37 722.46,-647.37 722.46,-606.37 597.21,-606.37"/>
 <text xml:space="preserve" text-anchor="middle" x="610.09" y="-622.07" font-family="Times,serif" font-size="14.00">A</text>
 <polyline fill="none" stroke="black" points="622.96,-606.37 622.96,-647.37"/>
-<text xml:space="preserve" text-anchor="middle" x="659.84" y="-630.07" font-family="Times,serif" font-size="14.00">$39</text>
+<text xml:space="preserve" text-anchor="middle" x="659.84" y="-630.07" font-family="Times,serif" font-size="14.00">$43</text>
 <text xml:space="preserve" text-anchor="middle" x="659.84" y="-613.57" font-family="Times,serif" font-size="14.00">$logic_not</text>
 <polyline fill="none" stroke="black" points="696.71,-606.37 696.71,-647.37"/>
 <text xml:space="preserve" text-anchor="middle" x="709.59" y="-622.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -727,7 +727,7 @@
 <polygon fill="none" stroke="black" points="1118.2,-1805.37 1118.2,-1846.37 1246.45,-1846.37 1246.45,-1805.37 1118.2,-1805.37"/>
 <text xml:space="preserve" text-anchor="middle" x="1131.08" y="-1821.07" font-family="Times,serif" font-size="14.00">A</text>
 <polyline fill="none" stroke="black" points="1143.95,-1805.37 1143.95,-1846.37"/>
-<text xml:space="preserve" text-anchor="middle" x="1182.33" y="-1829.07" font-family="Times,serif" font-size="14.00">$871</text>
+<text xml:space="preserve" text-anchor="middle" x="1182.33" y="-1829.07" font-family="Times,serif" font-size="14.00">$950</text>
 <text xml:space="preserve" text-anchor="middle" x="1182.33" y="-1812.57" font-family="Times,serif" font-size="14.00">$reduce_or</text>
 <polyline fill="none" stroke="black" points="1220.7,-1805.37 1220.7,-1846.37"/>
 <text xml:space="preserve" text-anchor="middle" x="1233.58" y="-1821.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -837,7 +837,7 @@
 <polygon fill="none" stroke="black" points="1118.2,-1312.37 1118.2,-1353.37 1246.45,-1353.37 1246.45,-1312.37 1118.2,-1312.37"/>
 <text xml:space="preserve" text-anchor="middle" x="1131.08" y="-1328.07" font-family="Times,serif" font-size="14.00">A</text>
 <polyline fill="none" stroke="black" points="1143.95,-1312.37 1143.95,-1353.37"/>
-<text xml:space="preserve" text-anchor="middle" x="1182.33" y="-1336.07" font-family="Times,serif" font-size="14.00">$743</text>
+<text xml:space="preserve" text-anchor="middle" x="1182.33" y="-1336.07" font-family="Times,serif" font-size="14.00">$817</text>
 <text xml:space="preserve" text-anchor="middle" x="1182.33" y="-1319.57" font-family="Times,serif" font-size="14.00">$reduce_or</text>
 <polyline fill="none" stroke="black" points="1220.7,-1312.37 1220.7,-1353.37"/>
 <text xml:space="preserve" text-anchor="middle" x="1233.58" y="-1328.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -870,7 +870,7 @@
 <polygon fill="none" stroke="black" points="1118.2,-1988.37 1118.2,-2029.37 1246.45,-2029.37 1246.45,-1988.37 1118.2,-1988.37"/>
 <text xml:space="preserve" text-anchor="middle" x="1131.08" y="-2004.07" font-family="Times,serif" font-size="14.00">A</text>
 <polyline fill="none" stroke="black" points="1143.95,-1988.37 1143.95,-2029.37"/>
-<text xml:space="preserve" text-anchor="middle" x="1182.33" y="-2012.07" font-family="Times,serif" font-size="14.00">$745</text>
+<text xml:space="preserve" text-anchor="middle" x="1182.33" y="-2012.07" font-family="Times,serif" font-size="14.00">$819</text>
 <text xml:space="preserve" text-anchor="middle" x="1182.33" y="-1995.57" font-family="Times,serif" font-size="14.00">$reduce_or</text>
 <polyline fill="none" stroke="black" points="1220.7,-1988.37 1220.7,-2029.37"/>
 <text xml:space="preserve" text-anchor="middle" x="1233.58" y="-2004.07" font-family="Times,serif" font-size="14.00">Y</text>
@@ -925,7 +925,7 @@
 <polyline fill="none" stroke="black" points="937.45,-531.62 963.2,-531.62"/>
 <text xml:space="preserve" text-anchor="middle" x="950.33" y="-514.32" font-family="Times,serif" font-size="14.00">S</text>
 <polyline fill="none" stroke="black" points="963.2,-507.12 963.2,-580.62"/>
-<text xml:space="preserve" text-anchor="middle" x="986.95" y="-547.07" font-family="Times,serif" font-size="14.00">$50</text>
+<text xml:space="preserve" text-anchor="middle" x="986.95" y="-547.07" font-family="Times,serif" font-size="14.00">$59</text>
 <text xml:space="preserve" text-anchor="middle" x="986.95" y="-530.57" font-family="Times,serif" font-size="14.00">$mux</text>
 <polyline fill="none" stroke="black" points="1010.7,-507.12 1010.7,-580.62"/>
 <text xml:space="preserve" text-anchor="middle" x="1023.58" y="-538.82" font-family="Times,serif" font-size="14.00">Y</text>
@@ -989,7 +989,7 @@
 <polyline fill="none" stroke="black" points="937.45,-705.62 963.2,-705.62"/>
 <text xml:space="preserve" text-anchor="middle" x="950.33" y="-688.32" font-family="Times,serif" font-size="14.00">S</text>
 <polyline fill="none" stroke="black" points="963.2,-681.12 963.2,-754.62"/>
-<text xml:space="preserve" text-anchor="middle" x="986.95" y="-721.07" font-family="Times,serif" font-size="14.00">$47</text>
+<text xml:space="preserve" text-anchor="middle" x="986.95" y="-721.07" font-family="Times,serif" font-size="14.00">$56</text>
 <text xml:space="preserve" text-anchor="middle" x="986.95" y="-704.57" font-family="Times,serif" font-size="14.00">$mux</text>
 <polyline fill="none" stroke="black" points="1010.7,-681.12 1010.7,-754.62"/>
 <text xml:space="preserve" text-anchor="middle" x="1023.58" y="-712.82" font-family="Times,serif" font-size="14.00">Y</text>
@@ -1029,7 +1029,7 @@
 <polyline fill="none" stroke="black" points="1575.94,-1241.62 1601.69,-1241.62"/>
 <text xml:space="preserve" text-anchor="middle" x="1588.81" y="-1224.32" font-family="Times,serif" font-size="14.00">S</text>
 <polyline fill="none" stroke="black" points="1601.69,-1217.12 1601.69,-1290.62"/>
-<text xml:space="preserve" text-anchor="middle" x="1628.81" y="-1257.07" font-family="Times,serif" font-size="14.00">$55</text>
+<text xml:space="preserve" text-anchor="middle" x="1628.81" y="-1257.07" font-family="Times,serif" font-size="14.00">$64</text>
 <text xml:space="preserve" text-anchor="middle" x="1628.81" y="-1240.57" font-family="Times,serif" font-size="14.00">$pmux</text>
 <polyline fill="none" stroke="black" points="1655.94,-1217.12 1655.94,-1290.62"/>
 <text xml:space="preserve" text-anchor="middle" x="1668.81" y="-1248.82" font-family="Times,serif" font-size="14.00">Y</text>
@@ -1112,7 +1112,7 @@
 <polyline fill="none" stroke="black" points="1575.94,-685.62 1601.69,-685.62"/>
 <text xml:space="preserve" text-anchor="middle" x="1588.81" y="-668.32" font-family="Times,serif" font-size="14.00">S</text>
 <polyline fill="none" stroke="black" points="1601.69,-661.12 1601.69,-734.62"/>
-<text xml:space="preserve" text-anchor="middle" x="1628.81" y="-701.07" font-family="Times,serif" font-size="14.00">$66</text>
+<text xml:space="preserve" text-anchor="middle" x="1628.81" y="-701.07" font-family="Times,serif" font-size="14.00">$75</text>
 <text xml:space="preserve" text-anchor="middle" x="1628.81" y="-684.57" font-family="Times,serif" font-size="14.00">$pmux</text>
 <polyline fill="none" stroke="black" points="1655.94,-661.12 1655.94,-734.62"/>
 <text xml:space="preserve" text-anchor="middle" x="1668.81" y="-692.82" font-family="Times,serif" font-size="14.00">Y</text>

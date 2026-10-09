@@ -40,7 +40,8 @@ A 16-bit register holding the address of the current instruction.
 | `pc[15:0]` | output | current address |
 
 If `pc_inc` and `pc_load` are both 1, `pc_inc` wins – the jump is not taken.
-The program counter is not connected in `system_top` yet; for now the testbench emulates it.
+The control unit never sets both at once: `pc_inc` only in `S_FETCH`, `pc_load` only in `S_JMP`.
+The program counter is part of `system_top`; its output `pc` is the address for the program memory.
 
 ## Register file
 
@@ -79,6 +80,9 @@ S_FETCH -> S_DECODE -> execute states -> S_FETCH
 | `S_MOV_WRITE` | value is written to the destination register |
 | `S_ALU_A` | operand Ra is stored, Rb is selected |
 | `S_ALU_B` | ALU result is written to Rd (except CMP), flags are stored |
+| `S_JMP` | target register is read; if the condition holds: `pc_addr` = target, `pc_load` = 1 |
+| `S_JMP_WAIT1` | the PC takes the target address at the end of the cycle |
+| `S_JMP_WAIT2` | the memory latches the target address at the end of the cycle |
 
 ### Timing rule
 
@@ -95,6 +99,25 @@ the following states only use the instruction register, so the memory fetches th
 
 Rule: `pc_inc` is set **only** in `S_FETCH` and every instruction takes **at least 3 cycles**
 (that is why NOP goes through `S_NOP`).
+
+### Jump timing
+
+The outputs of the control unit are registered and the memory is synchronous, so a taken jump needs two extra cycles
+before the instruction at the target address T can be fetched:
+
+| Cycle | State | What happens | PC | Memory latches |
+|---|---|---|---|---|
+| 1 | `S_FETCH` | JMP → instruction register, `pc_inc` = 1 | J | J |
+| 2 | `S_DECODE` | register address ← Rr | J → J+1 | J |
+| 3 | `S_JMP` | target is read, `pc_load` = 1 (if the condition holds) | J+1 | J+1 |
+| 4 | `S_JMP_WAIT1` | PC takes the target at the end of the cycle | J+1 → T | J+1 |
+| 5 | `S_JMP_WAIT2` | | T | **T** |
+| 6 | `S_FETCH` | the instruction at T is valid | T | |
+
+A jump that is **not taken** goes from `S_JMP` straight back to `S_FETCH` – the PC already points past the JMP,
+so it takes 3 cycles like any other short instruction.
+
+The condition is evaluated by the combinational signal `cond_ok` from `ir[11:8]` and the stored flags.
 
 ## Schematics
 

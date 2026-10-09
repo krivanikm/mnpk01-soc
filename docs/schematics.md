@@ -12,7 +12,7 @@ Each schematic is an SVG, so it stays sharp at any zoom.
 
 <figure class="schem">
   <div class="sv" data-src="{{ '/assets/schematics/system_top.svg' | relative_url }}" data-alt="system_top schematic"></div>
-  <figcaption><b>system_top</b> – how the control unit, register file and ALU are connected. Note <code>r1_out</code> going straight into the <code>op</code> input of the ALU.</figcaption>
+  <figcaption><b>system_top</b> – how the control unit, register file, ALU and program counter are connected. Note <code>r1_out</code> going straight into the <code>op</code> input of the ALU.</figcaption>
 </figure>
 
 <figure class="schem">
@@ -46,10 +46,10 @@ Synthesis for the Gowin GW1NR-9 (Tang Nano 9K) with Yosys `synth_gowin`:
 
 | Resource | CPU | Tang Nano 9K | Usage |
 |---|---|---|---|
-| Flip-flops | 347 | 6 480 | ~5 % |
-| LUTs | 1 296 | 8 640 | ~15 % |
+| Flip-flops | 367 | 6 480 | ~6 % |
+| LUTs | 1 405 | 8 640 | ~16 % |
 
 Most of it is the register file: 256 bits of state and a 16-to-1 multiplexer 16 bits wide.
-Of the LUT count, about 730 are only constant helper inputs for the wide multiplexers that Yosys adds for Gowin; the real logic is about 330 LUTs.
+Most of the ~920 single-input LUTs are only constant helper inputs for the wide multiplexers that Yosys adds for Gowin; the real logic (LUT2 – LUT4) is about 480 LUTs.
 
 <script src="{{ '/assets/js/schem.js' | relative_url }}?v=1.3"></script>

@@ -26,7 +26,7 @@
 <polyline fill="none" stroke="black" points="618.54,-68.25 669.04,-68.25"/>
 <text xml:space="preserve" text-anchor="middle" x="643.79" y="-50.95" font-family="Times,serif" font-size="14.00">D</text>
 <polyline fill="none" stroke="black" points="669.04,-43.75 669.04,-117.25"/>
-<text xml:space="preserve" text-anchor="middle" x="691.29" y="-83.7" font-family="Times,serif" font-size="14.00">$53</text>
+<text xml:space="preserve" text-anchor="middle" x="691.29" y="-83.7" font-family="Times,serif" font-size="14.00">$57</text>
 <text xml:space="preserve" text-anchor="middle" x="691.29" y="-67.2" font-family="Times,serif" font-size="14.00">$adff</text>
 <polyline fill="none" stroke="black" points="713.54,-43.75 713.54,-117.25"/>
 <text xml:space="preserve" text-anchor="middle" x="726.41" y="-75.45" font-family="Times,serif" font-size="14.00">Q</text>
@@ -53,7 +53,7 @@
 <polyline fill="none" stroke="black" points="176.79,-209.25 202.54,-209.25"/>
 <text xml:space="preserve" text-anchor="middle" x="189.66" y="-191.95" font-family="Times,serif" font-size="14.00">S</text>
 <polyline fill="none" stroke="black" points="202.54,-184.75 202.54,-258.25"/>
-<text xml:space="preserve" text-anchor="middle" x="226.29" y="-224.7" font-family="Times,serif" font-size="14.00">$46</text>
+<text xml:space="preserve" text-anchor="middle" x="226.29" y="-224.7" font-family="Times,serif" font-size="14.00">$50</text>
 <text xml:space="preserve" text-anchor="middle" x="226.29" y="-208.2" font-family="Times,serif" font-size="14.00">$mux</text>
 <polyline fill="none" stroke="black" points="250.04,-184.75 250.04,-258.25"/>
 <text xml:space="preserve" text-anchor="middle" x="262.91" y="-216.45" font-family="Times,serif" font-size="14.00">Y</text>
@@ -79,7 +79,7 @@
 <polyline fill="none" stroke="black" points="293.79,-132.5 319.54,-132.5"/>
 <text xml:space="preserve" text-anchor="middle" x="306.66" y="-115.2" font-family="Times,serif" font-size="14.00">B</text>
 <polyline fill="none" stroke="black" points="319.54,-108 319.54,-157"/>
-<text xml:space="preserve" text-anchor="middle" x="340.66" y="-135.7" font-family="Times,serif" font-size="14.00">$45</text>
+<text xml:space="preserve" text-anchor="middle" x="340.66" y="-135.7" font-family="Times,serif" font-size="14.00">$49</text>
 <text xml:space="preserve" text-anchor="middle" x="340.66" y="-119.2" font-family="Times,serif" font-size="14.00">$add</text>
 <polyline fill="none" stroke="black" points="361.79,-108 361.79,-157"/>
 <text xml:space="preserve" text-anchor="middle" x="374.66" y="-127.7" font-family="Times,serif" font-size="14.00">Y</text>
@@ -114,7 +114,7 @@
 <polyline fill="none" stroke="black" points="453.54,-111.25 479.29,-111.25"/>
 <text xml:space="preserve" text-anchor="middle" x="466.41" y="-93.95" font-family="Times,serif" font-size="14.00">S</text>
 <polyline fill="none" stroke="black" points="479.29,-86.75 479.29,-160.25"/>
-<text xml:space="preserve" text-anchor="middle" x="503.04" y="-126.7" font-family="Times,serif" font-size="14.00">$49</text>
+<text xml:space="preserve" text-anchor="middle" x="503.04" y="-126.7" font-family="Times,serif" font-size="14.00">$53</text>
 <text xml:space="preserve" text-anchor="middle" x="503.04" y="-110.2" font-family="Times,serif" font-size="14.00">$mux</text>
 <polyline fill="none" stroke="black" points="526.79,-86.75 526.79,-160.25"/>
 <text xml:space="preserve" text-anchor="middle" x="539.66" y="-118.45" font-family="Times,serif" font-size="14.00">Y</text>

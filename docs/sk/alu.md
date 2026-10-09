@@ -99,7 +99,7 @@ Register file má jeden 16-bitový čítací port, preto control unit číta ope
 | 4 | `S_ALU_B` | ALU dostane A = uložený Ra, B = Rb priamo z register file, výsledok je hotový v tom istom takte (ALU je kombinačná); pripraví sa zápis do Rd a flagy |
 
 Celý 16-bitový výsledok sa zapíše do Rd na ďalšej hrane hodín (`write_reg_en = 11`).
-Flagy Z, C, N si control unit uloží po každej inštrukcii `ALU`.
+Flagy Z, C, N si control unit uloží po každej inštrukcii `ALU`; používajú ich podmienené skoky (pozri [Skoky](isa.html#skoky)).
 
 - **CMP** (`1011`) iba nastaví flagy a do Rd **nezapisuje**.
 - Unárne operácie (INC, DEC, NOT, SHL, SHR, ROL, PASS, CLR) ignorujú Rb.

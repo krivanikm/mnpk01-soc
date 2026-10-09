@@ -26,10 +26,11 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 |---|---|
 | ALU | hotová, 16-bitová, 14 operácií, ~40 miliónov kontrol (hraničné a náhodné hodnoty) |
 | Register file | hotový |
-| Program counter | hotový (zapája sa do `system_top` spolu s JMP) |
-| Control unit | rozpracovaná – fungujú NOP, MVI, MVIB, MOV a ALU (16-bitovo), aj s BRAM vo FPGA |
-| ALU inštrukcia (cez register R1) | hotová, prechádza 13 automatických testov |
-| Skoky (JMP + podmienky) | rozpracované |
+| Program counter | hotový, zapojený v `system_top` |
+| Control unit | rozpracovaná – fungujú NOP, MVI, MVIB, MOV, ALU a JMP, aj s BRAM vo FPGA |
+| ALU inštrukcia (cez register R1) | hotová |
+| Skoky (JMP + 6 podmienok) | hotové – fungujú slučky aj rozhodovanie |
+| Automatické testy | 16/16 prechádza v oboch režimoch pamäte |
 | LOAD/STORE, RAM, I/O, assembler | plánované |
-| Syntéza (Yosys) | návrh sa zmestí do Tang Nano 9K, zaberie ~15 % LUT, pozri [Schémy](schematics.html) |
+| Syntéza (Yosys) | návrh sa zmestí do Tang Nano 9K, zaberie ~16 % LUT, pozri [Schémy](schematics.html) |
 | FPGA, plošný spoj | plánované |

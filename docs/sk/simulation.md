@@ -45,7 +45,7 @@ Každý test sa spustí v **oboch režimoch pamäte**:
 | kombinačná | inštrukcia je k dispozícii okamžite |
 | synchrónna (BRAM) | ako skutočná bloková pamäť vo FPGA: dáta prídu takt po adrese |
 
-Program counter a pamäť programu zatiaľ emuluje testbench.
+Program counter je skutočný hardvér (`programcounter.v` v `system_top`); testbench emuluje iba pamäť programu a podáva inštrukciu z adresy `pc`.
 
 ### Testy
 
@@ -54,7 +54,7 @@ Program counter a pamäť programu zatiaľ emuluje testbench.
 | `basic` | MVI, MVIB, MOV, NOP spolu |
 | `mvi_mvib` | 16-bitové konštanty, registre R0 a R15, prepísanie hodnoty |
 | `mov` | MOV kopíruje celých 16 bitov, reťazenie, MOV sám na seba |
-| `nop_unimplemented` | NOP a zatiaľ neimplementované inštrukcie procesor nezaseknú |
+| `nop_unimplemented` | NOP a zatiaľ neimplementované inštrukcie (LOAD, STORE) procesor nezaseknú |
 | `alu_add` | 59 + 49 = 108 |
 | `alu_ops` | SUB, AND, OR, XOR, zmena operácie v R1 medzi inštrukciami |
 | `alu_sub_borrow` | odčítanie pod nulu, odčítanie do nuly |
@@ -64,6 +64,9 @@ Program counter a pamäť programu zatiaľ emuluje testbench.
 | `alu_high_byte` | ALU použije aj horné bajty operandov a prepíše celý Rd |
 | `alu_carry16` | prenos / výpožička medzi dolným a horným bajtom, pretečenie 16 bitov |
 | `alu_op_runtime` | ALU zapíše do R1 a tým vyberie ďalšiu operáciu |
+| `jmp_always` | nepodmienený skok dopredu aj dozadu, preskočené inštrukcie sa nevykonajú |
+| `jmp_cond` | všetkých 6 podmienok po CMP, každá raz skočí a raz nie; neznáma podmienka neskočí nikdy |
+| `jmp_loop` | slučka: 6 × 7 = 42 opakovaným sčítaním, JNZ podľa flagu Z zo SUB |
 
 ### Spustenie
 
@@ -75,4 +78,4 @@ make test V=1    # s výpisom po taktoch
 make alu         # samostatný test ALU
 ```
 
-Aktuálny výsledok: **13/13 testov prejde** v oboch režimoch.
+Aktuálny výsledok: **16/16 testov prejde** v oboch režimoch.

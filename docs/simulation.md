@@ -44,7 +44,7 @@ Every test runs in **both memory modes**:
 | combinational | the instruction is available immediately |
 | synchronous (BRAM) | like real FPGA block RAM: data arrive one cycle after the address |
 
-The program counter and program memory are still emulated by the testbench for now.
+The program counter is real hardware (`programcounter.v` in `system_top`); the testbench only emulates the program memory and serves it the instruction at address `pc`.
 
 ### Tests
 
@@ -53,7 +53,7 @@ The program counter and program memory are still emulated by the testbench for n
 | `basic` | MVI, MVIB, MOV, NOP together |
 | `mvi_mvib` | 16-bit constants, registers R0 and R15, overwriting a value |
 | `mov` | MOV copies all 16 bits, chaining, MOV to itself |
-| `nop_unimplemented` | NOP and not yet implemented instructions do not hang the CPU |
+| `nop_unimplemented` | NOP and not yet implemented instructions (LOAD, STORE) do not hang the CPU |
 | `alu_add` | 59 + 49 = 108 |
 | `alu_ops` | SUB, AND, OR, XOR, operation in R1 changed between instructions |
 | `alu_sub_borrow` | subtraction below zero, subtraction to zero |
@@ -63,6 +63,9 @@ The program counter and program memory are still emulated by the testbench for n
 | `alu_high_byte` | the ALU uses the high bytes of the operands and overwrites the whole Rd |
 | `alu_carry16` | carry / borrow between the low and high byte, 16-bit overflow |
 | `alu_op_runtime` | the ALU writes into R1 and so selects the next operation |
+| `jmp_always` | unconditional jump forwards and backwards, skipped instructions are not executed |
+| `jmp_cond` | all 6 conditions after CMP, each one taken and not taken; an unknown condition never jumps |
+| `jmp_loop` | a loop: 6 × 7 = 42 by repeated addition, JNZ on the Z flag from SUB |
 
 ### Running
 
@@ -74,4 +77,4 @@ make test V=1    # with a cycle-by-cycle trace
 make alu         # standalone ALU test
 ```
 
-Current result: **13/13 tests pass** in both modes.
+Current result: **16/16 tests pass** in both modes.
