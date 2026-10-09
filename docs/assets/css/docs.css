@@ -385,25 +385,6 @@ footer {
   background: var(--bg-3);
 }
 
-.doc figure.schem a {
-  display: block;
-  background: #f4f3ee;
-  transition: opacity 0.2s;
-}
-
-.doc figure.schem a:hover {
-  opacity: 0.9;
-}
-
-.doc figure.schem img {
-  display: block;
-  width: 100%;
-  max-height: 520px;
-  object-fit: contain;
-  padding: 16px;
-  box-sizing: border-box;
-}
-
 .doc figure.schem figcaption {
   padding: 12px 16px;
   border-top: 1px solid var(--line);
@@ -414,4 +395,86 @@ footer {
 .doc figure.schem figcaption b {
   color: var(--accent);
   font-weight: 600;
+}
+
+/* --- PREHLIADAČ SCHÉM --- */
+
+.sv {
+  position: relative;
+  background: #f4f3ee;
+}
+
+.sv-stage {
+  position: relative;
+  height: 460px;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.sv-stage.drag {
+  cursor: grabbing;
+}
+
+.sv-stage img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  transform-origin: 0 0;
+}
+
+.sv-bar {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.sv-bar button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(12, 13, 12, 0.88);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.sv-bar button:hover {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.sv-zoom {
+  min-width: 52px;
+  padding: 0 6px;
+  font-family: monospace;
+  font-size: 11px;
+  color: #555;
+  text-align: right;
+}
+
+.sv:fullscreen .sv-stage,
+.sv.sv-max .sv-stage {
+  height: 100vh;
+}
+
+.sv.sv-max {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+
+.sv-hint {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--mute);
+  margin: -8px 0 24px;
 }
