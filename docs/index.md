@@ -17,16 +17,18 @@ implementation, verification by simulation, deployment on an FPGA and finally a 
 | Instruction width | 16 bits (1 instruction = 1 word) |
 | Registers | 16 × 16 bits (R0 – R15) |
 | Architecture | Harvard – separate program and data memory |
-| Program storage | FPGA BRAM, loaded from external SPI flash at boot |
+| Program storage | FPGA BRAM (planned: loaded from external SPI flash at boot) |
 
 ## Project status
 
 | Part | Status |
 |---|---|
-| ALU | done, 16-bit, ~40 million tests (edge and random values) |
+| ALU | done, 16-bit, 14 operations, ~40 million checks (edge and random values) |
 | Register file | done |
-| Program counter | done (not yet connected in `system_top`) |
+| Program counter | done (being connected in `system_top` together with JMP) |
 | Control unit | in progress – NOP, MVI, MVIB, MOV and ALU work (16-bit), also with FPGA BRAM |
 | ALU instruction (via register R1) | done, 13 automated tests pass |
-| Jumps, LOAD/STORE, RAM, I/O | being designed |
+| Jumps (JMP + conditions) | in progress |
+| LOAD/STORE, RAM, I/O, assembler | planned |
+| Synthesis (Yosys) | design fits a Tang Nano 9K with ~15 % of its LUTs, see [Schematics](schematics.html) |
 | FPGA, PCB | planned |

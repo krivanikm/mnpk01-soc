@@ -374,3 +374,44 @@ footer {
 .doc td code {
   white-space: nowrap;
 }
+
+/* --- SCHÉMY --- */
+
+.doc figure.schem {
+  margin: 28px 0 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-3);
+}
+
+.doc figure.schem a {
+  display: block;
+  background: #f4f3ee;
+  transition: opacity 0.2s;
+}
+
+.doc figure.schem a:hover {
+  opacity: 0.9;
+}
+
+.doc figure.schem img {
+  display: block;
+  width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.doc figure.schem figcaption {
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+  color: var(--soft);
+}
+
+.doc figure.schem figcaption b {
+  color: var(--accent);
+  font-weight: 600;
+}

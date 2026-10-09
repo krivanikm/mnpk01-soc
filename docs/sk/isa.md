@@ -17,8 +17,8 @@ Každá inštrukcia je jedno 16-bitové slovo:
 ```
 
 - `opcode` `[15:12]` – číslo inštrukcie (16 možností)
-- `reg` `[11:8]` – cieľový register R0 – R15
-- `[7:0]` – 8-bitová konštanta alebo ďalšie operandy
+- `reg` `[11:8]` – register R0 – R15: cieľ pri MVI, MVIB a MOV, prvý operand Ra pri ALU
+- `[7:0]` – 8-bitová konštanta (MVI, MVIB) alebo čísla ďalších registrov (MOV, ALU)
 
 ## Implementované inštrukcie
 

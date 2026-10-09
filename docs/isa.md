@@ -16,8 +16,8 @@ Every instruction is a single 16-bit word:
 ```
 
 - `opcode` `[15:12]` – instruction number (16 possible)
-- `reg` `[11:8]` – destination register R0 – R15
-- `[7:0]` – 8-bit constant or additional operands
+- `reg` `[11:8]` – register R0 – R15: the destination for MVI, MVIB and MOV, the first operand Ra for ALU
+- `[7:0]` – 8-bit constant (MVI, MVIB) or two more register numbers (MOV, ALU)
 
 ## Implemented instructions
 

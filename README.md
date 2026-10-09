@@ -6,7 +6,7 @@
 📖 **Documentation:** [krivanikm.github.io/mnpk01-soc](https://krivanikm.github.io/mnpk01-soc/) (English / Slovenčina)
 
 ## 📌 Project Overview
-**MNPK01-System** is a 16-bit microcomputer architecture, engineered from the silicon level up to the physical PCB. Developed as a comprehensive graduation thesis, this project bridges the gap between Hardware Description Languages (HDL) and physical hardware implementation.
+**MNPK01-System** is a 16-bit microcomputer architecture, designed from the logic level up to the physical PCB. Developed as a SOČ (Slovak high-school research competition) project, it bridges the gap between Hardware Description Languages (HDL) and physical hardware implementation.
 
 The core mission of the MNPK01 is to demonstrate a **complete vertical integration** of computer systems: from logical gate synthesis and custom Instruction Set Architecture (ISA) to physical PCB fabrication and low-level firmware optimization.
 
@@ -47,7 +47,7 @@ graph TD
     %% Control Signals
     CU -->|Jump Logic| PC
     CU -.->|Write Enable| REGS
-    ALU -.->|Flags: Z/C| CU
+    ALU -.->|Flags: Z/C/N| CU
 
     %% Peripherals
     REGS <-->|Memory Interface| RAM[RAM - Data Memory]
@@ -60,3 +60,47 @@ graph TD
     class FLASH,BRAM,RAM,REGS storage;
     class ALU compute;
     class PC routing;
+```
+
+> Data memory (RAM), I/O and the jump logic in the map above are still being designed – see the status below.
+
+---
+
+## 📊 Status
+
+| Part | Status |
+|---|---|
+| ALU (16-bit, 14 operations) | ✅ done – ~40 million checks |
+| Register file (16 × 16-bit) | ✅ done |
+| Control unit: NOP, MVI, MVIB, MOV, ALU | ✅ done – 13/13 system tests, also with synchronous FPGA BRAM |
+| Program counter | ✅ done, being connected together with JMP |
+| JMP + conditional jumps | 🔨 in progress |
+| LOAD/STORE, RAM, I/O, assembler | 📋 planned |
+| FPGA (Tang Nano 9K), PCB | 📋 planned |
+
+## 🚀 Running the simulation
+
+Requirements: [Verilator](https://www.veripool.org/verilator/), a C++ compiler, `make`. Optional: Yosys + Graphviz for schematics.
+
+```sh
+cd rtl
+make test          # all system tests (combinational and BRAM-like memory)
+make test V=1      # with a cycle-by-cycle trace
+make alu           # standalone ALU test (~40 million checks)
+make schematics    # RTL schematics into docs/assets/schematics/
+```
+
+## 📁 Repository layout
+
+```
+rtl/
+  alu/              ALU + its standalone test
+  control-unit/     control unit (FSM)
+  registers/        register file
+  program-counter/  program counter
+  tests/            system test programs (*.txt)
+  system_top.sv     top level
+  tb_full_system.cpp
+docs/               documentation website (GitHub Pages, EN + SK)
+```
+

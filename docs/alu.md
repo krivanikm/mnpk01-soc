@@ -27,7 +27,7 @@ and it sets three flags.
 | `1011` | CMP | `a` (compare only) | `a > b` |
 | `1100` | PASS | `a` | 0 |
 | `1101` | CLR | `0` | 0 |
-| `1110` | HLT | `0` (does nothing) | 0 |
+| `1110`, `1111` | – | `0` (unused; behaves like CLR – writes 0 to Rd and sets Z) | 0 |
 
 ## Flags
 
@@ -93,7 +93,7 @@ The register file has a single 16-bit read port, so the control unit reads the t
 
 | Cycle | State | What happens |
 |---|---|---|
-| 1 | `S_FETCH` | instruction is fetched, PC + 1 |
+| 1 | `S_FETCH` | instruction is stored in the instruction register, `pc_inc` = 1 (PC advances at the end of the next cycle) |
 | 2 | `S_DECODE` | register address ← Ra |
 | 3 | `S_ALU_A` | Ra is stored in the `alu_a` register (operand A), register address ← Rb |
 | 4 | `S_ALU_B` | ALU gets A = stored Ra, B = Rb straight from the register file, the result is ready in the same cycle (the ALU is combinational); the write to Rd and the flags are prepared |

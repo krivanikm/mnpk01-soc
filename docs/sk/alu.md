@@ -28,7 +28,7 @@ a nastavuje tri príznaky (flagy).
 | `1011` | CMP | `a` (iba porovnanie) | `a > b` |
 | `1100` | PASS | `a` | 0 |
 | `1101` | CLR | `0` | 0 |
-| `1110` | HLT | `0` (nerobí nič) | 0 |
+| `1110`, `1111` | – | `0` (nepoužité; správa sa ako CLR – zapíše 0 do Rd a nastaví Z) | 0 |
 
 ## Flagy
 
@@ -93,7 +93,7 @@ Register file má jeden 16-bitový čítací port, preto control unit číta ope
 
 | Takt | Stav | Čo sa deje |
 |---|---|---|
-| 1 | `S_FETCH` | načítanie inštrukcie, PC + 1 |
+| 1 | `S_FETCH` | inštrukcia sa uloží do inštrukčného registra, `pc_inc` = 1 (PC sa posunie na konci ďalšieho taktu) |
 | 2 | `S_DECODE` | adresa registra ← Ra |
 | 3 | `S_ALU_A` | Ra sa uloží do registra `alu_a` (operand A), adresa registra ← Rb |
 | 4 | `S_ALU_B` | ALU dostane A = uložený Ra, B = Rb priamo z register file, výsledok je hotový v tom istom takte (ALU je kombinačná); pripraví sa zápis do Rd a flagy |

@@ -40,6 +40,9 @@ Súbor: `rtl/program-counter/programcounter.v`
 | `d_in[15:0]` | vstup | cieľová adresa skoku |
 | `pc[15:0]` | výstup | aktuálna adresa |
 
+Ak sú `pc_inc` aj `pc_load` naraz 1, vyhrá `pc_inc` – skok sa nevykoná.
+Program counter zatiaľ nie je zapojený v `system_top`, zatiaľ ho emuluje testbench.
+
 ## Register file
 
 Súbor: `rtl/registers/register_file.sv`
@@ -96,13 +99,4 @@ Pravidlo: `pc_inc` sa nastavuje **iba** v `S_FETCH` a každá inštrukcia trvá 
 
 ## Schémy
 
-RTL schémy vygenerované nástrojom Yosys (`make schematics` v `rtl/`). SVG – otvor v prehliadači a priblíž.
-
-| Schéma | Obsah |
-|---|---|
-| [Celý procesor](../assets/schematics/cpu_full.svg) | control unit, register file a ALU spojené do jednej schémy |
-| [system_top](../assets/schematics/system_top.svg) | ako sú bloky prepojené |
-| [ALU](../assets/schematics/alu.svg) | |
-| [Register file](../assets/schematics/register_file.svg) | |
-| [Control unit](../assets/schematics/controlunit.svg) | |
-| [Program counter](../assets/schematics/programcounter.svg) | |
+RTL schémy všetkých blokov vygenerované nástrojom Yosys sú na stránke [Schémy](schematics.html).

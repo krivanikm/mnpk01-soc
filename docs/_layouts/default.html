@@ -38,9 +38,9 @@
       <div class="kicker">{% if sk %}dokumentácia{% else %}documentation{% endif %}</div>
       <nav>
         {%- if sk -%}
-          {%- assign items = "index:Úvod,architecture:Architektúra,isa:Inštrukčná sada,alu:ALU,simulation:Simulácia" | split: "," -%}
+          {%- assign items = "index:Úvod,architecture:Architektúra,isa:Inštrukčná sada,alu:ALU,simulation:Simulácia,schematics:Schémy" | split: "," -%}
         {%- else -%}
-          {%- assign items = "index:Home,architecture:Architecture,isa:Instruction set,alu:ALU,simulation:Simulation" | split: "," -%}
+          {%- assign items = "index:Home,architecture:Architecture,isa:Instruction set,alu:ALU,simulation:Simulation,schematics:Schematics" | split: "," -%}
         {%- endif -%}
         {%- for item in items -%}
           {%- assign parts = item | split: ":" -%}
