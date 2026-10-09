@@ -136,9 +136,9 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
         bool done = top->state_out == S_FETCH && pc >= (int)t.rom.size();
 
         if (verbose)
-            std::printf("  cyklus %3d | PC=%3d ROM=0x%04X | stav=%2d | pc_inc=%d we=%d addr=%2d high=%d data=0x%02X\n",
+            std::printf("  cyklus %3d | PC=%3d ROM=0x%04X | stav=%2d | pc_inc=%d we=%d%d addr=%2d data=0x%04X\n",
                         cycle, pc, top->rom_data, top->state_out, top->pc_inc,
-                        top->write_reg_en, top->reg_addr, top->high_b, top->reg_data);
+                        (top->write_reg_en >> 1) & 1, top->write_reg_en & 1, top->reg_addr, top->reg_data);
 
         bool inc = top->pc_inc;
         top->clk = 1; top->eval();

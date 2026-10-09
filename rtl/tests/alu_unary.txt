@@ -5,16 +5,16 @@
 1103    ; MVI R1, 3      (DEC)
 7204    ; ALU R2, R0, R4 -> 0x80
 1107    ; MVI R1, 7      (NOT)
-7205    ; ALU R2, R0, R5 -> 0x7E
+7205    ; ALU R2, R0, R5 -> 0xFF7E (neguje sa aj horný bajt)
 1108    ; MVI R1, 8      (SHL)
-7206    ; ALU R2, R0, R6 -> 0x02 (bit 7 vypadne)
+7206    ; ALU R2, R0, R6 -> 0x0102 (bit 7 prejde do bitu 8)
 1109    ; MVI R1, 9      (SHR)
 7207    ; ALU R2, R0, R7 -> 0x40
 110A    ; MVI R1, 0x0A   (ROL)
-7208    ; ALU R2, R0, R8 -> 0x03 (bit 7 -> bit 0)
+7208    ; ALU R2, R0, R8 -> 0x0102 (bit 15 = 0 -> bit 0)
 110C    ; MVI R1, 0x0C   (PASS)
 7209    ; ALU R2, R0, R9 -> 0x81
 1A55    ; MVI R10, 0x55
 110D    ; MVI R1, 0x0D   (CLR)
 720A    ; ALU R2, R0, R10 -> 0
-expect r1=0x0D r2=0x81 r3=0x82 r4=0x80 r5=0x7E r6=0x02 r7=0x40 r8=0x03 r9=0x81
+expect r1=0x0D r2=0x81 r3=0x82 r4=0x80 r5=0xFF7E r6=0x0102 r7=0x40 r8=0x0102 r9=0x81

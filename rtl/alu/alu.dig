@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit><version>2</version><attributes/><visualElements><visualElement><elementName>ExternalFile</elementName><elementAttributes><entry><string>Label</string><string>alu</string></entry><entry><string>applicationType</string><appType>IVERILOG</appType></entry><entry><string>externalInputs</string><string>a:8,b:8,op:4</string></entry><entry><string>externalOutputs</string><string>out:8,z_flag,c_flag,n_flag</string></entry><entry><string>CodeFile</string><file>alu.sv</file></entry><entry><string>iverilogOptions</string><string>-g2012</string></entry><entry><string>Width</string><int>5</int></entry></elementAttributes><pos x="500" y="300"/></visualElement><visualElement><elementName>In</elementName><elementAttributes><entry><string>Label</string><string>a</string></entry><entry><string>Bits</string><int>8</int></entry></elementAttributes><pos x="300" y="220"/></visualElement><visualElement><elementName>In</elementName><elementAttributes><entry><string>Label</string><string>b</string></entry><entry><string>Bits</string><int>8</int></entry></elementAttributes><pos x="300" y="300"/></visualElement><visualElement><elementName>In</elementName><elementAttributes><entry><string>Label</string><string>op</string></entry><entry><string>Bits</string><int>4</int></entry></elementAttributes><pos x="300" y="380"/></visualElement><visualElement><elementName>Out</elementName><elementAttributes><entry><string>Label</string><string>out</string></entry><entry><string>Bits</string><int>8</int></entry><entry><string>intFormat</string><intFormat>dec</intFormat></entry></elementAttributes><pos x="800" y="240"/></visualElement><visualElement><elementName>Out</elementName><elementAttributes><entry><string>Label</string><string>z_flag</string></entry><entry><string>Bits</string><int>1</int></entry></elementAttributes><pos x="800" y="300"/></visualElement><visualElement><elementName>Out</elementName><elementAttributes><entry><string>Label</string><string>c_flag</string></entry><entry><string>Bits</string><int>1</int></entry></elementAttributes><pos x="800" y="360"/></visualElement><visualElement><elementName>Out</elementName><elementAttributes><entry><string>Label</string><string>n_flag</string></entry><entry><string>Bits</string><int>1</int></entry></elementAttributes><pos x="800" y="420"/></visualElement><visualElement><elementName>Testcase</elementName><elementAttributes><entry><string>Label</string><string>ALU testy</string></entry><entry><string>Testdata</string><testData><dataString>a b op out z_flag c_flag n_flag
+# ADD
+59 49 0 108 0 0 0
+200 100 0 44 0 1 0
+128 128 0 0 1 1 0
+# SUB
+7 5 1 2 0 0 0
+5 7 1 254 0 1 1
+# INC / DEC
+255 0 2 0 1 1 0
+0 0 3 255 0 1 1
+# AND OR XOR NOT
+0xF0 0x3C 4 0x30 0 0 0
+0xF0 0x0F 5 0xFF 0 0 1
+0xAA 0xAA 6 0 1 0 0
+0x0F 0 7 0xF0 0 0 1
+# SHL SHR ROL
+0x81 0 8 0x02 0 1 0
+0x81 0 9 0x40 0 1 0
+0x81 0 10 0x03 0 1 0
+# CMP
+3 3 11 3 1 0 0
+2 9 11 2 0 0 1
+9 2 11 9 0 1 0
+# PASS_A CLR
+42 0 12 42 0 0 0
+42 0 13 0 1 0 0</dataString></testData></entry></elementAttributes><pos x="300" y="560"/></visualElement></visualElements><wires><wire><p1 x="300" y="220"/><p2 x="420" y="220"/></wire><wire><p1 x="420" y="220"/><p2 x="420" y="300"/></wire><wire><p1 x="420" y="300"/><p2 x="500" y="300"/></wire><wire><p1 x="300" y="300"/><p2 x="440" y="300"/></wire><wire><p1 x="440" y="300"/><p2 x="440" y="320"/></wire><wire><p1 x="440" y="320"/><p2 x="500" y="320"/></wire><wire><p1 x="300" y="380"/><p2 x="460" y="380"/></wire><wire><p1 x="460" y="380"/><p2 x="460" y="340"/></wire><wire><p1 x="460" y="340"/><p2 x="500" y="340"/></wire><wire><p1 x="600" y="300"/><p2 x="620" y="300"/></wire><wire><p1 x="620" y="300"/><p2 x="620" y="240"/></wire><wire><p1 x="620" y="240"/><p2 x="800" y="240"/></wire><wire><p1 x="600" y="320"/><p2 x="640" y="320"/></wire><wire><p1 x="640" y="320"/><p2 x="640" y="300"/></wire><wire><p1 x="640" y="300"/><p2 x="800" y="300"/></wire><wire><p1 x="600" y="340"/><p2 x="660" y="340"/></wire><wire><p1 x="660" y="340"/><p2 x="660" y="360"/></wire><wire><p1 x="660" y="360"/><p2 x="800" y="360"/></wire><wire><p1 x="600" y="360"/><p2 x="680" y="360"/></wire><wire><p1 x="680" y="360"/><p2 x="680" y="420"/></wire><wire><p1 x="680" y="420"/><p2 x="800" y="420"/></wire></wires><measurementOrdering/></circuit>

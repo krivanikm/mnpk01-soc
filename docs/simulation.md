@@ -10,8 +10,14 @@ The design is verified with the **Verilator** simulator, testbenches are written
 
 File: `rtl/alu/sim_main.cpp`
 
-Tries **every combination** of inputs: each operation with all values of `a` and `b` (256 × 256),
-and compares both the result and the flags with the expected values computed in C++.
+With 16-bit operands there are too many combinations to try them all (65536 × 65536 per operation), so for every operation it tests:
+
+1. all 65536 values of `a` against edge values of `b` (`0`, `1`, `0x7F`, `0x80`, `0xFF`, `0x100`, `0x7FFF`, `0x8000`, `0xFFFF`, …),
+2. edge values of `a` against all 65536 values of `b`,
+3. one million random pairs (with a fixed seed, so the test is always the same).
+
+That is about **40 million checks**; both the result and the flags are compared with the values computed in C++.
+Run it with `make alu` in `rtl/`.
 
 ## Full system test
 
@@ -46,7 +52,7 @@ The program counter and program memory are still emulated by the testbench for n
 |---|---|
 | `basic` | MVI, MVIB, MOV, NOP together |
 | `mvi_mvib` | 16-bit constants, registers R0 and R15, overwriting a value |
-| `mov` | MOV copies only the low byte, chaining, MOV to itself |
+| `mov` | MOV copies all 16 bits, chaining, MOV to itself |
 | `nop_unimplemented` | NOP and not yet implemented instructions do not hang the CPU |
 | `alu_add` | 59 + 49 = 108 |
 | `alu_ops` | SUB, AND, OR, XOR, operation in R1 changed between instructions |
@@ -54,7 +60,8 @@ The program counter and program memory are still emulated by the testbench for n
 | `alu_cmp` | CMP does not write to Rd |
 | `alu_rd_eq_src` | destination equal to a source register |
 | `alu_unary` | INC, DEC, NOT, SHL, SHR, ROL, PASS, CLR |
-| `alu_high_byte` | ALU changes only the low byte |
+| `alu_high_byte` | the ALU uses the high bytes of the operands and overwrites the whole Rd |
+| `alu_carry16` | carry / borrow between the low and high byte, 16-bit overflow |
 | `alu_op_runtime` | the ALU writes into R1 and so selects the next operation |
 
 ### Running
@@ -64,6 +71,7 @@ In the `rtl/` directory:
 ```
 make test        # all tests, both memory modes
 make test V=1    # with a cycle-by-cycle trace
+make alu         # standalone ALU test
 ```
 
-Current result: **12/12 tests pass** in both modes.
+Current result: **13/13 tests pass** in both modes.

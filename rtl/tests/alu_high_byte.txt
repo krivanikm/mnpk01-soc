@@ -1,8 +1,9 @@
-# ALU pracuje s dolným bajtom: horný bajt Rd ostane, horné bajty operandov sa ignorujú
-34AB    ; MVIB R4, 0xAB  -> R4 = 0xAB00
+# ALU počíta s celými 16 bitmi: horné bajty operandov sa započítajú, celý Rd sa prepíše
+34AB    ; MVIB R4, 0xAB  -> R4 = 0xAB00 (pôvodný obsah, musí sa celý prepísať)
 1100    ; MVI  R1, 0     (ADD)
 1201    ; MVI  R2, 1
-32FF    ; MVIB R2, 0xFF  -> R2 = 0xFF01 (horný bajt sa nesmie pripočítať)
+3210    ; MVIB R2, 0x10  -> R2 = 0x1001
 1302    ; MVI  R3, 2
-7234    ; ALU  R2, R3, R4 -> R4[7:0] = 3, R4 = 0xAB03
-expect r1=0 r2=0xFF01 r3=0x0002 r4=0xAB03
+3320    ; MVIB R3, 0x20  -> R3 = 0x2002
+7234    ; ALU  R2, R3, R4 -> R4 = 0x1001 + 0x2002 = 0x3003
+expect r1=0 r2=0x1001 r3=0x2002 r4=0x3003

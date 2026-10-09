@@ -19,7 +19,7 @@ lang: sk
                                              v      v      |
                                   +---------------+  +-----------+
                                   | Register file |<>|    ALU    |
-                                  |  16 x 16 bit  |  |   8 bit   |
+                                  |  16 x 16 bit  |  |  16 bit   |
                                   +---------------+  +-----------+
 ```
 
@@ -44,17 +44,17 @@ Súbor: `rtl/program-counter/programcounter.v`
 
 Súbor: `rtl/registers/register_file.sv`
 
-16 registrov po 16 bitoch. Dátová cesta je 8-bitová, preto sa do registra zapisuje aj z neho číta
-**po bajtoch** – signál `high_b` vyberá horný (`[15:8]`) alebo dolný (`[7:0]`) bajt.
+16 registrov po 16 bitoch. Z registra sa vždy **číta celé 16-bitové slovo**.
+Zápis má dva povoľovacie bity, jeden pre každý bajt, takže control unit vie zapísať dolný bajt (MVI),
+horný bajt (MVIB) alebo celé slovo (MOV, ALU).
 
 | Signál | Smer | Význam |
 |---|---|---|
 | `clk`, `rst_n` | vstup | hodiny, asynchrónny reset (aktívny v 0), vynuluje všetky registre |
 | `addr[3:0]` | vstup | číslo registra R0 – R15 |
-| `high_b` | vstup | 1 = horný bajt, 0 = dolný bajt |
-| `d_in[7:0]` | vstup | zapisovaný bajt |
-| `write_en` | vstup | zápis na nábežnej hrane hodín |
-| `q_out[7:0]` | výstup | čítaný bajt (kombinačne, hneď po zmene adresy) |
+| `d_in[15:0]` | vstup | zapisované dáta |
+| `write_en[1:0]` | vstup | zápis na nábežnej hrane hodín: `01` = dolný bajt `[7:0]`, `10` = horný bajt `[15:8]`, `11` = celé slovo |
+| `q_out[15:0]` | výstup | čítaný register (kombinačne, hneď po zmene adresy) |
 | `r1_out[3:0]` | výstup | `R1[3:0]`, ide priamo do ALU ako kód operácie |
 
 ## Control unit

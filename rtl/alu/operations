@@ -8,7 +8,7 @@
 0111	NOT	Bitwise Invert A (~A)                           OK
 1000	SHL_A	Logical Shift Left A (Multiply by 2)        OK
 1001	SHR_A	Logical Shift Right A (Divide by 2)         OK
-1010	ROL	Rotate Left A (Bit 7 moves to Bit 0)            OK
+1010	ROL	Rotate Left A (Bit 15 moves to Bit 0)            OK
 1011	CMP	Compare A and B (Updates Flags only, OUT = A)   OK
 1100	PASS_A	Bypass A directly to output                 OK
 1101	CLR	Clear output (OUT = 0)                          OK

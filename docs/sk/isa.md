@@ -26,9 +26,9 @@ Každá inštrukcia je jedno 16-bitové slovo:
 |---|---|---|---|---|
 | `0x0` | NOP | `0000 xxxx xxxx xxxx` | nič, iba PC + 1 | 3 |
 | `0x1` | MVI | `0001 rrrr dddd dddd` | `r[7:0] = d` | 3 |
-| `0x2` | MOV | `0010 rrrr ssss xxxx` | `r[7:0] = s[7:0]` | 4 |
+| `0x2` | MOV | `0010 rrrr ssss xxxx` | `r = s` (celých 16 bitov) | 4 |
 | `0x3` | MVIB | `0011 rrrr dddd dddd` | `r[15:8] = d` | 3 |
-| `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd[7:0] = Ra (operácia z R1) Rb` – pozri [ALU](alu.html) | 4 |
+| `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd = Ra (operácia z R1) Rb`, 16-bitovo – pozri [ALU](alu.html) | 4 |
 
 Opcode `0x4` (LOAD), `0x5` (STORE) a `0x6` (JMP) sú rezervované; kým nie sú implementované, správajú sa – rovnako ako neznámy opcode – ako NOP.
 

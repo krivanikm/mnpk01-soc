@@ -7,24 +7,24 @@ lang: sk
 
 Súbor: `rtl/alu/alu.sv`
 
-Kombinačná 8-bitová ALU. Má dva operandy `a` a `b`, 4-bitový kód operácie `op`
+Kombinačná 16-bitová ALU. Má dva 16-bitové operandy `a` a `b`, 4-bitový kód operácie `op`
 a nastavuje tri príznaky (flagy).
 
 ## Operácie
 
 | Kód | Meno | Výsledok | Carry (C) |
 |---|---|---|---|
-| `0000` | ADD | `a + b` | prenos z bitu 7 |
+| `0000` | ADD | `a + b` | prenos z bitu 15 |
 | `0001` | SUB | `a - b` | výpožička (`a < b`) |
-| `0010` | INC | `a + 1` | prenos z bitu 7 |
+| `0010` | INC | `a + 1` | prenos z bitu 15 |
 | `0011` | DEC | `a - 1` | výpožička (`a < 1`) |
 | `0100` | AND | `a & b` | 0 |
 | `0101` | OR | `a \| b` | 0 |
 | `0110` | XOR | `a ^ b` | 0 |
 | `0111` | NOT | `~a` | 0 |
-| `1000` | SHL | `a << 1` | pôvodný bit 7 |
+| `1000` | SHL | `a << 1` | pôvodný bit 15 |
 | `1001` | SHR | `a >> 1` | pôvodný bit 0 |
-| `1010` | ROL | rotácia doľava (bit 7 → bit 0) | pôvodný bit 7 |
+| `1010` | ROL | rotácia doľava (bit 15 → bit 0) | pôvodný bit 15 |
 | `1011` | CMP | `a` (iba porovnanie) | `a > b` |
 | `1100` | PASS | `a` | 0 |
 | `1101` | CLR | `0` | 0 |
@@ -36,7 +36,7 @@ a nastavuje tri príznaky (flagy).
 |---|---|
 | Z (zero) | výsledok je 0; pri CMP: `a == b` |
 | C (carry) | prenos / výpožička podľa tabuľky vyššie |
-| N (negative) | bit 7 výsledku; pri CMP: `a < b` |
+| N (negative) | bit 15 výsledku (znamienko); pri CMP: `a < b` |
 
 ## ALU ako „syscall“
 
@@ -64,6 +64,16 @@ MVI  R3, 49       ; 0x1331
 ALU  R2, R3, R4   ; 0x7234   R4 = 59 + 49 = 108
 ```
 
+### Príklad: 16-bitové sčítanie
+
+```
+MVI  R1, ADD      ; 0x1100
+MVI  R2, 0xFF     ; 0x12FF
+MVIB R2, 0x12     ; 0x3212   R2 = 0x12FF
+MVI  R3, 1        ; 0x1301
+ALU  R2, R3, R4   ; 0x7234   R4 = 0x12FF + 1 = 0x1300 (prenos z dolného do horného bajtu)
+```
+
 ### Prečo takto
 
 - **Jedna inštrukcia pre všetky operácie** – šetrí miesto v opcode, ostáva viac voľných opcode pre iné inštrukcie.
@@ -79,7 +89,7 @@ R1 je preto vyhradený na kód operácie a pred použitím inštrukcie `ALU` mus
 Bity `R1[3:0]` idú z register file **priamo drôtom** na vstup `op` ALU – register file má na to samostatný
 výstup `r1_out`. ALU teda vždy vidí aktuálny obsah R1 a na prečítanie operácie netreba žiadny takt navyše.
 
-Register file má jeden 8-bitový čítací port, preto control unit číta operandy postupne:
+Register file má jeden 16-bitový čítací port, preto control unit číta operandy postupne:
 
 | Takt | Stav | Čo sa deje |
 |---|---|---|
@@ -88,7 +98,7 @@ Register file má jeden 8-bitový čítací port, preto control unit číta oper
 | 3 | `S_ALU_A` | Ra sa uloží do registra `alu_a` (operand A), adresa registra ← Rb |
 | 4 | `S_ALU_B` | ALU dostane A = uložený Ra, B = Rb priamo z register file, výsledok je hotový v tom istom takte (ALU je kombinačná); pripraví sa zápis do Rd a flagy |
 
-Výsledok sa zapíše do `Rd[7:0]` na ďalšej hrane hodín, horný bajt Rd sa nemení.
+Celý 16-bitový výsledok sa zapíše do Rd na ďalšej hrane hodín (`write_reg_en = 11`).
 Flagy Z, C, N si control unit uloží po každej inštrukcii `ALU`.
 
 - **CMP** (`1011`) iba nastaví flagy a do Rd **nezapisuje**.

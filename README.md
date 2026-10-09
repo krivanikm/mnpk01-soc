@@ -1,4 +1,4 @@
-# MNPK01-System: Full-Stack 8-bit Microcomputer
+# MNPK01-System: Full-Stack 16-bit Microcomputer
 
 ![Status](https://img.shields.io/badge/Status-Development-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-GPLv3-green?style=for-the-badge)
@@ -6,7 +6,7 @@
 📖 **Documentation:** [krivanikm.github.io/mnpk01-soc](https://krivanikm.github.io/mnpk01-soc/) (English / Slovenčina)
 
 ## 📌 Project Overview
-**MNPK01-System** is a 8-bit microcomputer architecture, engineered from the silicon level up to the physical PCB. Developed as a comprehensive graduation thesis, this project bridges the gap between Hardware Description Languages (HDL) and physical hardware implementation.
+**MNPK01-System** is a 16-bit microcomputer architecture, engineered from the silicon level up to the physical PCB. Developed as a comprehensive graduation thesis, this project bridges the gap between Hardware Description Languages (HDL) and physical hardware implementation.
 
 The core mission of the MNPK01 is to demonstrate a **complete vertical integration** of computer systems: from logical gate synthesis and custom Instruction Set Architecture (ISA) to physical PCB fabrication and low-level firmware optimization.
 
@@ -14,7 +14,7 @@ The core mission of the MNPK01 is to demonstrate a **complete vertical integrati
 
 ## 🏗 System Architecture
 
-The MNPK-01 uses a Harvard architecture with an 8-bit data path and 16-bit addressing. The **Control Unit** drives every block directly – the register file, the ALU, data memory and I/O – with no separate bus-management unit in between. The ALU is used in a syscall-like way: the operation code is stored in register **R1** and a single `ALU Ra, Rb, Rd` instruction executes it.
+The MNPK-01 uses a Harvard architecture with a 16-bit data path (16 × 16-bit registers, 16-bit ALU) and 16-bit addressing. The **Control Unit** drives every block directly – the register file, the ALU, data memory and I/O – with no separate bus-management unit in between. The ALU is used in a syscall-like way: the operation code is stored in register **R1** and a single `ALU Ra, Rb, Rd` instruction executes it.
 
 ### Integrated System Map
 ```mermaid

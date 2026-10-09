@@ -6,24 +6,24 @@ title: ALU
 
 File: `rtl/alu/alu.sv`
 
-A combinational 8-bit ALU. It has two operands `a` and `b`, a 4-bit operation code `op`
+A combinational 16-bit ALU. It has two 16-bit operands `a` and `b`, a 4-bit operation code `op`
 and it sets three flags.
 
 ## Operations
 
 | Code | Name | Result | Carry (C) |
 |---|---|---|---|
-| `0000` | ADD | `a + b` | carry out of bit 7 |
+| `0000` | ADD | `a + b` | carry out of bit 15 |
 | `0001` | SUB | `a - b` | borrow (`a < b`) |
-| `0010` | INC | `a + 1` | carry out of bit 7 |
+| `0010` | INC | `a + 1` | carry out of bit 15 |
 | `0011` | DEC | `a - 1` | borrow (`a < 1`) |
 | `0100` | AND | `a & b` | 0 |
 | `0101` | OR | `a \| b` | 0 |
 | `0110` | XOR | `a ^ b` | 0 |
 | `0111` | NOT | `~a` | 0 |
-| `1000` | SHL | `a << 1` | original bit 7 |
+| `1000` | SHL | `a << 1` | original bit 15 |
 | `1001` | SHR | `a >> 1` | original bit 0 |
-| `1010` | ROL | rotate left (bit 7 → bit 0) | original bit 7 |
+| `1010` | ROL | rotate left (bit 15 → bit 0) | original bit 15 |
 | `1011` | CMP | `a` (compare only) | `a > b` |
 | `1100` | PASS | `a` | 0 |
 | `1101` | CLR | `0` | 0 |
@@ -35,7 +35,7 @@ and it sets three flags.
 |---|---|
 | Z (zero) | result is 0; for CMP: `a == b` |
 | C (carry) | carry / borrow as listed above |
-| N (negative) | bit 7 of the result; for CMP: `a < b` |
+| N (negative) | bit 15 of the result (sign); for CMP: `a < b` |
 
 ## The ALU as a "syscall"
 
@@ -63,6 +63,16 @@ MVI  R3, 49       ; 0x1331
 ALU  R2, R3, R4   ; 0x7234   R4 = 59 + 49 = 108
 ```
 
+### Example: 16-bit addition
+
+```
+MVI  R1, ADD      ; 0x1100
+MVI  R2, 0xFF     ; 0x12FF
+MVIB R2, 0x12     ; 0x3212   R2 = 0x12FF
+MVI  R3, 1        ; 0x1301
+ALU  R2, R3, R4   ; 0x7234   R4 = 0x12FF + 1 = 0x1300 (carry from the low into the high byte)
+```
+
 ### Why this design
 
 - **One instruction for all operations** – saves opcode space, leaving more free opcodes for other instructions.
@@ -79,7 +89,7 @@ Bits `R1[3:0]` are wired **directly** from the register file to the `op` input o
 file has an extra output `r1_out` just for this. The ALU always sees the current contents of R1, no extra
 cycle is needed to read the operation.
 
-The register file has a single 8-bit read port, so the control unit reads the two operands one after another:
+The register file has a single 16-bit read port, so the control unit reads the two operands one after another:
 
 | Cycle | State | What happens |
 |---|---|---|
@@ -88,7 +98,7 @@ The register file has a single 8-bit read port, so the control unit reads the tw
 | 3 | `S_ALU_A` | Ra is stored in the `alu_a` register (operand A), register address ← Rb |
 | 4 | `S_ALU_B` | ALU gets A = stored Ra, B = Rb straight from the register file, the result is ready in the same cycle (the ALU is combinational); the write to Rd and the flags are prepared |
 
-The result is written to `Rd[7:0]` on the next clock edge; the high byte of Rd is not changed.
+The whole 16-bit result is written to Rd on the next clock edge (`write_reg_en = 11`).
 The flags Z, C, N are stored in the control unit after every `ALU` instruction.
 
 - **CMP** (`1011`) only sets the flags and **does not write** to Rd.

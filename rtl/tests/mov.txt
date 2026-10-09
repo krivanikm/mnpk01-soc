@@ -1,9 +1,9 @@
-# MOV kopíruje iba dolný bajt, horný bajt cieľa ostane
+# MOV kopíruje celých 16 bitov
 1155    ; MVI  r1, 0x55
 3166    ; MVIB r1, 0x66     -> r1 = 0x6655
 3277    ; MVIB r2, 0x77     -> r2 = 0x7700
-2210    ; MOV  r2, r1       -> r2 = 0x7755
-2310    ; MOV  r3, r1       -> r3 = 0x0055
-2430    ; MOV  r4, r3       -> reťazenie: r4 = 0x0055
+2210    ; MOV  r2, r1       -> r2 = 0x6655 (prepíše sa aj horný bajt)
+2310    ; MOV  r3, r1       -> r3 = 0x6655
+2430    ; MOV  r4, r3       -> reťazenie: r4 = 0x6655
 2110    ; MOV  r1, r1       -> sám na seba, nič sa nezmení
-expect r1=0x6655 r2=0x7755 r3=0x0055 r4=0x0055
+expect r1=0x6655 r2=0x6655 r3=0x6655 r4=0x6655

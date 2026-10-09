@@ -8,3 +8,13 @@ build/
 # simulácie
 *.vcd
 *.fst
+
+# editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Jekyll (lokálny náhľad dokumentácie)
+docs/_site/
+.jekyll-cache/

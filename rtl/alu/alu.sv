@@ -1,24 +1,24 @@
 module alu (
-    input [7:0] a,
-    input [7:0] b,
+    input [15:0] a,
+    input [15:0] b,
     input [3:0] op,
-    output reg [7:0] out,
+    output reg [15:0] out,
     output reg z_flag,
     output reg c_flag,
     output reg n_flag
 );
-    reg [8:0] tmp_result;
+    reg [16:0] tmp_result;
 
     always @(*) begin
-        tmp_result = 9'b0;
-        out = 8'b0;
+        tmp_result = 17'b0;
+        out = 16'b0;
         c_flag = 1'b0;
 
         case (op)
         4'b0000: begin  //ADD
              tmp_result = a+b;
-             out = tmp_result[7:0];
-             c_flag = tmp_result[8];
+             out = tmp_result[15:0];
+             c_flag = tmp_result[16];
         end
 
         4'b0001: begin  //SUB
@@ -28,8 +28,8 @@ module alu (
 
         4'b0010: begin  //INC A
             tmp_result = a+1;
-            out = tmp_result[7:0];
-            c_flag = tmp_result[8];
+            out = tmp_result[15:0];
+            c_flag = tmp_result[16];
         end
 
         4'b0011: begin //DEC A
@@ -54,7 +54,7 @@ module alu (
         end
 
         4'b1000: begin //SHL
-            c_flag = a[7];
+            c_flag = a[15];
             out = a<<1;
         end
 
@@ -64,8 +64,8 @@ module alu (
         end
 
         4'b1010: begin //ROL
-            out = {a[6:0], a[7]};
-            c_flag = a[7];
+            out = {a[14:0], a[15]};
+            c_flag = a[15];
         end
 
         4'b1011: begin //CMP
@@ -78,16 +78,16 @@ module alu (
         end
 
         4'b1101: begin //CLR
-            out = 8'b0;
+            out = 16'b0;
         end
 
         default: begin
-            out = 8'b0;
+            out = 16'b0;
         end
         endcase
 
-        z_flag = (out == 8'b0);
-        n_flag = out[7];
+        z_flag = (out == 16'b0);
+        n_flag = out[15];
         
         if (op == 4'b1011) begin
              z_flag = (a == b);

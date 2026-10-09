@@ -1,8 +1,8 @@
 # Pôvodný test: MVI, MVIB, MOV, NOP
 12AA    ; MVI  r2, 0xAA
 3255    ; MVIB r2, 0x55     -> r2 = 0x55AA
-2520    ; MOV  r5, r2       -> r5[7:0] = 0xAA
+2520    ; MOV  r5, r2       -> r5 = 0x55AA
 110F    ; MVI  r1, 0x0F
 0000    ; NOP
 1333    ; MVI  r3, 0x33
-expect r1=0x000F r2=0x55AA r3=0x0033 r5=0x00AA
+expect r1=0x000F r2=0x55AA r3=0x0033 r5=0x55AA

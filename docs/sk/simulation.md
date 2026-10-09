@@ -11,8 +11,14 @@ Návrh sa overuje simulátorom **Verilator**, testbenche sú napísané v C++.
 
 Súbor: `rtl/alu/sim_main.cpp`
 
-Vyskúša **všetky kombinácie** vstupov: každú operáciu so všetkými hodnotami `a` a `b` (256 × 256)
-a porovná výsledok aj flagy s očakávanou hodnotou vypočítanou v C++.
+Pri 16-bitových operandoch je kombinácií priveľa na to, aby sa vyskúšali všetky (65536 × 65536 na operáciu), preto pre každú operáciu testuje:
+
+1. všetkých 65536 hodnôt `a` s hraničnými hodnotami `b` (`0`, `1`, `0x7F`, `0x80`, `0xFF`, `0x100`, `0x7FFF`, `0x8000`, `0xFFFF`, …),
+2. hraničné hodnoty `a` so všetkými 65536 hodnotami `b`,
+3. milión náhodných dvojíc (s pevným semienkom, takže test je vždy rovnaký).
+
+Spolu je to asi **40 miliónov kontrol**; výsledok aj flagy sa porovnajú s hodnotami vypočítanými v C++.
+Spúšťa sa príkazom `make alu` v `rtl/`.
 
 ## Test celého systému
 
@@ -47,7 +53,7 @@ Program counter a pamäť programu zatiaľ emuluje testbench.
 |---|---|
 | `basic` | MVI, MVIB, MOV, NOP spolu |
 | `mvi_mvib` | 16-bitové konštanty, registre R0 a R15, prepísanie hodnoty |
-| `mov` | MOV kopíruje iba dolný bajt, reťazenie, MOV sám na seba |
+| `mov` | MOV kopíruje celých 16 bitov, reťazenie, MOV sám na seba |
 | `nop_unimplemented` | NOP a zatiaľ neimplementované inštrukcie procesor nezaseknú |
 | `alu_add` | 59 + 49 = 108 |
 | `alu_ops` | SUB, AND, OR, XOR, zmena operácie v R1 medzi inštrukciami |
@@ -55,7 +61,8 @@ Program counter a pamäť programu zatiaľ emuluje testbench.
 | `alu_cmp` | CMP nezapisuje do Rd |
 | `alu_rd_eq_src` | cieľ je ten istý register ako zdroj |
 | `alu_unary` | INC, DEC, NOT, SHL, SHR, ROL, PASS, CLR |
-| `alu_high_byte` | ALU mení iba dolný bajt |
+| `alu_high_byte` | ALU použije aj horné bajty operandov a prepíše celý Rd |
+| `alu_carry16` | prenos / výpožička medzi dolným a horným bajtom, pretečenie 16 bitov |
 | `alu_op_runtime` | ALU zapíše do R1 a tým vyberie ďalšiu operáciu |
 
 ### Spustenie
@@ -65,6 +72,7 @@ V priečinku `rtl/`:
 ```
 make test        # všetky testy, oba režimy pamäte
 make test V=1    # s výpisom po taktoch
+make alu         # samostatný test ALU
 ```
 
-Aktuálny výsledok: **12/12 testov prejde** v oboch režimoch.
+Aktuálny výsledok: **13/13 testov prejde** v oboch režimoch.

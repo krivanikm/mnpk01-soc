@@ -25,9 +25,9 @@ Every instruction is a single 16-bit word:
 |---|---|---|---|---|
 | `0x0` | NOP | `0000 xxxx xxxx xxxx` | nothing, only PC + 1 | 3 |
 | `0x1` | MVI | `0001 rrrr dddd dddd` | `r[7:0] = d` | 3 |
-| `0x2` | MOV | `0010 rrrr ssss xxxx` | `r[7:0] = s[7:0]` | 4 |
+| `0x2` | MOV | `0010 rrrr ssss xxxx` | `r = s` (all 16 bits) | 4 |
 | `0x3` | MVIB | `0011 rrrr dddd dddd` | `r[15:8] = d` | 3 |
-| `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd[7:0] = Ra (operation from R1) Rb` – see [ALU](alu.html) | 4 |
+| `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd = Ra (operation from R1) Rb`, 16-bit – see [ALU](alu.html) | 4 |
 
 Opcodes `0x4` (LOAD), `0x5` (STORE) and `0x6` (JMP) are reserved; until they are implemented they – like any unknown opcode – behave like NOP.
 

@@ -18,7 +18,7 @@ title: Architecture
                                              v      v      |
                                   +---------------+  +-----------+
                                   | Register file |<>|    ALU    |
-                                  |  16 x 16 bit  |  |   8 bit   |
+                                  |  16 x 16 bit  |  |  16 bit   |
                                   +---------------+  +-----------+
 ```
 
@@ -43,17 +43,17 @@ A 16-bit register holding the address of the current instruction.
 
 File: `rtl/registers/register_file.sv`
 
-16 registers of 16 bits each. The data path is 8 bits wide, so registers are written and read
-**byte by byte** – the `high_b` signal selects the high (`[15:8]`) or low (`[7:0]`) byte.
+16 registers of 16 bits each. A register is always **read as a whole 16-bit word**.
+Writing has two enable bits, one per byte, so the control unit can write the low byte (MVI),
+the high byte (MVIB) or the whole word (MOV, ALU).
 
 | Signal | Direction | Meaning |
 |---|---|---|
 | `clk`, `rst_n` | input | clock, asynchronous active-low reset, clears all registers |
 | `addr[3:0]` | input | register number R0 – R15 |
-| `high_b` | input | 1 = high byte, 0 = low byte |
-| `d_in[7:0]` | input | byte to write |
-| `write_en` | input | write on the rising clock edge |
-| `q_out[7:0]` | output | byte read (combinational, valid right after the address changes) |
+| `d_in[15:0]` | input | data to write |
+| `write_en[1:0]` | input | write on the rising clock edge: `01` = low byte `[7:0]`, `10` = high byte `[15:8]`, `11` = whole word |
+| `q_out[15:0]` | output | register read (combinational, valid right after the address changes) |
 | `r1_out[3:0]` | output | `R1[3:0]`, wired straight to the ALU as the operation code |
 
 ## Control unit

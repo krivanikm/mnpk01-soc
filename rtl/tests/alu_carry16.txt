@@ -1,0 +1,14 @@
+# Prenos z dolného do horného bajtu a pretečenie celých 16 bitov
+1100    ; MVI  R1, 0     (ADD)
+12FF    ; MVI  R2, 0xFF
+3212    ; MVIB R2, 0x12  -> R2 = 0x12FF
+1301    ; MVI  R3, 1
+7234    ; ALU  R2, R3, R4 -> 0x12FF + 1 = 0x1300 (prenos z bitu 7 do bitu 8)
+15FF    ; MVI  R5, 0xFF
+35FF    ; MVIB R5, 0xFF  -> R5 = 0xFFFF
+7536    ; ALU  R5, R3, R6 -> 0xFFFF + 1 = 0x0000 (pretečenie 16 bitov)
+1101    ; MVI  R1, 1     (SUB)
+7437    ; ALU  R4, R3, R7 -> 0x1300 - 1 = 0x12FF (požičanie z horného bajtu)
+1234    ; MVI  R2, 0x34  -> R2 = 0x1234
+7428    ; ALU  R4, R2, R8 -> 0x1300 - 0x1234 = 0x00CC
+expect r1=1 r2=0x1234 r3=1 r4=0x1300 r5=0xFFFF r7=0x12FF r8=0x00CC
