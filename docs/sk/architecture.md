@@ -11,10 +11,10 @@ lang: sk
   ----------> |     (BRAM)      | ------------------+
               +-----------------+                   |
                        ^ 16-bit adresa              v
-              +-----------------+          +-----------------+
-              | Program counter | <------- |  Control unit   |
-              +-----------------+   skok   +-----------------+
-                                             |      |      ^
+              +-----------------+          +-----------------+   adresa, dáta  +-----------------+
+              | Program counter | <------- |  Control unit   | <-------------> |  Dátová RAM     |
+              +-----------------+   skok   +-----------------+   LOAD/STORE    | 4K x 16 (BRAM)  |
+                                             |      |      ^                   +-----------------+
                                   riadenie   |      |      | flagy Z/C/N
                                              v      v      |
                                   +---------------+  +-----------+
@@ -61,6 +61,25 @@ horný bajt (MVIB) alebo celé slovo (MOV, ALU).
 | `q_out[15:0]` | výstup | čítaný register (kombinačne, hneď po zmene adresy) |
 | `r1_out[3:0]` | výstup | `R1[3:0]`, ide priamo do ALU ako kód operácie |
 
+## Dátová RAM
+
+Súbor: `rtl/memory/data_ram.sv`
+
+4096 slov po 16 bitoch, realizovaných v blokovej pamäti FPGA (na Tang Nano 9K 4 bloky BSRAM).
+Je **synchrónna**: zápis aj čítanie prebieha na nábežnej hrane hodín, prečítané dáta sú teda platné takt po adrese.
+Pole pamäte zámerne nemá reset – s resetom by ho syntéza nevedela namapovať na blokovú pamäť
+a použila by namiesto nej 65 536 klopných obvodov.
+
+| Signál | Smer | Význam |
+|---|---|---|
+| `clk` | vstup | hodiny |
+| `addr[11:0]` | vstup | adresa slova (dolných 12 bitov adresy z registra) |
+| `din[15:0]` | vstup | zapisované dáta |
+| `we` | vstup | 1 = na nábežnej hrane zapíš `din` na `addr` |
+| `dout[15:0]` | výstup | dáta z `addr`, platné o takt neskôr |
+
+Horné bity adresy `[15:12]` sa zatiaľ nepoužívajú; sú vyhradené pre vstup/výstup mapovaný do pamäte (pozri [Pamäť](isa.html#pamäť)).
+
 ## Control unit
 
 Súbor: `rtl/control-unit/controlunit.sv`
@@ -84,6 +103,13 @@ S_FETCH -> S_DECODE -> stavy vykonania -> S_FETCH
 | `S_JMP` | prečíta sa cieľový register; ak platí podmienka: `pc_addr` = cieľ, `pc_load` = 1 |
 | `S_JMP_WAIT1` | PC na konci taktu prevezme cieľovú adresu |
 | `S_JMP_WAIT2` | pamäť na konci taktu zachytí cieľovú adresu |
+| `S_STORE_ADDR` | adresový register Ra sa prečíta do `mem_addr`, vyberie sa dátový register Rs |
+| `S_STORE_DATA` | Rs ide do `mem_wdata`, `mem_we` = 1 – RAM zapíše na konci ďalšieho taktu |
+| `S_LOAD_ADDR` | adresový register Ra sa prečíta do `mem_addr` |
+| `S_LOAD_WAIT` | RAM na konci taktu zachytí adresu |
+| `S_LOAD_WRITE` | dáta z RAM sa zapíšu do Rd |
+
+Register stavu má 5 bitov (stavov je 16, ďalší by sa do 4 bitov už nezmestil).
 
 ### Pravidlo časovania
 
@@ -119,6 +145,21 @@ Skok, ktorý sa **nevykoná**, ide z `S_JMP` rovno späť do `S_FETCH` – PC u�
 takže trvá 3 takty ako ktorákoľvek iná krátka inštrukcia.
 
 Podmienku vyhodnocuje kombinačný signál `cond_ok` z `ir[11:8]` a uložených flagov.
+
+### Časovanie LOAD / STORE
+
+Register file má jeden čítací port, preto STORE číta svoje dva registre (adresu a dáta) postupne.
+LOAD musí počkať jeden takt na synchrónnu RAM:
+
+| Takt | STORE | LOAD |
+|---|---|---|
+| 1 | `S_FETCH` | `S_FETCH` |
+| 2 | `S_DECODE` – adresa registra ← Ra | `S_DECODE` – adresa registra ← Ra |
+| 3 | `S_STORE_ADDR` – `mem_addr` ← Ra, adresa registra ← Rs | `S_LOAD_ADDR` – `mem_addr` ← Ra |
+| 4 | `S_STORE_DATA` – `mem_wdata` ← Rs, `mem_we` = 1 | `S_LOAD_WAIT` – RAM zachytí adresu |
+| 5 | (ďalší `S_FETCH`, RAM zapíše na konci taktu) | `S_LOAD_WRITE` – Rd ← `mem_rdata` |
+
+STORE trvá **4 takty**, LOAD **5 taktov**.
 
 ## Schémy
 

@@ -36,6 +36,7 @@ expect r2=59 r3=49 r4=108
 The testbench loads the program, runs it and at the end compares the **actual contents of all 16 registers**
 with the expected values. A register that is not listed must be 0, so a write to a wrong register is caught too.
 It also checks the final PC and stops a program that gets stuck.
+A test can also check the data RAM, e.g. `expect mem[0x10]=42` (only the listed addresses are checked).
 
 Every test runs in **both memory modes**:
 
@@ -53,7 +54,7 @@ The program counter is real hardware (`programcounter.v` in `system_top`); the t
 | `basic` | MVI, MVIB, MOV, NOP together |
 | `mvi_mvib` | 16-bit constants, registers R0 and R15, overwriting a value |
 | `mov` | MOV copies all 16 bits, chaining, MOV to itself |
-| `nop_unimplemented` | NOP and not yet implemented instructions (LOAD, STORE) do not hang the CPU |
+| `nop_unimplemented` | NOP and unknown opcodes (`0x8` – `0xF`) do not hang the CPU |
 | `alu_add` | 59 + 49 = 108 |
 | `alu_ops` | SUB, AND, OR, XOR, operation in R1 changed between instructions |
 | `alu_sub_borrow` | subtraction below zero, subtraction to zero |
@@ -66,6 +67,9 @@ The program counter is real hardware (`programcounter.v` in `system_top`); the t
 | `jmp_always` | unconditional jump forwards and backwards, skipped instructions are not executed |
 | `jmp_cond` | all 6 conditions after CMP, each one taken and not taken; an unknown condition never jumps |
 | `jmp_loop` | a loop: 6 × 7 = 42 by repeated addition, JNZ on the Z flag from SUB |
+| `mem_store_load` | STORE and LOAD back, the same register as address and data, LOAD into the address register |
+| `mem_back_to_back` | LOAD right after STORE and vice versa, swapping two values in memory |
+| `mem_array` | an array of 5 numbers in RAM summed in a loop (LOAD + JMP) = 150 |
 
 ### Running
 
@@ -77,4 +81,4 @@ make test V=1    # with a cycle-by-cycle trace
 make alu         # standalone ALU test
 ```
 
-Current result: **16/16 tests pass** in both modes.
+Current result: **19/19 tests pass** in both modes.

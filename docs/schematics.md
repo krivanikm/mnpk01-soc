@@ -12,7 +12,7 @@ Each schematic is an SVG, so it stays sharp at any zoom.
 
 <figure class="schem">
   <div class="sv" data-src="{{ '/assets/schematics/system_top.svg' | relative_url }}" data-alt="system_top schematic"></div>
-  <figcaption><b>system_top</b> – how the control unit, register file, ALU and program counter are connected. Note <code>r1_out</code> going straight into the <code>op</code> input of the ALU.</figcaption>
+  <figcaption><b>system_top</b> – how the control unit, register file, ALU, program counter and data RAM are connected. Note <code>r1_out</code> going straight into the <code>op</code> input of the ALU.</figcaption>
 </figure>
 
 <figure class="schem">
@@ -36,6 +36,11 @@ Each schematic is an SVG, so it stays sharp at any zoom.
 </figure>
 
 <figure class="schem">
+  <div class="sv" data-src="{{ '/assets/schematics/data_ram.svg' | relative_url }}" data-alt="data RAM schematic"></div>
+  <figcaption><b>Data RAM</b> – a memory array with a write port and a registered read. The synthesizer maps it to FPGA block RAM.</figcaption>
+</figure>
+
+<figure class="schem">
   <div class="sv" data-src="{{ '/assets/schematics/cpu_full.svg' | relative_url }}" data-alt="whole CPU schematic"></div>
   <figcaption><b>Whole CPU</b> – everything above flattened into a single diagram. Very large – use fullscreen and zoom in.</figcaption>
 </figure>
@@ -46,10 +51,12 @@ Synthesis for the Gowin GW1NR-9 (Tang Nano 9K) with Yosys `synth_gowin`:
 
 | Resource | CPU | Tang Nano 9K | Usage |
 |---|---|---|---|
-| Flip-flops | 367 | 6 480 | ~6 % |
-| LUTs | 1 405 | 8 640 | ~16 % |
+| Flip-flops | 396 | 6 480 | ~6 % |
+| LUTs | 1 197 | 8 640 | ~14 % |
+| Block RAM (BSRAM) | 4 | 26 | ~15 % |
 
 Most of it is the register file: 256 bits of state and a 16-to-1 multiplexer 16 bits wide.
-Most of the ~920 single-input LUTs are only constant helper inputs for the wide multiplexers that Yosys adds for Gowin; the real logic (LUT2 – LUT4) is about 480 LUTs.
+Most of the ~670 single-input LUTs are only constant helper inputs for the wide multiplexers that Yosys adds for Gowin; the real logic (LUT2 – LUT4) is about 530 LUTs.
+The data RAM (4096 × 16 bits) takes 4 block RAMs and no flip-flops.
 
 <script src="{{ '/assets/js/schem.js' | relative_url }}?v=1.3"></script>

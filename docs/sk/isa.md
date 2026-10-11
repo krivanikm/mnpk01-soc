@@ -28,10 +28,12 @@ Každá inštrukcia je jedno 16-bitové slovo:
 | `0x1` | MVI | `0001 rrrr dddd dddd` | `r[7:0] = d` | 3 |
 | `0x2` | MOV | `0010 rrrr ssss xxxx` | `r = s` (celých 16 bitov) | 4 |
 | `0x3` | MVIB | `0011 rrrr dddd dddd` | `r[15:8] = d` | 3 |
+| `0x4` | LOAD | `0100 dddd aaaa xxxx` | `Rd = RAM[Ra]` | 5 |
+| `0x5` | STORE | `0101 ssss aaaa xxxx` | `RAM[Ra] = Rs` | 4 |
 | `0x6` | JMP | `0110 cccc rrrr xxxx` | ak platí podmienka `cccc`: `PC = Rr` | 5 so skokom / 3 bez |
 | `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd = Ra (operácia z R1) Rb`, 16-bitovo – pozri [ALU](alu.html) | 4 |
 
-Opcode `0x4` (LOAD) a `0x5` (STORE) sú rezervované; kým nie sú implementované, správajú sa – rovnako ako neznámy opcode – ako NOP.
+Opcode `0x8` – `0xF` sú voľné pre budúce inštrukcie; dovtedy sa správajú ako NOP.
 
 ### 16-bitová konštanta
 
@@ -83,6 +85,51 @@ JNZ  R14            ; 0x62E0   opakuj, kým R4 != 0
                     ;          R2 = 42
 ```
 
+## Pamäť
+
+```
+LOAD   0100 dddd aaaa xxxx      Rd = RAM[Ra]
+STORE  0101 ssss aaaa xxxx      RAM[Ra] = Rs
+```
+
+K dátovej pamäti pristupujú iba LOAD a STORE – ALU pracuje len s registrami (**load/store architektúra**,
+typická pre RISC procesory). Adresa sa berie z registra **Ra**.
+
+Pamäť je **adresovaná po slovách**: na každej adrese je jedno 16-bitové slovo.
+
+| Adresy | Obsah |
+|---|---|
+| `0x0000` – `0x0FFF` | RAM, 4096 slov |
+| `0xFF00` – `0xFFFF` | plánované: vstup/výstup (LED, tlačidlá, UART) – STORE na tieto adresy bude ovládať hardvér |
+
+Zatiaľ sa používa iba dolných 12 bitov adresy, vyššie adresy sa preto „zabalia“ späť do RAM.
+
+### Príklad: súčet poľa
+
+```
+; pole 5 čísel na adresách 0x20 – 0x24
+MVI  R2, 0x20       ; 0x1220   ukazovateľ
+MVI  R4, 5          ; 0x1405   počet prvkov
+MVI  R5, 1          ; 0x1501
+MVI  R14, 4         ; 0x1E04   adresa začiatku slučky
+slučka:
+LOAD R7, [R2]       ; 0x4720   R7 = prvok
+MVI  R1, ADD        ; 0x1100
+ALU  R6, R7, R6     ; 0x7676   súčet += prvok
+ALU  R2, R5, R2     ; 0x7252   ukazovateľ + 1
+MVI  R1, SUB        ; 0x1101
+ALU  R4, R5, R4     ; 0x7454   počet - 1
+JNZ  R14            ; 0x62E0
+```
+
 ## Plánované inštrukcie
 
-Práca s pamäťou (`0x4` LOAD, `0x5` STORE) a vstup/výstup sú vo fáze návrhu.
+| Inštrukcia | Nápad | Prečo |
+|---|---|---|
+| HLT | zastaví procesor | programy aj testy majú jasný koniec |
+| BR | relatívny skok `PC = PC + offset` | netreba vopred nahrávať cieľovú adresu do registra |
+| ADDI | `Rd = Rd + konštanta` | počítadlá a ukazovatele jednou inštrukciou |
+| JAL | `Rd = PC`, `PC = Rt` | podprogramy (návrat je obyčajný `JMP Rd`) |
+| ADC / SBC | ALU operácie s prenosom | 32-bitová aritmetika cez dva registre |
+
+Vstup/výstup bude mapovaný do pamäte, takže nepotrebuje nové inštrukcie.

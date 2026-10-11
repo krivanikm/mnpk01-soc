@@ -27,10 +27,12 @@ Every instruction is a single 16-bit word:
 | `0x1` | MVI | `0001 rrrr dddd dddd` | `r[7:0] = d` | 3 |
 | `0x2` | MOV | `0010 rrrr ssss xxxx` | `r = s` (all 16 bits) | 4 |
 | `0x3` | MVIB | `0011 rrrr dddd dddd` | `r[15:8] = d` | 3 |
+| `0x4` | LOAD | `0100 dddd aaaa xxxx` | `Rd = RAM[Ra]` | 5 |
+| `0x5` | STORE | `0101 ssss aaaa xxxx` | `RAM[Ra] = Rs` | 4 |
 | `0x6` | JMP | `0110 cccc rrrr xxxx` | if condition `cccc` holds: `PC = Rr` | 5 taken / 3 not taken |
 | `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd = Ra (operation from R1) Rb`, 16-bit – see [ALU](alu.html) | 4 |
 
-Opcodes `0x4` (LOAD) and `0x5` (STORE) are reserved; until they are implemented they – like any unknown opcode – behave like NOP.
+Opcodes `0x8` – `0xF` are free for future instructions; until then they behave like NOP.
 
 ### 16-bit constant
 
@@ -82,6 +84,51 @@ JNZ  R14            ; 0x62E0   repeat while R4 != 0
                     ;          R2 = 42
 ```
 
+## Memory
+
+```
+LOAD   0100 dddd aaaa xxxx      Rd = RAM[Ra]
+STORE  0101 ssss aaaa xxxx      RAM[Ra] = Rs
+```
+
+Only LOAD and STORE access the data memory – the ALU works with registers only (a **load/store architecture**,
+typical for RISC processors). The address is taken from register **Ra**.
+
+Memory is **word-addressed**: every address holds one 16-bit word.
+
+| Addresses | Contents |
+|---|---|
+| `0x0000` – `0x0FFF` | RAM, 4096 words |
+| `0xFF00` – `0xFFFF` | planned: input/output (LEDs, buttons, UART) – a STORE to these addresses will control the hardware |
+
+For now only the low 12 bits of the address are used, so higher addresses wrap around into the RAM.
+
+### Example: sum of an array
+
+```
+; array of 5 numbers at 0x20 – 0x24
+MVI  R2, 0x20       ; 0x1220   pointer
+MVI  R4, 5          ; 0x1405   number of items
+MVI  R5, 1          ; 0x1501
+MVI  R14, 4         ; 0x1E04   address of the loop
+loop:
+LOAD R7, [R2]       ; 0x4720   R7 = item
+MVI  R1, ADD        ; 0x1100
+ALU  R6, R7, R6     ; 0x7676   sum += item
+ALU  R2, R5, R2     ; 0x7252   pointer + 1
+MVI  R1, SUB        ; 0x1101
+ALU  R4, R5, R4     ; 0x7454   count - 1
+JNZ  R14            ; 0x62E0
+```
+
 ## Planned instructions
 
-Memory access (`0x4` LOAD, `0x5` STORE) and input/output are being designed.
+| Instruction | Idea | Why |
+|---|---|---|
+| HLT | stop the processor | programs and tests get a clear end |
+| BR | relative jump `PC = PC + offset` | no need to load the target address into a register first |
+| ADDI | `Rd = Rd + constant` | counters and pointers in one instruction |
+| JAL | `Rd = PC`, `PC = Rt` | subroutines (the return is a plain `JMP Rd`) |
+| ADC / SBC | ALU operations with carry | 32-bit arithmetic over two registers |
+
+Input/output will be memory-mapped, so it needs no new instructions.

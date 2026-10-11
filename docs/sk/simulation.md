@@ -37,6 +37,7 @@ expect r2=59 r3=49 r4=108
 Testbench program nahrá, spustí a na konci porovná **skutočný obsah všetkých 16 registrov**
 s očakávanými hodnotami. Register, ktorý nie je uvedený, musí byť 0 – odhalí sa tak aj zápis do zlého registra.
 Kontroluje aj konečnú hodnotu PC a zastaví program, ktorý sa zasekne.
+Test môže skontrolovať aj dátovú RAM, napr. `expect mem[0x10]=42` (kontrolujú sa iba uvedené adresy).
 
 Každý test sa spustí v **oboch režimoch pamäte**:
 
@@ -54,7 +55,7 @@ Program counter je skutočný hardvér (`programcounter.v` v `system_top`); test
 | `basic` | MVI, MVIB, MOV, NOP spolu |
 | `mvi_mvib` | 16-bitové konštanty, registre R0 a R15, prepísanie hodnoty |
 | `mov` | MOV kopíruje celých 16 bitov, reťazenie, MOV sám na seba |
-| `nop_unimplemented` | NOP a zatiaľ neimplementované inštrukcie (LOAD, STORE) procesor nezaseknú |
+| `nop_unimplemented` | NOP a neznáme opcode (`0x8` – `0xF`) procesor nezaseknú |
 | `alu_add` | 59 + 49 = 108 |
 | `alu_ops` | SUB, AND, OR, XOR, zmena operácie v R1 medzi inštrukciami |
 | `alu_sub_borrow` | odčítanie pod nulu, odčítanie do nuly |
@@ -67,6 +68,9 @@ Program counter je skutočný hardvér (`programcounter.v` v `system_top`); test
 | `jmp_always` | nepodmienený skok dopredu aj dozadu, preskočené inštrukcie sa nevykonajú |
 | `jmp_cond` | všetkých 6 podmienok po CMP, každá raz skočí a raz nie; neznáma podmienka neskočí nikdy |
 | `jmp_loop` | slučka: 6 × 7 = 42 opakovaným sčítaním, JNZ podľa flagu Z zo SUB |
+| `mem_store_load` | STORE a LOAD späť, ten istý register ako adresa aj dáta, LOAD do adresového registra |
+| `mem_back_to_back` | LOAD hneď po STORE a naopak, výmena dvoch hodnôt v pamäti |
+| `mem_array` | pole 5 čísel v RAM sčítané v slučke (LOAD + JMP) = 150 |
 
 ### Spustenie
 
@@ -78,4 +82,4 @@ make test V=1    # s výpisom po taktoch
 make alu         # samostatný test ALU
 ```
 
-Aktuálny výsledok: **16/16 testov prejde** v oboch režimoch.
+Aktuálny výsledok: **19/19 testov prejde** v oboch režimoch.

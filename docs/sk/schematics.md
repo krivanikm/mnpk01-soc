@@ -13,7 +13,7 @@ Každá schéma je SVG, takže ostane ostrá pri akomkoľvek priblížení.
 
 <figure class="schem">
   <div class="sv" data-src="{{ '/assets/schematics/system_top.svg' | relative_url }}" data-alt="schéma system_top"></div>
-  <figcaption><b>system_top</b> – ako sú prepojené control unit, register file, ALU a program counter. Všimni si <code>r1_out</code>, ktorý ide priamo do vstupu <code>op</code> ALU.</figcaption>
+  <figcaption><b>system_top</b> – ako sú prepojené control unit, register file, ALU, program counter a dátová RAM. Všimni si <code>r1_out</code>, ktorý ide priamo do vstupu <code>op</code> ALU.</figcaption>
 </figure>
 
 <figure class="schem">
@@ -37,6 +37,11 @@ Každá schéma je SVG, takže ostane ostrá pri akomkoľvek priblížení.
 </figure>
 
 <figure class="schem">
+  <div class="sv" data-src="{{ '/assets/schematics/data_ram.svg' | relative_url }}" data-alt="schéma dátovej RAM"></div>
+  <figcaption><b>Dátová RAM</b> – pole pamäte so zápisovým portom a registrovaným čítaním. Syntéza ho namapuje na blokovú pamäť FPGA.</figcaption>
+</figure>
+
+<figure class="schem">
   <div class="sv" data-src="{{ '/assets/schematics/cpu_full.svg' | relative_url }}" data-alt="schéma celého procesora"></div>
   <figcaption><b>Celý procesor</b> – všetko vyššie spojené do jednej schémy. Je veľmi veľká – daj ju na celú obrazovku a priblíž si ju.</figcaption>
 </figure>
@@ -47,10 +52,12 @@ Syntéza pre Gowin GW1NR-9 (Tang Nano 9K) nástrojom Yosys `synth_gowin`:
 
 | Zdroj | Procesor | Tang Nano 9K | Využitie |
 |---|---|---|---|
-| Klopné obvody | 367 | 6 480 | ~6 % |
-| LUT | 1 405 | 8 640 | ~16 % |
+| Klopné obvody | 396 | 6 480 | ~6 % |
+| LUT | 1 197 | 8 640 | ~14 % |
+| Bloková pamäť (BSRAM) | 4 | 26 | ~15 % |
 
 Väčšinu zaberá register file: 256 bitov stavu a 16-bitový multiplexer 1 zo 16.
-Väčšina z ~920 jednovstupových LUT sú iba konštantné pomocné vstupy pre široké multiplexery, ktoré Yosys pre Gowin pridáva; skutočnej logiky (LUT2 – LUT4) je asi 480 LUT.
+Väčšina z ~670 jednovstupových LUT sú iba konštantné pomocné vstupy pre široké multiplexery, ktoré Yosys pre Gowin pridáva; skutočnej logiky (LUT2 – LUT4) je asi 530 LUT.
+Dátová RAM (4096 × 16 bitov) zaberá 4 bloky pamäte a žiadne klopné obvody.
 
 <script src="{{ '/assets/js/schem.js' | relative_url }}?v=1.3"></script>

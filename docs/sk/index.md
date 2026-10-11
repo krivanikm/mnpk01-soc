@@ -17,6 +17,7 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | Šírka adresy | 16 bitov |
 | Šírka inštrukcie | 16 bitov (1 inštrukcia = 1 slovo) |
 | Registre | 16 × 16 bitov (R0 – R15) |
+| Dátová pamäť | RAM 4096 × 16 bitov (bloková pamäť FPGA), adresovaná po slovách |
 | Architektúra | Harvardská – oddelená pamäť programu a dát |
 | Program | BRAM vo FPGA (plánované: pri štarte načítaná z externej SPI flash) |
 
@@ -27,10 +28,11 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | ALU | hotová, 16-bitová, 14 operácií, ~40 miliónov kontrol (hraničné a náhodné hodnoty) |
 | Register file | hotový |
 | Program counter | hotový, zapojený v `system_top` |
-| Control unit | rozpracovaná – fungujú NOP, MVI, MVIB, MOV, ALU a JMP, aj s BRAM vo FPGA |
+| Control unit | fungujú všetky 8 inštrukcie (NOP, MVI, MOV, MVIB, LOAD, STORE, JMP, ALU), aj s BRAM vo FPGA |
 | ALU inštrukcia (cez register R1) | hotová |
 | Skoky (JMP + 6 podmienok) | hotové – fungujú slučky aj rozhodovanie |
-| Automatické testy | 16/16 prechádza v oboch režimoch pamäte |
-| LOAD/STORE, RAM, I/O, assembler | plánované |
-| Syntéza (Yosys) | návrh sa zmestí do Tang Nano 9K, zaberie ~16 % LUT, pozri [Schémy](schematics.html) |
+| LOAD/STORE + dátová RAM | hotové – fungujú polia v pamäti |
+| Automatické testy | 19/19 prechádza v oboch režimoch pamäte |
+| I/O (LED, UART), nové inštrukcie, assembler | plánované |
+| Syntéza (Yosys) | návrh sa zmestí do Tang Nano 9K, zaberie ~14 % LUT a 4 z 26 blokov pamäte, pozri [Schémy](schematics.html) |
 | FPGA, plošný spoj | plánované |

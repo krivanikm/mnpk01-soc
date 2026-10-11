@@ -62,7 +62,7 @@ graph TD
     class PC routing;
 ```
 
-> Data memory (RAM) and I/O in the map above are still being designed – see the status below.
+> I/O in the map above is still being designed – see the status below.
 
 ---
 
@@ -72,11 +72,12 @@ graph TD
 |---|---|
 | ALU (16-bit, 14 operations) | ✅ done – ~40 million checks |
 | Register file (16 × 16-bit) | ✅ done |
-| Control unit: NOP, MVI, MVIB, MOV, ALU, JMP | ✅ done – 16/16 system tests, also with synchronous FPGA BRAM |
+| Control unit: all 8 instructions | ✅ done – 19/19 system tests, also with synchronous FPGA BRAM |
 | Program counter | ✅ done, connected in `system_top` |
 | JMP + 6 conditional jumps | ✅ done – loops and decisions |
-| LOAD/STORE, RAM | 🔨 next |
-| I/O, assembler | 📋 planned |
+| LOAD/STORE + 4K × 16 data RAM | ✅ done |
+| I/O (LEDs, UART), new instructions (HLT, BR, ADDI, JAL) | 🔨 next |
+| Assembler | 📋 planned |
 | FPGA (Tang Nano 9K), PCB | 📋 planned |
 
 ## 🚀 Running the simulation
@@ -98,6 +99,7 @@ rtl/
   alu/              ALU + its standalone test
   control-unit/     control unit (FSM)
   registers/        register file
+  memory/           data RAM
   program-counter/  program counter
   tests/            system test programs (*.txt)
   system_top.sv     top level

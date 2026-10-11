@@ -21,3 +21,7 @@ docs/_site/
 
 # Yosys
 abc.history
+
+# dočasné súbory z make schematics
+docs/assets/schematics/*.dot
+docs/assets/schematics/*.new
