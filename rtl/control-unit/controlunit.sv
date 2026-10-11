@@ -25,10 +25,14 @@
         output reg  [1:0]  write_reg_en,    // [1] = horný bajt, [0] = dolný bajt, 2'b11 = celé slovo
         output reg  [3:0]  reg_addr,
         output reg  [15:0] reg_data,        // dáta pre zápis do registra
-        output wire [3:0]  state_out
+        output wire [4:0]  state_out,
+        output reg  [15:0] mem_addr,
+        output reg  [15:0] mem_wdata,
+        output reg mem_we,
+        input wire [15:0] mem_rdata
     );
 
-        typedef enum reg [3:0] {
+        typedef enum reg [4:0] {
         S_FETCH,
         S_DECODE,
         S_NOP,
@@ -43,7 +47,14 @@
 
         S_JMP,
         S_JMP_WAIT1,
-        S_JMP_WAIT2
+        S_JMP_WAIT2,
+
+        S_STORE_ADDR,
+        S_STORE_DATA,
+
+        S_LOAD_ADDR,
+        S_LOAD_WAIT,
+        S_LOAD_WRITE
 
         }state_t;
 
@@ -85,12 +96,16 @@
                 alu_a               <= 16'h0000;
                 pc_load             <= 1'b0;
                 pc_addr             <= 16'h0;
+                mem_addr            <= 16'h0;
+                mem_wdata           <= 16'h0;
+                mem_we              <= 1'b0;
             end else begin
                 // predvolené hodnoty - pulzné signály trvajú 1 takt
                 pc_inc              <= 1'b0;
                 write_reg_en        <= 2'b00;
                 pc_load             <= 1'b0;
                 pc_addr             <= 16'h0;
+                mem_we <= 1'b0;
 
                 case (state)
                     S_FETCH: begin
@@ -112,8 +127,14 @@
                                 reg_addr <= ir[11:8];
                                 state <= S_ALU_A;
                              end
-                            `OP_LOAD: state <= S_NOP; 
-                            `OP_STORE: state <= S_NOP;
+                            `OP_LOAD:begin
+                                reg_addr <= ir[7:4]; 
+                                state <= S_LOAD_ADDR;
+                            end 
+                            `OP_STORE: begin
+                                reg_addr <= ir[7:4];
+                                state <= S_STORE_ADDR;
+                            end
                             `OP_JMP:begin 
                                 state <= S_JMP;
                                 reg_addr <= ir[7:4];
@@ -180,6 +201,32 @@
                      S_JMP_WAIT2:begin
                         state <= S_FETCH;
                      end
+                     S_STORE_ADDR: begin 
+                        mem_addr <= reg_read_data;
+                        reg_addr <= ir[11:8];
+                        state <= S_STORE_DATA;
+                     end
+                     S_STORE_DATA: begin
+                        mem_wdata <= reg_read_data;
+                        mem_we <= 1;
+                        state <= S_FETCH;
+                     end
+                     S_LOAD_ADDR: begin 
+                        mem_addr <= reg_read_data;
+                        state <= S_LOAD_WAIT;
+                     end
+                     S_LOAD_WAIT: begin 
+                        state<= S_LOAD_WRITE;
+                     end
+                     S_LOAD_WRITE: begin 
+                        reg_addr <= ir[11:8];
+                        reg_data <= mem_rdata;
+                        write_reg_en <= 2'b11;
+                        state <= S_FETCH;
+                     end
+
+            
+
 
 
 

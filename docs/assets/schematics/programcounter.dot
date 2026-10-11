@@ -1,0 +1,30 @@
+digraph "programcounter" {
+label="programcounter";
+rankdir="LR";
+remincross=true;
+n4 [ shape=octagon, label="clk", color="black", fontcolor="black"];
+n5 [ shape=octagon, label="d_in", color="black", fontcolor="black"];
+n6 [ shape=octagon, label="pc", color="black", fontcolor="black"];
+n7 [ shape=octagon, label="pc_inc", color="black", fontcolor="black"];
+n8 [ shape=octagon, label="pc_load", color="black", fontcolor="black"];
+n9 [ shape=octagon, label="rst", color="black", fontcolor="black"];
+{ rank="source"; n4; n5; n7; n8; n9;}
+{ rank="sink"; n6;}
+v0 [ label="1'1" ];
+c13 [ shape=record, label="{{<p10> A|<p11> B}|$49\n$add|{<p12> Y}}",  ];
+c18 [ shape=record, label="{{<p14> ARST|<p15> CLK|<p16> D}|$66\n$adff|{<p17> Q}}",  ];
+c20 [ shape=record, label="{{<p10> A|<p11> B|<p19> S}|$59\n$mux|{<p12> Y}}",  ];
+c21 [ shape=record, label="{{<p10> A|<p11> B|<p19> S}|$62\n$mux|{<p12> Y}}",  ];
+c21:p12:e -> c18:p16:w [color="black", fontcolor="black", style="setlinewidth(3)", label="<16>"];
+c13:p12:e -> c21:p11:w [color="black", fontcolor="black", style="setlinewidth(3)", label="<16>"];
+c20:p12:e -> c21:p10:w [color="black", fontcolor="black", style="setlinewidth(3)", label="<16>"];
+n4:e -> c18:p15:w [color="black", fontcolor="black", label=""];
+n5:e -> c20:p11:w [color="black", fontcolor="black", style="setlinewidth(3)", label="<16>"];
+c18:p17:e -> n6:w [color="black", fontcolor="black", style="setlinewidth(3)", label="<16>"];
+n6:e -> c13:p10:w [color="black", fontcolor="black", style="setlinewidth(3)", label="<16>"];
+n6:e -> c20:p10:w [color="black", fontcolor="black", style="setlinewidth(3)", label="<16>"];
+n7:e -> c21:p19:w [color="black", fontcolor="black", label=""];
+n8:e -> c20:p19:w [color="black", fontcolor="black", label=""];
+n9:e -> c18:p14:w [color="black", fontcolor="black", label=""];
+v0:e -> c13:p11:w [color="black", fontcolor="black", label=""];
+}

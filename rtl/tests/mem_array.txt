@@ -1,0 +1,28 @@
+# Pole v pamäti: zapíše 10, 20, 30, 40, 50 a v slučke ich sčíta (LOAD + JMP) -> 150
+1220    ;  0  MVI R2, 0x20
+130A    ;  1  MVI R3, 10
+5320    ;  2  STORE R3, [R2]
+1221    ;  3  MVI R2, 0x21
+1314    ;  4  MVI R3, 20
+5320    ;  5  STORE R3, [R2]
+1222    ;  6  MVI R2, 0x22
+131E    ;  7  MVI R3, 30
+5320    ;  8  STORE R3, [R2]
+1223    ;  9  MVI R2, 0x23
+1328    ; 10  MVI R3, 40
+5320    ; 11  STORE R3, [R2]
+1224    ; 12  MVI R2, 0x24
+1332    ; 13  MVI R3, 50
+5320    ; 14  STORE R3, [R2]
+1220    ; 15  MVI R2, 0x20        ukazovateľ na začiatok poľa
+1405    ; 16  MVI R4, 5           počet prvkov
+1501    ; 17  MVI R5, 1
+1E13    ; 18  MVI R14, 19         adresa slučky
+4720    ; 19  slučka: LOAD R7, [R2]
+1100    ; 20  MVI R1, ADD
+7676    ; 21  ALU R6, R7, R6      súčet += prvok
+7252    ; 22  ALU R2, R5, R2      ukazovateľ + 1
+1101    ; 23  MVI R1, SUB
+7454    ; 24  ALU R4, R5, R4      počet - 1
+62E0    ; 25  JNZ R14
+expect r1=1 r2=0x25 r3=50 r4=0 r5=1 r6=150 r7=50 r14=19 mem[0x20]=10 mem[0x21]=20 mem[0x22]=30 mem[0x23]=40 mem[0x24]=50

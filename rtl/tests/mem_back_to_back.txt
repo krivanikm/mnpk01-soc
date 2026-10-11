@@ -1,0 +1,14 @@
+# LOAD hneď po STORE a naopak, výmena dvoch hodnôt v pamäti
+1210    ;  0  MVI R2, 0x10
+1311    ;  1  MVI R3, 0x11
+1AAA    ;  2  MVI R10, 0xAA
+1BBB    ;  3  MVI R11, 0xBB
+5A20    ;  4  STORE R10, [R2]     mem[0x10] = 0xAA
+5B30    ;  5  STORE R11, [R3]     mem[0x11] = 0xBB
+4420    ;  6  LOAD  R4, [R2]      R4 = 0xAA (hneď po STORE)
+4530    ;  7  LOAD  R5, [R3]      R5 = 0xBB
+5430    ;  8  STORE R4, [R3]      mem[0x11] = 0xAA (hneď po LOAD)
+5520    ;  9  STORE R5, [R2]      mem[0x10] = 0xBB
+4620    ; 10  LOAD  R6, [R2]      R6 = 0xBB
+4730    ; 11  LOAD  R7, [R3]      R7 = 0xAA
+expect r2=0x10 r3=0x11 r4=0xAA r5=0xBB r6=0xBB r7=0xAA r10=0xAA r11=0xBB mem[0x10]=0xBB mem[0x11]=0xAA

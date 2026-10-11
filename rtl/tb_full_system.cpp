@@ -28,12 +28,14 @@
 
 static const int MAX_CYCLES = 10000;   // ochrana proti zaseknutiu / nekonečnej slučke
 static const int S_FETCH = 0;          // číslo stavu S_FETCH v controlunit.sv (prvý v enum)
+static const int RAM_WORDS = 4096;     // veľkosť data_ram (adresa [11:0])
 
 struct Test {
     std::string name;
     std::vector<uint16_t> rom;
     uint16_t expect_reg[16] = {0};
     int expect_pc = -1;                 // -1 = koniec programu (za poslednou inštrukciou)
+    std::vector<std::pair<int, uint16_t>> expect_mem;   // mem[adresa]=hodnota (kontrolujú sa len uvedené)
 };
 
 // --- načítanie testu zo súboru ---------------------------------------------
@@ -75,8 +77,12 @@ static bool load_test(const char* path, Test& t) {
                 }
                 std::string key = item.substr(0, eq);
                 long r;
+                long a;
                 if (key == "pc") {
                     t.expect_pc = (int)val;
+                } else if (key.size() > 5 && key.compare(0, 4, "mem[") == 0 && key.back() == ']'
+                           && parse_number(key.substr(4, key.size() - 5), a) && a >= 0 && a < RAM_WORDS) {
+                    t.expect_mem.push_back({(int)a, (uint16_t)val});
                 } else if ((key[0] == 'r' || key[0] == 'R') && parse_number(key.substr(1), r) && r >= 0 && r < 16) {
                     t.expect_reg[r] = (uint16_t)val;
                 } else {
@@ -165,6 +171,16 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
         uint16_t got = regfile[r];
         if (got != t.expect_reg[r]) {
             std::printf("  [%s] CHYBA: r%-2d = 0x%04X, očakávané 0x%04X\n", mode, r, got, t.expect_reg[r]);
+            ok = false;
+        }
+    }
+
+    // obsah RAM (data_ram ram_inst)
+    auto& ram = top->rootp->system_top__DOT__ram_inst__DOT__mem;
+    for (auto& m : t.expect_mem) {
+        uint16_t got = ram[m.first];
+        if (got != m.second) {
+            std::printf("  [%s] CHYBA: mem[0x%03X] = 0x%04X, očakávané 0x%04X\n", mode, m.first, got, m.second);
             ok = false;
         }
     }

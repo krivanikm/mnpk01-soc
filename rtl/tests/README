@@ -4,6 +4,7 @@ FORMÁT TESTU (jeden súbor = jeden program)
   3255            ; komentár začína ; alebo #
   expect r2=0x55AA r5=0xAA     ; očakávaný obsah registrov na konci (celých 16 bitov)
   expect pc=2                  ; voliteľné: PC na konci (predvolené = za poslednou inštrukciou)
+  expect mem[0x10]=42          ; voliteľné: obsah RAM na adrese (kontrolujú sa len uvedené adresy)
 
 - Register, ktorý nie je v "expect", musí byť na konci 0 -> odhalí aj zápis tam, kam nemal.
 - Program končí, keď CU chce načítať inštrukciu za koncom programu.
