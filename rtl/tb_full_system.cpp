@@ -35,6 +35,8 @@ struct Test {
     std::vector<uint16_t> rom;
     uint16_t expect_reg[16] = {0};
     int expect_pc = -1;                 // -1 = koniec programu (za poslednou inštrukciou)
+    uint16_t io_in = 0;
+    uint16_t expect_io_out = 0;
     std::vector<std::pair<int, uint16_t>> expect_mem;   // mem[adresa]=hodnota (kontrolujú sa len uvedené)
 };
 
@@ -65,7 +67,15 @@ static bool load_test(const char* path, Test& t) {
         std::string word;
         if (!(in >> word)) continue;                  // prázdny riadok
 
-        if (word == "expect") {
+        if (word == "io_in") {
+            std::string v;
+            long val;
+            if (!(in >> v) || !parse_number(v, val) || val < 0 || val > 0xFFFF) {
+                std::printf("%s:%d: zlý zápis io_in\n", path, lineno);
+                return false;
+            }
+            t.io_in = (uint16_t)val;
+        } else if (word == "expect") {
             // expect r2=0x55AA r5=0xAA pc=6
             std::string item;
             while (in >> item) {
@@ -80,6 +90,8 @@ static bool load_test(const char* path, Test& t) {
                 long a;
                 if (key == "pc") {
                     t.expect_pc = (int)val;
+                } else if (key == "io_out") {
+                    t.expect_io_out = (uint16_t)val;
                 } else if (key.size() > 5 && key.compare(0, 4, "mem[") == 0 && key.back() == ']'
                            && parse_number(key.substr(4, key.size() - 5), a) && a >= 0 && a < RAM_WORDS) {
                     t.expect_mem.push_back({(int)a, (uint16_t)val});
@@ -122,6 +134,7 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
 
     // reset
     top->clk = 0; top->rst = 1; top->rom_data = rom_at(0);
+    top->io_in = t.io_in;
     top->eval();
     tick(top);
     top->rst = 0;
@@ -162,6 +175,11 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
     }
     if (pc != t.expect_pc) {
         std::printf("  [%s] CHYBA: PC=%d, očakávané %d\n", mode, pc, t.expect_pc);
+        ok = false;
+    }
+
+    if (top->io_out != t.expect_io_out) {
+        std::printf("  [%s] CHYBA: io_out = 0x%04X, očakávané 0x%04X\n", mode, top->io_out, t.expect_io_out);
         ok = false;
     }
 

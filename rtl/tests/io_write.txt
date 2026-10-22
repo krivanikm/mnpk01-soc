@@ -1,0 +1,7 @@
+# STORE na 0xFF00 nastaví io_out a nezapíše sa do RAM (0xFF00 by inak padlo na 0xF00)
+1200    ;  0  MVI  R2, 0x00
+32FF    ;  1  MVIB R2, 0xFF     -> R2 = 0xFF00
+135A    ;  2  MVI  R3, 0x5A
+33A5    ;  3  MVIB R3, 0xA5     -> R3 = 0xA55A
+5320    ;  4  STORE R3, [R2]    io_out = 0xA55A
+expect r2=0xFF00 r3=0xA55A io_out=0xA55A mem[0xF00]=0
