@@ -78,7 +78,33 @@ a použila by namiesto nej 65 536 klopných obvodov.
 | `we` | vstup | 1 = na nábežnej hrane zapíš `din` na `addr` |
 | `dout[15:0]` | výstup | dáta z `addr`, platné o takt neskôr |
 
-Horné bity adresy `[15:12]` sa zatiaľ nepoužívajú; sú vyhradené pre vstup/výstup mapovaný do pamäte (pozri [Pamäť](isa.html#pamäť)).
+RAM vidí len dolných 12 bitov adresy; oblasť I/O `0xFF00` – `0xFFFF` sa dekóduje v `system_top` pred RAM (pozri [Vstup a výstup](#vstup-a-výstup)).
+
+## Vstup a výstup
+
+Vstup a výstup sú **mapované do pamäte**: tie isté inštrukcie `LOAD` a `STORE`, ktoré pristupujú k RAM, sa dostanú aj k portom, samostatná I/O inštrukcia neexistuje.
+`system_top` dekóduje celú 16-bitovú adresu prístupu do pamäte:
+
+```
+io_sel = (mem_addr[15:8] == 8'hFF)          adresa je v 0xFF00 – 0xFFFF
+zápis do RAM = mem_we && !io_sel             STORE do oblasti I/O sa nikdy nezapíše do RAM
+io_out <= mem_wdata   keď mem_we && mem_addr == 16'hFF00
+```
+
+| Port | Smer | Adresa | Popis |
+|---|---|---|---|
+| `io_out[15:0]` | výstup | `0xFF00` (STORE) | 16-bitový register, po resete 0 |
+| `io_in[15:0]` | vstup | `0xFF01` (LOAD) | hodnota pinov, čítaná cez multiplexor |
+
+**Čítanie.** RAM je synchrónna, takže LOAD čaká jeden takt na dáta (`S_LOAD_WAIT`). Vstupný port musí odpovedať s rovnakým oneskorením:
+`system_top` zaregistruje `io_sel` aj `io_in` v takte, v ktorom RAM zachytáva adresu, a potom vyberie medzi výstupom RAM a portom:
+
+```
+w_mem_rdata = io_sel_q ? io_in_q : ram_dout
+```
+
+Bez toho by CU prečítala predošlú hodnotu portu namiesto aktuálnej.
+Testy `io_read` a `io_read_ram_mix` kontrolujú presne toto, vrátane striedavých LOAD z portu a z RAM.
 
 ## Control unit
 

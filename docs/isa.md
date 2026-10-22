@@ -99,9 +99,12 @@ Memory is **word-addressed**: every address holds one 16-bit word.
 | Addresses | Contents |
 |---|---|
 | `0x0000` – `0x0FFF` | RAM, 4096 words |
-| `0xFF00` – `0xFFFF` | planned: input/output (LEDs, buttons, UART) – a STORE to these addresses will control the hardware |
+| `0xFF00` | output port (write): `STORE` here sets the 16-bit `io_out` register |
+| `0xFF01` | input port (read): `LOAD` from here returns the 16-bit `io_in` value |
+| other `0xFFxx` | reserved: a write is ignored, a read currently returns `io_in` |
 
-For now only the low 12 bits of the address are used, so higher addresses wrap around into the RAM.
+The RAM uses only the low 12 bits of the address, but the whole 16-bit address is decoded: the upper byte `0xFF` selects the I/O area,
+so a `STORE` to `0xFF00` never reaches the RAM. See [Input / output](architecture.html#input--output).
 
 ### Example: sum of an array
 
@@ -131,4 +134,4 @@ JNZ  R14            ; 0x62E0
 | JAL | `Rd = PC`, `PC = Rt` | subroutines (the return is a plain `JMP Rd`) |
 | ADC / SBC | ALU operations with carry | 32-bit arithmetic over two registers |
 
-Input/output will be memory-mapped, so it needs no new instructions.
+Input/output is memory-mapped, so it needs no new instructions: LEDs, switches and later a UART are just addresses.

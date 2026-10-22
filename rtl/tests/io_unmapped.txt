@@ -1,0 +1,6 @@
+# STORE na nepriradenú I/O adresu 0xFF01 nesmie zmeniť io_out ani zapísať do RAM
+1201    ;  0  MVI  R2, 0x01
+32FF    ;  1  MVIB R2, 0xFF     -> R2 = 0xFF01
+1377    ;  2  MVI  R3, 0x77
+5320    ;  3  STORE R3, [R2]
+expect r2=0xFF01 r3=0x77 mem[0xF01]=0

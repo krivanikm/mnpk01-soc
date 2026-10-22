@@ -37,6 +37,7 @@ The testbench loads the program, runs it and at the end compares the **actual co
 with the expected values. A register that is not listed must be 0, so a write to a wrong register is caught too.
 It also checks the final PC and stops a program that gets stuck.
 A test can also check the data RAM, e.g. `expect mem[0x10]=42` (only the listed addresses are checked).
+The I/O ports work the same way: the line `io_in 0xA5C3` sets the input pins and `expect io_out=0x1234` checks the output register at the end of the test (a test that does not list `io_out` expects 0, so a stray write to the port is caught).
 
 Every test runs in **both memory modes**:
 
@@ -70,6 +71,11 @@ The program counter is real hardware (`programcounter.v` in `system_top`); the t
 | `mem_store_load` | STORE and LOAD back, the same register as address and data, LOAD into the address register |
 | `mem_back_to_back` | LOAD right after STORE and vice versa, swapping two values in memory |
 | `mem_array` | an array of 5 numbers in RAM summed in a loop (LOAD + JMP) = 150 |
+| `io_write` | `STORE` to `0xFF00` sets `io_out` and does not write into the RAM (it would alias to `0x0F00`) |
+| `io_unmapped` | `STORE` to the unused address `0xFF01` changes neither `io_out` nor the RAM |
+| `io_and_ram` | a write to the port and a write to the RAM do not mix |
+| `io_read` | `LOAD` from `0xFF01` returns `io_in` |
+| `io_read_ram_mix` | alternating `LOAD` from the port and from the RAM, the port selection does not stay latched |
 
 ### Running
 
@@ -81,4 +87,4 @@ make test V=1    # with a cycle-by-cycle trace
 make alu         # standalone ALU test
 ```
 
-Current result: **19/19 tests pass** in both modes.
+Current result: **24/24 tests pass** in both modes.

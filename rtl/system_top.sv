@@ -2,6 +2,7 @@ module system_top (
     input  wire        clk,
     input  wire        rst,
     input  wire [15:0] rom_data,
+    input  wire [15:0] io_in,
     
     output wire [4:0]  state_out,
     output wire        pc_inc,
@@ -9,7 +10,8 @@ module system_top (
     output wire [3:0]  reg_addr,
     output wire [15:0] reg_data,
     output wire [15:0] reg_q_out,
-    output wire [15:0] pc
+    output wire [15:0] pc,
+    output reg [15:0] io_out
      
 );
 
@@ -18,6 +20,9 @@ module system_top (
     wire [3:0]  w_reg_addr;
     wire [15:0] w_reg_data;
     wire [15:0] w_reg_q_out;
+    wire [15:0] ram_dout;
+    reg         io_sel_q;
+    reg  [15:0] io_in_q;
 
     wire [3:0]  w_alu_op;
     wire [15:0] w_alu_a;
@@ -30,13 +35,28 @@ module system_top (
     wire [15:0] w_mem_addr;
     wire        w_mem_we;
     wire [15:0] w_mem_rdata;
-    wire [15:0] w_mem_wdata;    
-
+    wire [15:0] w_mem_wdata;
+    wire        io_sel = (w_mem_addr[15:8] == 8'hFF);
     assign pc_inc       = w_pc_inc;
     assign write_reg_en = w_write_reg_en;
     assign reg_addr     = w_reg_addr;
     assign reg_data     = w_reg_data;
     assign reg_q_out    = w_reg_q_out;
+
+    always @(posedge clk)begin
+
+        if(rst) begin
+            io_out <=0;
+        end else if (w_mem_we && io_sel && (w_mem_addr == 16'hFF00))begin
+            io_out <=w_mem_wdata;
+        end
+
+    end
+    always @(posedge clk)begin
+        io_sel_q <=io_sel;
+        io_in_q <= io_in;
+    end
+    assign w_mem_rdata = io_sel_q ? io_in_q : ram_dout;
 
     // Instancia Control Unit
     controlunit cu_inst (
@@ -96,8 +116,8 @@ module system_top (
         .clk(clk),
         .addr(w_mem_addr[11:0]),
         .din(w_mem_wdata),
-        .we(w_mem_we),
-        .dout(w_mem_rdata)
+        .we(w_mem_we && !io_sel),
+        .dout(ram_dout)
     );
 
 

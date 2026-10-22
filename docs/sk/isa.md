@@ -100,9 +100,12 @@ Pamäť je **adresovaná po slovách**: na každej adrese je jedno 16-bitové sl
 | Adresy | Obsah |
 |---|---|
 | `0x0000` – `0x0FFF` | RAM, 4096 slov |
-| `0xFF00` – `0xFFFF` | plánované: vstup/výstup (LED, tlačidlá, UART) – STORE na tieto adresy bude ovládať hardvér |
+| `0xFF00` | výstupný port (zápis): `STORE` sem nastaví 16-bitový register `io_out` |
+| `0xFF01` | vstupný port (čítanie): `LOAD` odtiaľto vráti 16-bitovú hodnotu `io_in` |
+| ostatné `0xFFxx` | rezervované: zápis sa ignoruje, čítanie zatiaľ vráti `io_in` |
 
-Zatiaľ sa používa iba dolných 12 bitov adresy, vyššie adresy sa preto „zabalia“ späť do RAM.
+RAM používa len dolných 12 bitov adresy, ale dekóduje sa celá 16-bitová adresa: horný bajt `0xFF` vyberá oblasť I/O,
+takže `STORE` na `0xFF00` sa nikdy nedostane do RAM. Pozri [Vstup a výstup](architecture.html#vstup-a-výstup).
 
 ### Príklad: súčet poľa
 
@@ -132,4 +135,4 @@ JNZ  R14            ; 0x62E0
 | JAL | `Rd = PC`, `PC = Rt` | podprogramy (návrat je obyčajný `JMP Rd`) |
 | ADC / SBC | ALU operácie s prenosom | 32-bitová aritmetika cez dva registre |
 
-Vstup/výstup bude mapovaný do pamäte, takže nepotrebuje nové inštrukcie.
+Vstup/výstup je mapovaný do pamäte, takže nepotrebuje nové inštrukcie: LED, spínače a neskôr UART sú len adresy.

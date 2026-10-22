@@ -77,7 +77,33 @@ The memory array has no reset on purpose – with a reset the synthesizer could 
 | `we` | input | 1 = write `din` to `addr` on the rising edge |
 | `dout[15:0]` | output | data read from `addr`, valid one cycle later |
 
-The upper bits of the address `[15:12]` are not used yet; they are reserved for memory-mapped I/O (see [Memory](isa.html#memory)).
+The RAM only sees the low 12 bits of the address; the I/O area `0xFF00` – `0xFFFF` is decoded in `system_top` before the RAM (see [Input / output](#input--output)).
+
+## Input / output
+
+Input and output are **memory-mapped**: the same `LOAD` and `STORE` instructions that access the RAM also reach the ports, there is no separate I/O instruction.
+`system_top` decodes the full 16-bit address of the memory access:
+
+```
+io_sel = (mem_addr[15:8] == 8'hFF)          the address is in 0xFF00 – 0xFFFF
+RAM write enable = mem_we && !io_sel         a STORE to the I/O area never writes into the RAM
+io_out <= mem_wdata   when mem_we && mem_addr == 16'hFF00
+```
+
+| Port | Direction | Address | Description |
+|---|---|---|---|
+| `io_out[15:0]` | output | `0xFF00` (STORE) | a 16-bit register, reset to 0 |
+| `io_in[15:0]` | input | `0xFF01` (LOAD) | value of the pins, read through the multiplexer |
+
+**Read path.** The RAM is synchronous, so LOAD waits one cycle for the data (`S_LOAD_WAIT`). The input port has to answer with the same delay:
+`system_top` registers both `io_sel` and `io_in` in the cycle in which the RAM latches the address and then selects between the RAM output and the port:
+
+```
+w_mem_rdata = io_sel_q ? io_in_q : ram_dout
+```
+
+Without this the CU would read the previous value of the port instead of the current one.
+The tests `io_read` and `io_read_ram_mix` check exactly that, including alternating LOADs from the port and from the RAM.
 
 ## Control unit
 

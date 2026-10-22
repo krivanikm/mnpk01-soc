@@ -1,0 +1,10 @@
+# zápis do portu a do RAM sa nepomiešajú
+1200    ;  0  MVI  R2, 0x00
+32FF    ;  1  MVIB R2, 0xFF     -> R2 = 0xFF00
+1334    ;  2  MVI  R3, 0x34
+3312    ;  3  MVIB R3, 0x12     -> R3 = 0x1234
+5320    ;  4  STORE R3, [R2]    io_out = 0x1234
+1410    ;  5  MVI  R4, 0x10
+15FF    ;  6  MVI  R5, 0xFF
+5540    ;  7  STORE R5, [R4]    mem[0x10] = 0x00FF
+expect r2=0xFF00 r3=0x1234 r4=0x10 r5=0xFF io_out=0x1234 mem[0x10]=0xFF
