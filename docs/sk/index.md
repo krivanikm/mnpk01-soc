@@ -19,7 +19,8 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | Registre | 16 × 16 bitov (R0 – R15) |
 | Dátová pamäť | RAM 4096 × 16 bitov (bloková pamäť FPGA), adresovaná po slovách |
 | Architektúra | Harvardská – oddelená pamäť programu a dát |
-| Program | BRAM vo FPGA (plánované: pri štarte načítaná z externej SPI flash) |
+| Vstup / výstup | memory-mapped na `0xFF00` – `0xFFFF`: 16-bitový výstupný port, 16-bitový vstupný port |
+| Program | BRAM vo FPGA, naplnená z hex súboru (plánované: pri štarte načítaná z externej SPI flash) |
 
 ## Stav projektu
 
@@ -32,7 +33,9 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | ALU inštrukcia (cez register R1) | hotová |
 | Skoky (JMP + 6 podmienok) | hotové – fungujú slučky aj rozhodovanie |
 | LOAD/STORE + dátová RAM | hotové – fungujú polia v pamäti |
-| Automatické testy | 19/19 prechádza v oboch režimoch pamäte |
-| I/O (LED, UART), nové inštrukcie, assembler | plánované |
+| Automatické testy | 24/24 prechádza v oboch režimoch pamäte |
+| I/O port | hotový – `STORE` na `0xFF00` ovláda výstup, `LOAD` z `0xFF01` číta vstup |
+| UART, nové inštrukcie, assembler | plánované |
 | Syntéza (Yosys) | návrh sa zmestí do Tang Nano 9K, zaberie ~14 % LUT a 4 z 26 blokov pamäte, pozri [Schémy](schematics.html) |
-| FPGA, plošný spoj | plánované |
+| FPGA | hotové – procesor beží na Tang Nano 9K (LED a spínače cez I/O port), pozri [FPGA](fpga.html) |
+| Plošný spoj | plánované |

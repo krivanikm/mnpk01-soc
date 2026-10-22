@@ -38,6 +38,7 @@ Testbench program nahrá, spustí a na konci porovná **skutočný obsah všetk�
 s očakávanými hodnotami. Register, ktorý nie je uvedený, musí byť 0 – odhalí sa tak aj zápis do zlého registra.
 Kontroluje aj konečnú hodnotu PC a zastaví program, ktorý sa zasekne.
 Test môže skontrolovať aj dátovú RAM, napr. `expect mem[0x10]=42` (kontrolujú sa iba uvedené adresy).
+I/O porty fungujú rovnako: riadok `io_in 0xA5C3` nastaví vstupné piny a `expect io_out=0x1234` skontroluje na konci testu výstupný register (test, ktorý `io_out` neuvedie, očakáva 0, takže sa zachytí aj náhodný zápis do portu).
 
 Každý test sa spustí v **oboch režimoch pamäte**:
 
@@ -71,6 +72,11 @@ Program counter je skutočný hardvér (`programcounter.v` v `system_top`); test
 | `mem_store_load` | STORE a LOAD späť, ten istý register ako adresa aj dáta, LOAD do adresového registra |
 | `mem_back_to_back` | LOAD hneď po STORE a naopak, výmena dvoch hodnôt v pamäti |
 | `mem_array` | pole 5 čísel v RAM sčítané v slučke (LOAD + JMP) = 150 |
+| `io_write` | `STORE` na `0xFF00` nastaví `io_out` a nezapíše sa do RAM (inak by padlo na `0x0F00`) |
+| `io_unmapped` | `STORE` na nepoužitú adresu `0xFF01` nezmení `io_out` ani RAM |
+| `io_and_ram` | zápis do portu a zápis do RAM sa nepomiešajú |
+| `io_read` | `LOAD` z `0xFF01` vráti `io_in` |
+| `io_read_ram_mix` | striedavé `LOAD` z portu a z RAM, výber portu nezostane zaseknutý |
 
 ### Spustenie
 
@@ -82,4 +88,4 @@ make test V=1    # s výpisom po taktoch
 make alu         # samostatný test ALU
 ```
 
-Aktuálny výsledok: **19/19 testov prejde** v oboch režimoch.
+Aktuálny výsledok: **24/24 testov prejde** v oboch režimoch.

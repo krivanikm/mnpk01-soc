@@ -18,7 +18,8 @@ implementation, verification by simulation, deployment on an FPGA and finally a 
 | Registers | 16 × 16 bits (R0 – R15) |
 | Data memory | 4096 × 16 bits RAM (FPGA block RAM), word-addressed |
 | Architecture | Harvard – separate program and data memory |
-| Program storage | FPGA BRAM (planned: loaded from external SPI flash at boot) |
+| Input / output | memory-mapped at `0xFF00` – `0xFFFF`: 16-bit output port, 16-bit input port |
+| Program storage | FPGA BRAM, initialised from a hex file (planned: loaded from external SPI flash at boot) |
 
 ## Project status
 
@@ -31,7 +32,9 @@ implementation, verification by simulation, deployment on an FPGA and finally a 
 | ALU instruction (via register R1) | done |
 | Jumps (JMP + 6 conditions) | done – loops and decisions work |
 | LOAD/STORE + data RAM | done – arrays in memory work |
-| Automated tests | 19/19 pass in both memory modes |
-| I/O (LEDs, UART), new instructions, assembler | planned |
+| Automated tests | 24/24 pass in both memory modes |
+| I/O port | done – `STORE` to `0xFF00` drives the output, `LOAD` from `0xFF01` reads the input |
+| UART, new instructions, assembler | planned |
 | Synthesis (Yosys) | design fits a Tang Nano 9K with ~14 % of its LUTs and 4 of 26 block RAMs, see [Schematics](schematics.html) |
-| FPGA, PCB | planned |
+| FPGA | done – the CPU runs on a Tang Nano 9K (LEDs and switches through the I/O port), see [FPGA](fpga.html) |
+| PCB | planned |
