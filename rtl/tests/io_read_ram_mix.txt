@@ -1,0 +1,12 @@
+# LOAD z portu a z RAM striedavo, výber portu nesmie zostať "zaseknutý" z predošlého LOAD
+io_in 0xA5C3
+1210    ;  0  MVI  R2, 0x10
+1334    ;  1  MVI  R3, 0x34
+3312    ;  2  MVIB R3, 0x12     -> R3 = 0x1234
+5320    ;  3  STORE R3, [R2]    mem[0x10] = 0x1234
+1401    ;  4  MVI  R4, 0x01
+34FF    ;  5  MVIB R4, 0xFF     -> R4 = 0xFF01
+4540    ;  6  LOAD R5, [R4]     R5 = io_in
+4620    ;  7  LOAD R6, [R2]     R6 = mem[0x10]
+4740    ;  8  LOAD R7, [R4]     R7 = io_in
+expect r2=0x10 r3=0x1234 r4=0xFF01 r5=0xA5C3 r6=0x1234 r7=0xA5C3 mem[0x10]=0x1234

@@ -1,0 +1,6 @@
+# LOAD z 0xFF01 vráti io_in
+io_in 0xA5C3
+1201    ;  0  MVI  R2, 0x01
+32FF    ;  1  MVIB R2, 0xFF     -> R2 = 0xFF01
+4320    ;  2  LOAD R3, [R2]     R3 = io_in
+expect r2=0xFF01 r3=0xA5C3
