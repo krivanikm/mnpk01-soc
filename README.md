@@ -1,4 +1,4 @@
-# MNPK01-System: Full-Stack 16-bit Microcomputer
+# MNPK01-System: Full-Stack 16-bit Microcontroller
 
 ![Status](https://img.shields.io/badge/Status-Development-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-GPLv3-green?style=for-the-badge)
@@ -6,7 +6,7 @@
 📖 **Documentation:** [krivanikm.github.io/mnpk01-soc](https://krivanikm.github.io/mnpk01-soc/) (English / Slovenčina)
 
 ## 📌 Project Overview
-**MNPK01-System** is a 16-bit microcomputer architecture, designed from the logic level up to the physical PCB. Developed as a SOČ (Slovak high-school research competition) project, it bridges the gap between Hardware Description Languages (HDL) and physical hardware implementation.
+**MNPK01-System** is a 16-bit microcontroller architecture, designed from the logic level up to the physical PCB. Developed as a SOČ (Slovak high-school research competition) project, it bridges the gap between Hardware Description Languages (HDL) and physical hardware implementation.
 
 The core mission of the MNPK01 is to demonstrate a **complete vertical integration** of computer systems: from logical gate synthesis and custom Instruction Set Architecture (ISA) to physical PCB fabrication and low-level firmware optimization.
 
