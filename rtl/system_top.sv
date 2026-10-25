@@ -11,8 +11,8 @@ module system_top (
     output wire [15:0] reg_data,
     output wire [15:0] reg_q_out,
     output wire [15:0] pc,
-    output reg [15:0] io_out
-     
+    output reg [15:0] io_out,
+    output wire        uart_tx_pin 
 );
 
     wire        w_pc_inc;
@@ -23,6 +23,7 @@ module system_top (
     wire [15:0] ram_dout;
     reg         io_sel_q;
     reg  [15:0] io_in_q;
+    reg         io_status_q;
 
     wire [3:0]  w_alu_op;
     wire [15:0] w_alu_a;
@@ -36,6 +37,9 @@ module system_top (
     wire        w_mem_we;
     wire [15:0] w_mem_rdata;
     wire [15:0] w_mem_wdata;
+    wire        uart_busy;
+    wire        uart_start;
+
     wire        io_sel = (w_mem_addr[15:8] == 8'hFF);
     assign pc_inc       = w_pc_inc;
     assign write_reg_en = w_write_reg_en;
@@ -55,9 +59,21 @@ module system_top (
     always @(posedge clk)begin
         io_sel_q <=io_sel;
         io_in_q <= io_in;
+        io_status_q <=(w_mem_addr == 16'hFF02);
     end
-    assign w_mem_rdata = io_sel_q ? io_in_q : ram_dout;
+    assign w_mem_rdata = io_sel_q ? (io_status_q ? {15'b0, uart_busy} : io_in_q) : ram_dout;
+    assign uart_start = w_mem_we && (w_mem_addr == 16'hFF01) && !uart_busy;
 
+
+
+    uart_tx u_uart(
+        .clk(clk),
+        .rst(rst),
+        .data(w_mem_wdata[7:0]),
+        .start(uart_start),
+        .tx(uart_tx_pin),
+        .busy(uart_busy)
+    );
     // Instancia Control Unit
     controlunit cu_inst (
         .clk(clk),

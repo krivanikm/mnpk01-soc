@@ -1,0 +1,9 @@
+# STORE na 0xFF01 spustí UART (busy = 1) a nezapíše sa do RAM
+1201    ;  0  MVI  R2, 0x01
+32FF    ;  1  MVIB R2, 0xFF     -> R2 = 0xFF01
+1441    ;  2  MVI  R4, 0x41     'A'
+5420    ;  3  STORE R4, [R2]    UART start
+1502    ;  4  MVI  R5, 0x02
+35FF    ;  5  MVIB R5, 0xFF     -> R5 = 0xFF02
+4650    ;  6  LOAD R6, [R5]     R6 = busy = 1
+expect r2=0xFF01 r4=0x41 r5=0xFF02 r6=1 mem[0xF01]=0

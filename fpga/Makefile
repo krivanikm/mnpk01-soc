@@ -1,6 +1,6 @@
 export PATH := $(HOME)/tools/oss-cad-suite/bin:$(PATH)
 R = ../rtl
-SRC = top.sv $(R)/system_top.sv $(R)/control-unit/controlunit.sv $(R)/registers/register_file.sv $(R)/alu/alu.sv $(R)/program-counter/programcounter.v $(R)/memory/data_ram.sv
+SRC = top.sv $(R)/system_top.sv $(R)/control-unit/controlunit.sv $(R)/registers/register_file.sv $(R)/alu/alu.sv $(R)/program-counter/programcounter.v $(R)/memory/data_ram.sv $(R)/uart/uart_tx.sv
 DEVICE = GW1NR-LV9QN88PC6/I5
 
 all: top.fs
