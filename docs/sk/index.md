@@ -5,7 +5,7 @@ lang: sk
 
 # MNPK-01
 
-**MNPK-01** je 16-bitový mikropočítač navrhnutý od úrovne logiky v jazyku SystemVerilog až po fyzický plošný spoj.
+**MNPK-01** je 16-bitový mikrokontrolér navrhnutý od úrovne logiky v jazyku SystemVerilog až po fyzický plošný spoj.
 Cieľom projektu je ukázať celý reťazec návrhu počítača: vlastnú inštrukčnú sadu (ISA), jej realizáciu v hardvéri,
 overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spojov.
 
