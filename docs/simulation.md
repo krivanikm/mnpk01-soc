@@ -78,6 +78,8 @@ The program counter is real hardware (`programcounter.v` in `system_top`); the t
 | `io_read_ram_mix` | alternating `LOAD` from the port and from the RAM, the port selection does not stay latched |
 | `uart_send_busy` | `STORE` to `0xFF01` starts the UART (`busy` = 1 on the next `LOAD` from `0xFF02`) and nothing is written into the RAM |
 | `uart_status_idle` | `LOAD` from `0xFF02` before any transmission returns `busy` = 0 |
+| `uart_recv` | the CPU waits for `rx_ready`, reads a received byte from `0xFF03` and `rx_ready` is 0 afterwards |
+| `uart_recv_two` | two bytes in a row; the second one arrives while the CPU is busy in a delay loop and its `rx_ready` must not be lost |
 
 ### Running
 
@@ -87,10 +89,10 @@ In the `rtl/` directory:
 make test        # all tests, both memory modes
 make test V=1    # with a cycle-by-cycle trace
 make alu         # standalone ALU test
-make uart        # standalone UART transmitter test
+make uart        # standalone UART transmitter and receiver tests
 ```
 
-Current result: **26/26 tests pass** in both modes.
+Current result: **28/28 tests pass** in both modes.
 
 ### UART test
 
@@ -99,3 +101,12 @@ File: `rtl/uart/tb_uart_tx.cpp`
 The transmitter is tested alone, with `CLKS_PER_BIT` = 16 so the simulation is short. For a set of bytes the testbench sends the byte,
 samples the `tx` line in the middle of every bit and checks the start bit (0), the 8 data bits (least significant first) and the stop bit (1),
 and also that `busy` is high for the whole frame and low again afterwards.
+
+### UART receiver test
+
+File: `rtl/uart/tb_uart_rx.cpp`
+
+The receiver is tested alone, also with `CLKS_PER_BIT` = 16. The testbench drives the `rx` line with a start bit, 8 data bits (least significant first) and a stop bit, each held for `CLKS_PER_BIT` clocks, and checks that `valid` pulses exactly once and `data` equals the sent byte.
+It sends the bytes 0x41, 0x55, 0xAA, 0x00, 0xFF, 0x80 and 0x01, then a start bit lasting only a quarter of the bit time (a glitch that must be rejected), and finally two frames back to back, which must give two `valid` pulses.
+
+In the full-system testbench (`tb_full_system.cpp`) the line `rx 0x5A 0xA5` in a test file drives `uart_rx_pin` with those bytes, one frame after another, starting at clock 50.

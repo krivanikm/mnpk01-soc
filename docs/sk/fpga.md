@@ -45,7 +45,9 @@ Súbor: `fpga/top.sv`. Obsahuje len „lepidlo“ okolo `system_top`:
 | `0xFF00` | `STORE` | `io_out[7:0]` na 8 externých LED (každá cez rezistor 330 Ω) |
 | `0xFF01` | `LOAD` | `io_in[7:0]` z 8-polohového DIP spínača (ON = 1, piny majú pull-up) |
 | `0xFF01` | `STORE` | dolný bajt sa odošle cez UART (pin 17, 115 200 Bd, 8N1) |
-| `0xFF02` | `LOAD` | stav UART, bit 0 = busy |
+| `0xFF02` | `LOAD` | stav vysielača UART, bit 0 = busy |
+| `0xFF03` | `LOAD` | posledný bajt prijatý cez UART (pin 18, 115 200 Bd, 8N1) |
+| `0xFF04` | `LOAD` | stav prijímača UART, bit 0 = čaká nový bajt |
 
 | Signál | Piny |
 |---|---|
@@ -53,12 +55,15 @@ Súbor: `fpga/top.sv`. Obsahuje len „lepidlo“ okolo `system_top`:
 | DIP spínač, bity 0 – 7 | 25, 26, 27, 28, 29, 30, 36, 37 |
 | LED, bity 0 – 7 | 33, 34, 40, 35, 41, 42, 51, 53 |
 | `uart_tx` | 17 |
+| `uart_rx` | 18 |
 
 Priradenie pinov je v `fpga/tang9k.cst`.
 
 Výstup UART ide cez USB-UART prevodník na doske, takže netreba žiadny ďalší hardvér: text sa v počítači objaví ako sériový port
 (`/dev/ttyUSB1` na Linuxe, napr. `picocom -b 115200 /dev/ttyUSB1`).
-Program v `fpga/prog.hex` v slučke posiela text `Hello World` a nový riadok, pred každým znakom počká na `busy` = 0.
+Program v `fpga/prog.hex` je echo: procesor počká na prijatý bajt (`rx_ready` na `0xFF04`), prečíta ho z `0xFF03`, počká na `busy` = 0 a pošle ho späť.
+Všetko, čo v termináli napíšeš, sa objaví znova, takže písmená na obrazovke dokazujú, že prijímač, procesor aj vysielač fungujú.
+Starší program, ktorý v slučke posiela `Hello World`, je uložený v `fpga/prog_hello.hex`; skopíruj ho cez `prog.hex` a spusti `make flash`.
 
 ## Programy, ktoré bežali na doske
 

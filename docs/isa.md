@@ -101,6 +101,10 @@ Memory is **word-addressed**: every address holds one 16-bit word.
 | `0x0000` – `0x0FFF` | RAM, 4096 words |
 | `0xFF00` | output port (write): `STORE` here sets the 16-bit `io_out` register |
 | `0xFF01` | input port (read): `LOAD` from here returns the 16-bit `io_in` value |
+| `0xFF01` (write) | UART transmitter: `STORE` sends the low byte |
+| `0xFF02` | UART transmitter status (read): bit 0 = `busy` |
+| `0xFF03` | UART receiver data (read): the last received byte, clears `rx_ready` |
+| `0xFF04` | UART receiver status (read): bit 0 = `rx_ready` |
 | other `0xFFxx` | reserved: a write is ignored, a read currently returns `io_in` |
 
 The RAM uses only the low 12 bits of the address, but the whole 16-bit address is decoded: the upper byte `0xFF` selects the I/O area,
