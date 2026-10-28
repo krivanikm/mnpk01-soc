@@ -44,14 +44,26 @@ File: `fpga/top.sv`. It contains only the glue around `system_top`:
 |---|---|---|
 | `0xFF00` | `STORE` | `io_out[7:0]` to 8 external LEDs (each through a 330 Ω resistor) |
 | `0xFF01` | `LOAD` | `io_in[7:0]` from an 8-position DIP switch (ON = 1, the pins use pull-ups) |
+| `0xFF01` | `STORE` | the low byte is sent over the UART (pin 17, 115 200 Bd, 8N1) |
+| `0xFF02` | `LOAD` | UART transmitter status, bit 0 = busy |
+| `0xFF03` | `LOAD` | the last byte received over the UART (pin 18, 115 200 Bd, 8N1) |
+| `0xFF04` | `LOAD` | UART receiver status, bit 0 = a new byte is waiting |
 
 | Signal | Pins |
 |---|---|
 | clock | 52 |
 | DIP switch bits 0 – 7 | 25, 26, 27, 28, 29, 30, 36, 37 |
 | LED bits 0 – 7 | 33, 34, 40, 35, 41, 42, 51, 53 |
+| `uart_tx` | 17 |
+| `uart_rx` | 18 |
 
 The pin assignment is in `fpga/tang9k.cst`.
+
+The UART output goes through the USB-UART bridge on the board, so no extra hardware is needed: the text appears on the computer as a serial port
+(`/dev/ttyUSB1` on Linux, e.g. `picocom -b 115200 /dev/ttyUSB1`).
+The program in `fpga/prog.hex` is an echo: the CPU waits for a received byte (`rx_ready` on `0xFF04`), reads it from `0xFF03`, waits until `busy` = 0 and sends it back.
+Everything typed in the terminal appears again, so the picture of letters on the screen proves that the receiver, the CPU and the transmitter all work.
+The older program that sends `Hello World` in a loop is kept in `fpga/prog_hello.hex`; copy it over `prog.hex` and run `make flash` to use it.
 
 ## Programs that ran on the board
 

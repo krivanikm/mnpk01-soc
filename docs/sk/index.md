@@ -19,7 +19,7 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | Registre | 16 × 16 bitov (R0 – R15) |
 | Dátová pamäť | RAM 4096 × 16 bitov (bloková pamäť FPGA), adresovaná po slovách |
 | Architektúra | Harvardská – oddelená pamäť programu a dát |
-| Vstup / výstup | memory-mapped na `0xFF00` – `0xFFFF`: 16-bitový výstupný port, 16-bitový vstupný port |
+| Vstup / výstup | memory-mapped na `0xFF00` – `0xFFFF`: 16-bitový výstupný port, 16-bitový vstupný port, vysielač a prijímač UART |
 | Program | BRAM vo FPGA, naplnená z hex súboru (plánované: pri štarte načítaná z externej SPI flash) |
 
 ## Stav projektu
@@ -33,9 +33,11 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | ALU inštrukcia (cez register R1) | hotová |
 | Skoky (JMP + 6 podmienok) | hotové – fungujú slučky aj rozhodovanie |
 | LOAD/STORE + dátová RAM | hotové – fungujú polia v pamäti |
-| Automatické testy | 24/24 prechádza v oboch režimoch pamäte |
+| Automatické testy | 28/28 prechádza v oboch režimoch pamäte |
 | I/O port | hotový – `STORE` na `0xFF00` ovláda výstup, `LOAD` z `0xFF01` číta vstup |
-| UART, nové inštrukcie, assembler | plánované |
+| Vysielač UART | hotový – `STORE` na `0xFF01` odošle bajt, `LOAD` z `0xFF02` číta `busy`, na doske beží „Hello World“ |
+| Prijímač UART | hotový – `LOAD` z `0xFF04` číta `rx_ready`, `LOAD` z `0xFF03` číta bajt, na doske beží echo program |
+| Nové inštrukcie, assembler, loader programov cez UART | plánované |
 | Syntéza (Yosys) | návrh sa zmestí do Tang Nano 9K, zaberie ~14 % LUT a 4 z 26 blokov pamäte, pozri [Schémy](schematics.html) |
-| FPGA | hotové – procesor beží na Tang Nano 9K (LED a spínače cez I/O port), pozri [FPGA](fpga.html) |
+| FPGA | hotové – procesor beží na Tang Nano 9K (LED, spínače a UART cez I/O port), pozri [FPGA](fpga.html) |
 | Plošný spoj | plánované |

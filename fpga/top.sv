@@ -2,7 +2,9 @@ module top (
     input  wire       clk,
     input  wire [7:0] dip,
     output wire [7:0] ext,
-    output wire [5:0] led
+    output wire [5:0] led,
+    output wire       uart_tx,
+    input wire       uart_rx
 );
 
     reg [3:0] rst_cnt = 0;
@@ -34,7 +36,9 @@ module top (
         .reg_data(),
         .reg_q_out(),
         .pc(pc),
-        .io_out(io_out)
+        .io_out(io_out),
+        .uart_tx_pin(uart_tx),
+        .uart_rx_pin(uart_rx)
     );
 
     assign ext = io_out[7:0];

@@ -1,0 +1,6 @@
+# čítanie 0xFF02 pred odoslaním: UART je voľný, busy = 0
+1202    ;  0  MVI  R2, 0x02
+32FF    ;  1  MVIB R2, 0xFF     -> R2 = 0xFF02
+13FF    ;  2  MVI  R3, 0xFF     R3 != 0, aby bolo vidno prepis
+4320    ;  3  LOAD R3, [R2]     R3 = busy = 0
+expect r2=0xFF02 r3=0

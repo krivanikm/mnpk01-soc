@@ -95,16 +95,89 @@ io_out <= mem_wdata   keď mem_we && mem_addr == 16'hFF00
 |---|---|---|---|
 | `io_out[15:0]` | výstup | `0xFF00` (STORE) | 16-bitový register, po resete 0 |
 | `io_in[15:0]` | vstup | `0xFF01` (LOAD) | hodnota pinov, čítaná cez multiplexor |
+| dáta UART | výstup | `0xFF01` (STORE) | dolný bajt sa odošle na pin `uart_tx_pin`; ignoruje sa, kým je UART zaneprázdnený |
+| stav UART | vstup | `0xFF02` (LOAD) | bit 0 = `busy` (1, kým sa odosiela bajt), ostatné bity sú 0 |
+| prijaté dáta UART | vstup | `0xFF03` (LOAD) | dolných 8 bitov = posledný prijatý bajt; čítanie vynuluje `rx_ready` |
+| stav príjmu UART | vstup | `0xFF04` (LOAD) | bit 0 = `rx_ready` (1 = čaká nový bajt), ostatné bity sú 0 |
+
+Adresa `0xFF01` znamená pre každý smer niečo iné: `STORE` spustí UART, `LOAD` číta vstupné piny.
+Každý `LOAD` z oblasti I/O okrem `0xFF02` – `0xFF04` vráti `io_in`, adresa sa nedekóduje presnejšie.
 
 **Čítanie.** RAM je synchrónna, takže LOAD čaká jeden takt na dáta (`S_LOAD_WAIT`). Vstupný port musí odpovedať s rovnakým oneskorením:
 `system_top` zaregistruje `io_sel` aj `io_in` v takte, v ktorom RAM zachytáva adresu, a potom vyberie medzi výstupom RAM a portom:
 
 ```
-w_mem_rdata = io_sel_q ? io_in_q : ram_dout
+if (!io_sel_q) w_mem_rdata = ram_dout
+else case (io_addr_q)
+    8'h02:   w_mem_rdata = {15'b0, uart_busy}
+    8'h03:   w_mem_rdata = {8'b0, rx_data}
+    8'h04:   w_mem_rdata = {15'b0, rx_ready}
+    default: w_mem_rdata = io_in_q
 ```
 
+`io_addr_q` je zaregistrovaný dolný bajt `mem_addr`, takže aj registre UART prídu s rovnakým oneskorením ako dáta z RAM.
 Bez toho by CU prečítala predošlú hodnotu portu namiesto aktuálnej.
 Testy `io_read` a `io_read_ram_mix` kontrolujú presne toto, vrátane striedavých LOAD z portu a z RAM.
+
+### Vysielač UART
+
+Súbor: `rtl/uart/uart_tx.sv`
+
+Vysielač vo formáte 8N1 (1 štart bit, 8 dátových bitov od najnižšieho, 1 stop bit, bez parity).
+Parameter `CLKS_PER_BIT` je počet taktov na jeden bit: 27 MHz / 115 200 Bd = 234 (predvolená hodnota).
+
+| Signál | Smer | Význam |
+|---|---|---|
+| `clk`, `rst` | vstup | hodiny, synchrónny reset (linka v kľude je 1) |
+| `data[7:0]` | vstup | bajt na odoslanie, zachytí sa pri `start` = 1 |
+| `start` | vstup | 1 na jeden takt v stave `IDLE` spustí vysielanie |
+| `tx` | výstup | sériová linka, kľudová úroveň 1 |
+| `busy` | výstup | 1 v každom stave okrem `IDLE` |
+
+FSM má štyri stavy: `IDLE -> START -> DATA -> STOP -> IDLE`, počítadlo `clk_cnt` počíta takty v rámci jedného bitu a `bit_idx` dátový bit.
+Jeden bajt trvá 10 bitov, teda pri 115 200 Bd približne 87 µs, čo sú tisíce taktov procesora.
+
+V `system_top`: `uart_start = mem_we && mem_addr == 0xFF01 && !uart_busy`, dáta sú `mem_wdata[7:0]`.
+UART nemá buffer, takže program musí pred každým bajtom počkať na `busy` = 0, inak sa bajt stratí. Odoslanie jedného znaku:
+
+```
+wait:  LOAD  R6, [R3]      ; R3 = 0xFF02, R6 = busy
+       ...                 ; R6 != 0 -> skok späť na wait
+       STORE R5, [R2]      ; R2 = 0xFF01, odošle dolný bajt R5
+```
+
+### Prijímač UART
+
+Súbor: `rtl/uart/uart_rx.sv`
+
+Prijímač pre rovnaký formát 8N1 a s rovnakým parametrom `CLKS_PER_BIT` (predvolene 234).
+
+| Signál | Smer | Význam |
+|---|---|---|
+| `clk`, `rst` | vstup | hodiny, synchrónny reset |
+| `rx` | vstup | sériová linka, v pokoji 1 |
+| `data[7:0]` | výstup | prijatý bajt, platný, kým je `valid` = 1 |
+| `valid` | výstup | 1 na jeden takt, keď je celý bajt prijatý |
+
+Pin `rx` je asynchrónny voči hodinám, preto najprv prejde cez dva flip-flopy (`rx_sync1`, `rx_sync2`) proti metastabilite.
+FSM má rovnaké štyri stavy ako vysielač, `IDLE -> START -> DATA -> STOP -> IDLE`:
+
+- `IDLE`: čaká na `rx_sync2` = 0 (zostupná hrana štart bitu) a nuluje `clk_cnt`.
+- `START`: počká pol bitu (`CLKS_PER_BIT/2`), takže stojí v strede štart bitu. Ak je linka stále 0, pokračuje. Ak nie, bol to šum a FSM sa vráti do `IDLE`.
+- `DATA`: počká celý bit, čiže vždy pristane v strede ďalšieho bitu, a uloží `rx_sync2` do `data[bit_idx]`. Najprv príde najnižší bit.
+- `STOP`: počká ešte jeden bit, nastaví `valid` na jeden takt a vráti sa do `IDLE`.
+
+Vzorkovanie v strede každého bitu je najďalej od hrán, takže znesie malý rozdiel medzi oboma prenosovými rýchlosťami.
+
+V `system_top` sa po príchode `valid` bajt uloží do `rx_data` a `rx_ready` sa nastaví na 1. `rx_ready` sa vynuluje, keď CU číta port `0xFF03` (v stave `S_LOAD_WRITE`).
+Nuluje sa len v tomto jedinom stave, nie vždy keď je adresa `0xFF03`: adresa po `LOAD` zostáva na zbernici a bajt, ktorý by medzitým prišiel, by o príznak hneď prišiel.
+Ak príde nový bajt skôr, ako sa prečíta predošlý, prepíše `rx_data`; buffer tam nie je. Príjem jedného znaku:
+
+```
+wait:  LOAD  R6, [R2]      ; R2 = 0xFF04, R6 = rx_ready
+       ...                 ; R6 == 0 -> skok späť na wait
+       LOAD  R7, [R3]      ; R3 = 0xFF03, R7 = prijatý bajt
+```
 
 ## Control unit
 

@@ -73,10 +73,14 @@ Program counter je skutočný hardvér (`programcounter.v` v `system_top`); test
 | `mem_back_to_back` | LOAD hneď po STORE a naopak, výmena dvoch hodnôt v pamäti |
 | `mem_array` | pole 5 čísel v RAM sčítané v slučke (LOAD + JMP) = 150 |
 | `io_write` | `STORE` na `0xFF00` nastaví `io_out` a nezapíše sa do RAM (inak by padlo na `0x0F00`) |
-| `io_unmapped` | `STORE` na nepoužitú adresu `0xFF01` nezmení `io_out` ani RAM |
+| `io_unmapped` | `STORE` na `0xFF01` (dátový port UART) nezmení `io_out` ani RAM |
 | `io_and_ram` | zápis do portu a zápis do RAM sa nepomiešajú |
 | `io_read` | `LOAD` z `0xFF01` vráti `io_in` |
 | `io_read_ram_mix` | striedavé `LOAD` z portu a z RAM, výber portu nezostane zaseknutý |
+| `uart_send_busy` | `STORE` na `0xFF01` spustí UART (`busy` = 1 pri nasledujúcom `LOAD` z `0xFF02`) a nič sa nezapíše do RAM |
+| `uart_status_idle` | `LOAD` z `0xFF02` pred akýmkoľvek odoslaním vráti `busy` = 0 |
+| `uart_recv` | procesor počká na `rx_ready`, prečíta prijatý bajt z `0xFF03` a potom je `rx_ready` 0 |
+| `uart_recv_two` | dva bajty za sebou; druhý príde, kým procesor čaká v oneskorovacej slučke, a jeho `rx_ready` sa nesmie stratiť |
 
 ### Spustenie
 
@@ -86,6 +90,24 @@ V priečinku `rtl/`:
 make test        # všetky testy, oba režimy pamäte
 make test V=1    # s výpisom po taktoch
 make alu         # samostatný test ALU
+make uart        # samostatné testy vysielača a prijímača UART
 ```
 
-Aktuálny výsledok: **24/24 testov prejde** v oboch režimoch.
+Aktuálny výsledok: **28/28 testov prejde** v oboch režimoch.
+
+### Test UART
+
+Súbor: `rtl/uart/tb_uart_tx.cpp`
+
+Vysielač sa testuje samostatne, s `CLKS_PER_BIT` = 16, aby bola simulácia krátka. Pre sadu bajtov testbench bajt odošle,
+vzorkuje linku `tx` v strede každého bitu a kontroluje štart bit (0), 8 dátových bitov (od najnižšieho) a stop bit (1),
+a tiež že `busy` je počas celého rámca vysoko a potom opäť nízko.
+
+### Test prijímača UART
+
+Súbor: `rtl/uart/tb_uart_rx.cpp`
+
+Prijímač sa testuje samostatne, tiež s `CLKS_PER_BIT` = 16. Testbench riadi linku `rx` štart bitom, 8 dátovými bitmi (od najnižšieho) a stop bitom, každý drží `CLKS_PER_BIT` taktov, a kontroluje, že `valid` sa objaví presne raz a `data` sa rovná odoslanému bajtu.
+Pošle bajty 0x41, 0x55, 0xAA, 0x00, 0xFF, 0x80 a 0x01, potom štart bit trvajúci len štvrtinu bitu (šum, ktorý sa musí zamietnuť) a nakoniec dva rámce hneď za sebou, ktoré musia dať dva impulzy `valid`.
+
+V testbenchi celého systému (`tb_full_system.cpp`) riadok `rx 0x5A 0xA5` v testovacom súbore posiela tieto bajty na `uart_rx_pin`, rámec za rámcom od taktu 50.

@@ -62,8 +62,6 @@ graph TD
     class PC routing;
 ```
 
-> I/O in the map above is still being designed – see the status below.
-
 ---
 
 ## 📊 Status
@@ -72,13 +70,15 @@ graph TD
 |---|---|
 | ALU (16-bit, 14 operations) | ✅ done – ~40 million checks |
 | Register file (16 × 16-bit) | ✅ done |
-| Control unit: all 8 instructions | ✅ done – 19/19 system tests, also with synchronous FPGA BRAM |
+| Control unit: all 8 instructions | ✅ done – 28/28 system tests, also with synchronous FPGA BRAM |
 | Program counter | ✅ done, connected in `system_top` |
 | JMP + 6 conditional jumps | ✅ done – loops and decisions |
 | LOAD/STORE + 4K × 16 data RAM | ✅ done |
-| I/O (LEDs, UART), new instructions (HLT, BR, ADDI, JAL) | 🔨 next |
+| I/O: 16-bit ports (LEDs, switches) + UART TX and RX | ✅ done – "Hello World" and an echo program over UART on the Tang Nano 9K |
+| New instructions (HLT, BR, ADDI, JAL), program loader over UART | 🔨 next |
 | Assembler | 📋 planned |
-| FPGA (Tang Nano 9K), PCB | 📋 planned |
+| FPGA (Tang Nano 9K) | ✅ done |
+| PCB | 📋 planned |
 
 ## 🚀 Running the simulation
 
@@ -89,6 +89,7 @@ cd rtl
 make test          # all system tests (combinational and BRAM-like memory)
 make test V=1      # with a cycle-by-cycle trace
 make alu           # standalone ALU test (~40 million checks)
+make uart          # standalone UART transmitter and receiver tests
 make schematics    # RTL schematics into docs/assets/schematics/
 ```
 
@@ -101,6 +102,7 @@ rtl/
   registers/        register file
   memory/           data RAM
   program-counter/  program counter
+  uart/             UART transmitter and receiver + their standalone tests
   tests/            system test programs (*.txt)
   system_top.sv     top level
   tb_full_system.cpp

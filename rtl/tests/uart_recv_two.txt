@@ -1,0 +1,27 @@
+# Dva bajty za sebou. Medzi nimi CPU dlho čaká v slučke, druhý bajt príde, kým CPU nečíta.
+# rx_ready sa nesmie stratiť.
+rx 0x5A 0xA5
+1204    ;  0  MVI  R2, 0x04
+32FF    ;  1  MVIB R2, 0xFF     -> R2 = 0xFF04
+1303    ;  2  MVI  R3, 0x03
+33FF    ;  3  MVIB R3, 0xFF     -> R3 = 0xFF03
+110B    ;  4  MVI  R1, CMP
+1E06    ;  5  MVI  R14, 6
+4620    ;  6  LOAD R6, [R2]
+7600    ;  7  CMP  R6, R0
+61E0    ;  8  JZ   R14
+4730    ;  9  LOAD R7, [R3]     prvý bajt
+14C8    ; 10  MVI  R4, 200
+1501    ; 11  MVI  R5, 1
+1D0D    ; 12  MVI  R13, 13
+1101    ; 13  MVI  R1, SUB     slučka: čakanie
+7454    ; 14  ALU  R4, R5, R4   R4 = R4 - 1
+62D0    ; 15  JNZ  R13
+110B    ; 16  MVI  R1, CMP
+1E12    ; 17  MVI  R14, 18
+4620    ; 18  LOAD R6, [R2]
+7600    ; 19  CMP  R6, R0
+61E0    ; 20  JZ   R14
+4830    ; 21  LOAD R8, [R3]     druhý bajt
+4620    ; 22  LOAD R6, [R2]     rx_ready je po čítaní 0
+expect r1=0x0B r2=0xFF04 r3=0xFF03 r5=1 r7=0x5A r8=0xA5 r13=13 r14=18
