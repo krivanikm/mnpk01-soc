@@ -135,4 +135,4 @@ JNZ  R14            ; 0x62E0
 | JAL | `Rd = PC`, `PC = Rt` | podprogramy (návrat je obyčajný `JMP Rd`) |
 | ADC / SBC | ALU operácie s prenosom | 32-bitová aritmetika cez dva registre |
 
-Vstup/výstup je mapovaný do pamäte, takže nepotrebuje nové inštrukcie: LED, spínače a neskôr UART sú len adresy.
+Vstup/výstup je mapovaný do pamäte, takže nepotrebuje nové inštrukcie: LED, spínače a UART sú len adresy (pozri [Vstup a výstup](architecture.html#vstup-a-výstup)).

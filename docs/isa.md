@@ -134,4 +134,4 @@ JNZ  R14            ; 0x62E0
 | JAL | `Rd = PC`, `PC = Rt` | subroutines (the return is a plain `JMP Rd`) |
 | ADC / SBC | ALU operations with carry | 32-bit arithmetic over two registers |
 
-Input/output is memory-mapped, so it needs no new instructions: LEDs, switches and later a UART are just addresses.
+Input/output is memory-mapped, so it needs no new instructions: LEDs, switches and the UART are just addresses (see [Input / output](architecture.html#input--output)).

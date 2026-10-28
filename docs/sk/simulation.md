@@ -73,10 +73,12 @@ Program counter je skutočný hardvér (`programcounter.v` v `system_top`); test
 | `mem_back_to_back` | LOAD hneď po STORE a naopak, výmena dvoch hodnôt v pamäti |
 | `mem_array` | pole 5 čísel v RAM sčítané v slučke (LOAD + JMP) = 150 |
 | `io_write` | `STORE` na `0xFF00` nastaví `io_out` a nezapíše sa do RAM (inak by padlo na `0x0F00`) |
-| `io_unmapped` | `STORE` na nepoužitú adresu `0xFF01` nezmení `io_out` ani RAM |
+| `io_unmapped` | `STORE` na `0xFF01` (dátový port UART) nezmení `io_out` ani RAM |
 | `io_and_ram` | zápis do portu a zápis do RAM sa nepomiešajú |
 | `io_read` | `LOAD` z `0xFF01` vráti `io_in` |
 | `io_read_ram_mix` | striedavé `LOAD` z portu a z RAM, výber portu nezostane zaseknutý |
+| `uart_send_busy` | `STORE` na `0xFF01` spustí UART (`busy` = 1 pri nasledujúcom `LOAD` z `0xFF02`) a nič sa nezapíše do RAM |
+| `uart_status_idle` | `LOAD` z `0xFF02` pred akýmkoľvek odoslaním vráti `busy` = 0 |
 
 ### Spustenie
 
@@ -86,6 +88,15 @@ V priečinku `rtl/`:
 make test        # všetky testy, oba režimy pamäte
 make test V=1    # s výpisom po taktoch
 make alu         # samostatný test ALU
+make uart        # samostatný test vysielača UART
 ```
 
-Aktuálny výsledok: **24/24 testov prejde** v oboch režimoch.
+Aktuálny výsledok: **26/26 testov prejde** v oboch režimoch.
+
+### Test UART
+
+Súbor: `rtl/uart/tb_uart_tx.cpp`
+
+Vysielač sa testuje samostatne, s `CLKS_PER_BIT` = 16, aby bola simulácia krátka. Pre sadu bajtov testbench bajt odošle,
+vzorkuje linku `tx` v strede každého bitu a kontroluje štart bit (0), 8 dátových bitov (od najnižšieho) a stop bit (1),
+a tiež že `busy` je počas celého rámca vysoko a potom opäť nízko.

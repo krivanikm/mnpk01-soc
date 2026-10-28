@@ -95,16 +95,49 @@ io_out <= mem_wdata   keď mem_we && mem_addr == 16'hFF00
 |---|---|---|---|
 | `io_out[15:0]` | výstup | `0xFF00` (STORE) | 16-bitový register, po resete 0 |
 | `io_in[15:0]` | vstup | `0xFF01` (LOAD) | hodnota pinov, čítaná cez multiplexor |
+| dáta UART | výstup | `0xFF01` (STORE) | dolný bajt sa odošle na pin `uart_tx_pin`; ignoruje sa, kým je UART zaneprázdnený |
+| stav UART | vstup | `0xFF02` (LOAD) | bit 0 = `busy` (1, kým sa odosiela bajt), ostatné bity sú 0 |
+
+Adresa `0xFF01` znamená pre každý smer niečo iné: `STORE` spustí UART, `LOAD` číta vstupné piny.
+Každý `LOAD` z oblasti I/O okrem `0xFF02` vráti `io_in`, adresa sa nedekóduje presnejšie.
 
 **Čítanie.** RAM je synchrónna, takže LOAD čaká jeden takt na dáta (`S_LOAD_WAIT`). Vstupný port musí odpovedať s rovnakým oneskorením:
 `system_top` zaregistruje `io_sel` aj `io_in` v takte, v ktorom RAM zachytáva adresu, a potom vyberie medzi výstupom RAM a portom:
 
 ```
-w_mem_rdata = io_sel_q ? io_in_q : ram_dout
+w_mem_rdata = io_sel_q ? (io_status_q ? {15'b0, uart_busy} : io_in_q) : ram_dout
 ```
 
+`io_status_q` je zaregistrovaný výsledok porovnania `mem_addr == 0xFF02`, takže aj stav UART príde s rovnakým oneskorením ako dáta z RAM.
 Bez toho by CU prečítala predošlú hodnotu portu namiesto aktuálnej.
 Testy `io_read` a `io_read_ram_mix` kontrolujú presne toto, vrátane striedavých LOAD z portu a z RAM.
+
+### Vysielač UART
+
+Súbor: `rtl/uart/uart_tx.sv`
+
+Vysielač vo formáte 8N1 (1 štart bit, 8 dátových bitov od najnižšieho, 1 stop bit, bez parity).
+Parameter `CLKS_PER_BIT` je počet taktov na jeden bit: 27 MHz / 115 200 Bd = 234 (predvolená hodnota).
+
+| Signál | Smer | Význam |
+|---|---|---|
+| `clk`, `rst` | vstup | hodiny, synchrónny reset (linka v kľude je 1) |
+| `data[7:0]` | vstup | bajt na odoslanie, zachytí sa pri `start` = 1 |
+| `start` | vstup | 1 na jeden takt v stave `IDLE` spustí vysielanie |
+| `tx` | výstup | sériová linka, kľudová úroveň 1 |
+| `busy` | výstup | 1 v každom stave okrem `IDLE` |
+
+FSM má štyri stavy: `IDLE -> START -> DATA -> STOP -> IDLE`, počítadlo `clk_cnt` počíta takty v rámci jedného bitu a `bit_idx` dátový bit.
+Jeden bajt trvá 10 bitov, teda pri 115 200 Bd približne 87 µs, čo sú tisíce taktov procesora.
+
+V `system_top`: `uart_start = mem_we && mem_addr == 0xFF01 && !uart_busy`, dáta sú `mem_wdata[7:0]`.
+UART nemá buffer, takže program musí pred každým bajtom počkať na `busy` = 0, inak sa bajt stratí. Odoslanie jedného znaku:
+
+```
+wait:  LOAD  R6, [R3]      ; R3 = 0xFF02, R6 = busy
+       ...                 ; R6 != 0 -> skok späť na wait
+       STORE R5, [R2]      ; R2 = 0xFF01, odošle dolný bajt R5
+```
 
 ## Control unit
 

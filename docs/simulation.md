@@ -72,10 +72,12 @@ The program counter is real hardware (`programcounter.v` in `system_top`); the t
 | `mem_back_to_back` | LOAD right after STORE and vice versa, swapping two values in memory |
 | `mem_array` | an array of 5 numbers in RAM summed in a loop (LOAD + JMP) = 150 |
 | `io_write` | `STORE` to `0xFF00` sets `io_out` and does not write into the RAM (it would alias to `0x0F00`) |
-| `io_unmapped` | `STORE` to the unused address `0xFF01` changes neither `io_out` nor the RAM |
+| `io_unmapped` | `STORE` to `0xFF01` (the UART data port) changes neither `io_out` nor the RAM |
 | `io_and_ram` | a write to the port and a write to the RAM do not mix |
 | `io_read` | `LOAD` from `0xFF01` returns `io_in` |
 | `io_read_ram_mix` | alternating `LOAD` from the port and from the RAM, the port selection does not stay latched |
+| `uart_send_busy` | `STORE` to `0xFF01` starts the UART (`busy` = 1 on the next `LOAD` from `0xFF02`) and nothing is written into the RAM |
+| `uart_status_idle` | `LOAD` from `0xFF02` before any transmission returns `busy` = 0 |
 
 ### Running
 
@@ -85,6 +87,15 @@ In the `rtl/` directory:
 make test        # all tests, both memory modes
 make test V=1    # with a cycle-by-cycle trace
 make alu         # standalone ALU test
+make uart        # standalone UART transmitter test
 ```
 
-Current result: **24/24 tests pass** in both modes.
+Current result: **26/26 tests pass** in both modes.
+
+### UART test
+
+File: `rtl/uart/tb_uart_tx.cpp`
+
+The transmitter is tested alone, with `CLKS_PER_BIT` = 16 so the simulation is short. For a set of bytes the testbench sends the byte,
+samples the `tx` line in the middle of every bit and checks the start bit (0), the 8 data bits (least significant first) and the stop bit (1),
+and also that `busy` is high for the whole frame and low again afterwards.

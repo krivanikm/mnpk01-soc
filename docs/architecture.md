@@ -94,16 +94,49 @@ io_out <= mem_wdata   when mem_we && mem_addr == 16'hFF00
 |---|---|---|---|
 | `io_out[15:0]` | output | `0xFF00` (STORE) | a 16-bit register, reset to 0 |
 | `io_in[15:0]` | input | `0xFF01` (LOAD) | value of the pins, read through the multiplexer |
+| UART data | output | `0xFF01` (STORE) | the low byte is sent over the `uart_tx_pin` pin; ignored while the UART is busy |
+| UART status | input | `0xFF02` (LOAD) | bit 0 = `busy` (1 while a byte is being sent), the other bits are 0 |
+
+`0xFF01` has a different meaning for each direction: `STORE` starts the UART, `LOAD` reads the input pins.
+Any `LOAD` from the I/O area except `0xFF02` returns `io_in`, the address is not decoded more precisely.
 
 **Read path.** The RAM is synchronous, so LOAD waits one cycle for the data (`S_LOAD_WAIT`). The input port has to answer with the same delay:
 `system_top` registers both `io_sel` and `io_in` in the cycle in which the RAM latches the address and then selects between the RAM output and the port:
 
 ```
-w_mem_rdata = io_sel_q ? io_in_q : ram_dout
+w_mem_rdata = io_sel_q ? (io_status_q ? {15'b0, uart_busy} : io_in_q) : ram_dout
 ```
 
+`io_status_q` is the registered result of the comparison `mem_addr == 0xFF02`, so the UART status also arrives with the same delay as RAM data.
 Without this the CU would read the previous value of the port instead of the current one.
 The tests `io_read` and `io_read_ram_mix` check exactly that, including alternating LOADs from the port and from the RAM.
+
+### UART transmitter
+
+File: `rtl/uart/uart_tx.sv`
+
+A transmitter for the 8N1 format (1 start bit, 8 data bits starting with the least significant one, 1 stop bit, no parity).
+The parameter `CLKS_PER_BIT` is the number of clocks per bit: 27 MHz / 115 200 Bd = 234 (the default).
+
+| Signal | Direction | Meaning |
+|---|---|---|
+| `clk`, `rst` | input | clock, synchronous reset (line idle at 1) |
+| `data[7:0]` | input | byte to send, latched when `start` = 1 |
+| `start` | input | 1 for one clock in `IDLE` starts the transmission |
+| `tx` | output | serial line, idle level 1 |
+| `busy` | output | 1 in every state except `IDLE` |
+
+The FSM has four states: `IDLE -> START -> DATA -> STOP -> IDLE`, a counter `clk_cnt` counts the clocks inside one bit and `bit_idx` the data bit.
+One byte takes 10 bits, i.e. about 87 µs at 115 200 Bd, which is thousands of CPU cycles.
+
+In `system_top`: `uart_start = mem_we && mem_addr == 0xFF01 && !uart_busy`, the data are `mem_wdata[7:0]`.
+The UART has no buffer, so a program has to wait for `busy` = 0 before every byte, otherwise the byte is lost. Sending one character:
+
+```
+wait:  LOAD  R6, [R3]      ; R3 = 0xFF02, R6 = busy
+       ...                 ; R6 != 0 -> jump back to wait
+       STORE R5, [R2]      ; R2 = 0xFF01, send the low byte of R5
+```
 
 ## Control unit
 

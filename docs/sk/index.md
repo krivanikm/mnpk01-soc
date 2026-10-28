@@ -33,9 +33,10 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | ALU inštrukcia (cez register R1) | hotová |
 | Skoky (JMP + 6 podmienok) | hotové – fungujú slučky aj rozhodovanie |
 | LOAD/STORE + dátová RAM | hotové – fungujú polia v pamäti |
-| Automatické testy | 24/24 prechádza v oboch režimoch pamäte |
+| Automatické testy | 26/26 prechádza v oboch režimoch pamäte |
 | I/O port | hotový – `STORE` na `0xFF00` ovláda výstup, `LOAD` z `0xFF01` číta vstup |
-| UART, nové inštrukcie, assembler | plánované |
+| Vysielač UART | hotový – `STORE` na `0xFF01` odošle bajt, `LOAD` z `0xFF02` číta `busy`, na doske beží „Hello World“ |
+| Prijímač UART, nové inštrukcie, assembler | plánované |
 | Syntéza (Yosys) | návrh sa zmestí do Tang Nano 9K, zaberie ~14 % LUT a 4 z 26 blokov pamäte, pozri [Schémy](schematics.html) |
-| FPGA | hotové – procesor beží na Tang Nano 9K (LED a spínače cez I/O port), pozri [FPGA](fpga.html) |
+| FPGA | hotové – procesor beží na Tang Nano 9K (LED, spínače a UART cez I/O port), pozri [FPGA](fpga.html) |
 | Plošný spoj | plánované |
