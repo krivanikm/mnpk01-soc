@@ -5,7 +5,7 @@
 #   make schematics  RTL schémy (Yosys) do docs/assets/schematics/
 #   make clean
 
-SRC   = control-unit/controlunit.sv registers/register_file.sv alu/alu.sv system_top.sv program-counter/programcounter.v memory/data_ram.sv uart/uart_tx.sv
+SRC   = control-unit/controlunit.sv registers/register_file.sv alu/alu.sv system_top.sv program-counter/programcounter.v memory/data_ram.sv uart/uart_tx.sv uart/uart_rx.sv
 TB    = tb_full_system.cpp
 BUILD = build
 BIN   = $(BUILD)/Vsystem_top
@@ -50,5 +50,11 @@ UART_BIN = $(BUILD)/uart/Vuart_tx
 $(UART_BIN): uart/uart_tx.sv uart/tb_uart_tx.cpp
 	verilator --cc --exe --build --top uart_tx --Mdir $(BUILD)/uart -GCLKS_PER_BIT=16 -Wno-fatal uart/uart_tx.sv uart/tb_uart_tx.cpp
 
-uart: $(UART_BIN)
+UART_RX_BIN = $(BUILD)/uart_rx/Vuart_rx
+
+$(UART_RX_BIN): uart/uart_rx.sv uart/tb_uart_rx.cpp
+	verilator --cc --exe --build --top uart_rx --Mdir $(BUILD)/uart_rx -GCLKS_PER_BIT=16 -Wno-fatal uart/uart_rx.sv uart/tb_uart_rx.cpp
+
+uart: $(UART_BIN) $(UART_RX_BIN)
 	./$(UART_BIN)
+	./$(UART_RX_BIN)

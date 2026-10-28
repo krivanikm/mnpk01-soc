@@ -29,6 +29,8 @@
 static const int MAX_CYCLES = 10000;   // ochrana proti zaseknutiu / nekonečnej slučke
 static const int S_FETCH = 0;          // číslo stavu S_FETCH v controlunit.sv (prvý v enum)
 static const int RAM_WORDS = 4096;     // veľkosť data_ram (adresa [11:0])
+static const int UART_CLKS = 234;      // CLKS_PER_BIT v uart_rx (predvolená hodnota)
+static const int RX_START = 50;        // takt, v ktorom začne prvý rámec na uart_rx_pin
 
 struct Test {
     std::string name;
@@ -38,6 +40,7 @@ struct Test {
     uint16_t io_in = 0;
     uint16_t expect_io_out = 0;
     std::vector<std::pair<int, uint16_t>> expect_mem;   // mem[adresa]=hodnota (kontrolujú sa len uvedené)
+    std::vector<uint8_t> rx_bytes;      // bajty posielané na uart_rx_pin, rámec za rámcom
 };
 
 // --- načítanie testu zo súboru ---------------------------------------------
@@ -75,6 +78,16 @@ static bool load_test(const char* path, Test& t) {
                 return false;
             }
             t.io_in = (uint16_t)val;
+        } else if (word == "rx") {
+            std::string v;
+            while (in >> v) {
+                long val;
+                if (!parse_number(v, val) || val < 0 || val > 0xFF) {
+                    std::printf("%s:%d: zlý zápis rx '%s'\n", path, lineno, v.c_str());
+                    return false;
+                }
+                t.rx_bytes.push_back((uint8_t)val);
+            }
         } else if (word == "expect") {
             // expect r2=0x55AA r5=0xAA pc=6
             std::string item;
@@ -118,6 +131,18 @@ static bool load_test(const char* path, Test& t) {
 
 // --- simulácia -------------------------------------------------------------
 
+static int rx_level(const Test& t, int cycle) {
+    int rel = cycle - RX_START;
+    int frame_len = 10 * UART_CLKS;
+    if (rel < 0) return 1;
+    int frame = rel / frame_len;
+    if (frame >= (int)t.rx_bytes.size()) return 1;
+    int bit = (rel % frame_len) / UART_CLKS;
+    if (bit == 0) return 0;
+    if (bit == 9) return 1;
+    return (t.rx_bytes[frame] >> (bit - 1)) & 1;
+}
+
 static void tick(Vsystem_top* top) {
     top->clk = 1; top->eval();
     top->clk = 0; top->eval();
@@ -135,6 +160,7 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
     // reset
     top->clk = 0; top->rst = 1; top->rom_data = rom_at(0);
     top->io_in = t.io_in;
+    top->uart_rx_pin = 1;
     top->eval();
     tick(top);
     top->rst = 0;
@@ -149,6 +175,7 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
     int pc = 0;
     for (; cycle < MAX_CYCLES; cycle++) {
         pc = top->pc;
+        top->uart_rx_pin = rx_level(t, cycle);
         top->rom_data = sync_rom ? rom_reg : rom_at(pc);
         top->eval();
 

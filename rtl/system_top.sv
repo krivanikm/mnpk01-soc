@@ -3,6 +3,8 @@ module system_top (
     input  wire        rst,
     input  wire [15:0] rom_data,
     input  wire [15:0] io_in,
+    input  wire        uart_rx_pin,
+
     
     output wire [4:0]  state_out,
     output wire        pc_inc,
@@ -21,9 +23,12 @@ module system_top (
     wire [15:0] w_reg_data;
     wire [15:0] w_reg_q_out;
     wire [15:0] ram_dout;
+
     reg         io_sel_q;
     reg  [15:0] io_in_q;
-    reg         io_status_q;
+    reg  [7:0]  io_addr_q;
+    reg  [7:0]  rx_data;
+    reg         rx_ready;
 
     wire [3:0]  w_alu_op;
     wire [15:0] w_alu_a;
@@ -35,10 +40,13 @@ module system_top (
     wire [15:0] w_pc_addr;
     wire [15:0] w_mem_addr;
     wire        w_mem_we;
-    wire [15:0] w_mem_rdata;
+    reg  [15:0] w_mem_rdata;
     wire [15:0] w_mem_wdata;
     wire        uart_busy;
     wire        uart_start;
+    wire [7:0]  rx_byte;
+    wire        rx_valid;
+    localparam S_LOAD_WRITE = 5'd15;
 
     wire        io_sel = (w_mem_addr[15:8] == 8'hFF);
     assign pc_inc       = w_pc_inc;
@@ -59,9 +67,32 @@ module system_top (
     always @(posedge clk)begin
         io_sel_q <=io_sel;
         io_in_q <= io_in;
-        io_status_q <=(w_mem_addr == 16'hFF02);
+        io_addr_q <= w_mem_addr[7:0];
     end
-    assign w_mem_rdata = io_sel_q ? (io_status_q ? {15'b0, uart_busy} : io_in_q) : ram_dout;
+
+    always @(posedge clk)begin
+        if(rst)begin
+            rx_data <=0;
+            rx_ready <=0;
+        end else if(rx_valid)begin
+            rx_data <=rx_byte;
+            rx_ready <=1;
+        end else if(state_out == S_LOAD_WRITE && io_sel_q && io_addr_q == 8'h03)begin
+            rx_ready <=0;
+        end
+
+    end
+
+
+    always @* begin
+        if (!io_sel_q) w_mem_rdata = ram_dout;
+        else case (io_addr_q)
+            8'h02: w_mem_rdata = {15'b0, uart_busy};
+            8'h03: w_mem_rdata = {8'b0, rx_data};
+            8'h04: w_mem_rdata = {15'b0, rx_ready};
+            default: w_mem_rdata = io_in_q;
+        endcase
+    end
     assign uart_start = w_mem_we && (w_mem_addr == 16'hFF01) && !uart_busy;
 
 
@@ -135,6 +166,13 @@ module system_top (
         .we(w_mem_we && !io_sel),
         .dout(ram_dout)
     );
+    uart_rx u_uart_rx(
+        .clk(clk),
+        .rst(rst),
+        .rx(uart_rx_pin),
+        .data(rx_byte),
+        .valid(rx_valid)
+        );
 
 
 endmodule

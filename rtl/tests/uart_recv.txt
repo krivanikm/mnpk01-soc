@@ -1,0 +1,14 @@
+# CPU čaká na bajt z UART RX (0xFF04 = rx_ready), prečíta ho z 0xFF03 a rx_ready sa vynuluje
+rx 0x5A
+1204    ;  0  MVI  R2, 0x04
+32FF    ;  1  MVIB R2, 0xFF     -> R2 = 0xFF04
+1303    ;  2  MVI  R3, 0x03
+33FF    ;  3  MVIB R3, 0xFF     -> R3 = 0xFF03
+110B    ;  4  MVI  R1, CMP
+1E06    ;  5  MVI  R14, 6      začiatok čakania
+4620    ;  6  LOAD R6, [R2]     rx_ready
+7600    ;  7  CMP  R6, R0
+61E0    ;  8  JZ   R14          kým nie je bajt
+4730    ;  9  LOAD R7, [R3]     R7 = prijatý bajt
+4620    ; 10  LOAD R6, [R2]     rx_ready je po čítaní 0
+expect r1=0x0B r2=0xFF04 r3=0xFF03 r7=0x5A r14=6
