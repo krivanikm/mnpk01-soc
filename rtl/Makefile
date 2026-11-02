@@ -43,7 +43,7 @@ schematics: $(SRC)
 clean:
 	rm -rf $(BUILD) obj_dir
 
-.PHONY: test alu schematics clean
+.PHONY: test alu schematics clean uart boot
 
 UART_BIN = $(BUILD)/uart/Vuart_tx
 
@@ -58,3 +58,11 @@ $(UART_RX_BIN): uart/uart_rx.sv uart/tb_uart_rx.cpp
 uart: $(UART_BIN) $(UART_RX_BIN)
 	./$(UART_BIN)
 	./$(UART_RX_BIN)
+
+BOOT_BIN = $(BUILD)/boot/Vbootloader
+
+$(BOOT_BIN): boot/bootloader.sv uart/uart_rx.sv boot/tb_bootloader.cpp
+	verilator --cc --exe --build --top bootloader --Mdir $(BUILD)/boot -GCLKS_PER_BIT=16 -Wno-fatal boot/bootloader.sv uart/uart_rx.sv boot/tb_bootloader.cpp
+
+boot: $(BOOT_BIN)
+	./$(BOOT_BIN)
