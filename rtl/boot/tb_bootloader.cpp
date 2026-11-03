@@ -49,8 +49,7 @@ static void expect_rst(const char *seq, int want) {
     }
 }
 
-static void upload(const char *name, const int *words, int n) {
-    reset();
+static void send_prog(const int *words, int n, int chk_flip) {
     wr_n = 0;
     send_str("MNPK");
     send_byte(n >> 8);
@@ -61,7 +60,21 @@ static void upload(const char *name, const int *words, int n) {
         send_byte(words[i] & 0xFF);
         chk ^= (words[i] >> 8) ^ (words[i] & 0xFF);
     }
-    send_byte(chk);
+    send_byte(chk ^ chk_flip);
+}
+
+static bool check_done(const char *name, int ok, int err, int rst) {
+    if (dut->done_ok != ok || dut->done_err != err || dut->cpu_rst != rst) {
+        printf("FAIL %s: done_ok=%d done_err=%d cpu_rst=%d, ocakavane %d %d %d\n",
+               name, dut->done_ok, dut->done_err, dut->cpu_rst, ok, err, rst);
+        return false;
+    }
+    return true;
+}
+
+static void upload(const char *name, const int *words, int n) {
+    reset();
+    send_prog(words, n, 0);
     bool ok = wr_n == n;
     for (int i = 0; ok && i < n; i++)
         if (wr_addr[i] != i || wr_data[i] != words[i]) {
@@ -70,7 +83,13 @@ static void upload(const char *name, const int *words, int n) {
             ok = false;
         }
     if (wr_n != n) printf("FAIL %s: %d zapisov, ocakavane %d\n", name, wr_n, n);
-    if (ok) printf("ok   %s: %d slov na adresy 0..%d\n", name, n, n - 1);
+    if (ok) ok = check_done(name, 1, 0, 0);
+    if (ok) printf("ok   %s: %d slov na adresy 0..%d, done_ok\n", name, n, n - 1);
+    else fails++;
+}
+
+static void expect(const char *name, bool ok) {
+    if (ok) printf("ok   %s\n", name);
     else fails++;
 }
 
@@ -98,6 +117,26 @@ int main(int argc, char **argv) {
     int p3[256];
     for (int i = 0; i < 256; i++) p3[i] = (i * 0x0101) ^ 0xA55A;
     upload("256 slov", p3, 256);
+
+    reset();
+    expect("po resete done_ok=0 done_err=0", check_done("po resete", 0, 0, 0));
+
+    reset();
+    send_prog(p1, 3, 0x01);
+    expect("zly checksum -> done_err, CPU ostava v resete", check_done("zly checksum", 0, 1, 1));
+
+    send_str("MNPK");
+    expect("nove MNPK po chybe nuluje done_err", check_done("MNPK po chybe", 0, 0, 1));
+
+    reset();
+    send_prog(p1, 3, 0x80);
+    send_prog(p2, 1, 0);
+    expect("zly a potom dobry upload -> done_ok", check_done("zly potom dobry", 1, 0, 0));
+
+    reset();
+    send_prog(p1, 3, 0);
+    send_prog(p2, 1, 0x10);
+    expect("dobry a potom zly upload -> done_err", check_done("dobry potom zly", 0, 1, 1));
 
     delete dut;
     if (fails) { printf("%d FAILED\n", fails); return 1; }
