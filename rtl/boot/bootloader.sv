@@ -103,6 +103,12 @@ module bootloader #(
             len[7:0] <= rx_byte;
             addr <= 0;
             chk <= 0;
+            if ({len[15:8], rx_byte} == 0 || {len[15:8], rx_byte} > 256) begin
+              done_err <= 1;
+              state <= IDLE;
+            end else begin
+              state <= DATA_HI;
+            end
           end
           DATA_HI: begin
             hi <= rx_byte;

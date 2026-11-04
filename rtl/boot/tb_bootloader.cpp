@@ -138,6 +138,17 @@ int main(int argc, char **argv) {
     send_prog(p2, 1, 0x10);
     expect("dobry a potom zly upload -> done_err", check_done("dobry potom zly", 0, 1, 1));
 
+    reset();
+    send_prog(p1, 0, 0);
+    expect("dlzka 0 -> ziadne zapisy, nie done_ok", wr_n == 0 && !dut->done_ok);
+
+    reset();
+    int p4[257];
+    for (int i = 0; i < 257; i++) p4[i] = i ^ 0x5A5A;
+    send_prog(p4, 257, 0);
+    expect("dlzka 257 -> ziadne zapisy, nie done_ok", wr_n == 0 && !dut->done_ok);
+    if (wr_n != 0) printf("     zapisov: %d\n", wr_n);
+
     delete dut;
     if (fails) { printf("%d FAILED\n", fails); return 1; }
     printf("bootloader: all passed\n");
