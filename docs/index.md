@@ -36,7 +36,8 @@ implementation, verification by simulation, deployment on an FPGA and finally a 
 | I/O port | done – `STORE` to `0xFF00` drives the output, `LOAD` from `0xFF01` reads the input |
 | UART transmitter | done – `STORE` to `0xFF01` sends a byte, `LOAD` from `0xFF02` reads `busy`, "Hello World" runs on the board |
 | UART receiver | done – `LOAD` from `0xFF04` reads `rx_ready`, `LOAD` from `0xFF03` reads the byte, an echo program runs on the board |
-| New instructions, assembler, program loader over UART | planned |
+| Program loader over UART | done – `MNPK` packet with length and XOR checksum, `tools/upload.py` loads a program into the running board |
+| New instructions, assembler | planned |
 | Synthesis (Yosys) | design fits a Tang Nano 9K with ~14 % of its LUTs and 4 of 26 block RAMs, see [Schematics](schematics.html) |
 | FPGA | done – the CPU runs on a Tang Nano 9K (LEDs, switches and UART through the I/O port), see [FPGA](fpga.html) |
 | PCB | planned |

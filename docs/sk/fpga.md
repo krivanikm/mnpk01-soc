@@ -34,7 +34,8 @@ Súbor: `fpga/top.sv`. Obsahuje len „lepidlo“ okolo `system_top`:
 | Časť | Čo robí |
 |---|---|
 | reset | 4-bitové počítadlo drží `rst` v jednotke 15 taktov po zapnutí (doska nemá resetovacie tlačidlo) |
-| pamäť programu | pole 256 × 16 bitov naplnené zo `prog.hex` cez `$readmemh`, adresované `pc` |
+| pamäť programu | pole 256 × 16 bitov naplnené zo `prog.hex` cez `$readmemh`, adresované `pc`; bootloader ju môže prepísať cez zápisový port |
+| bootloader | počúva na pine UART, počas nahrávania programu drží procesor v resete (`rst \| cpu_rst`) |
 | synchronizácia vstupu | dva registre za sebou pre spínače, aby CPU nikdy nevidel signál, ktorý sa mení práve na hrane hodín |
 | porty | negovaná hodnota spínačov ide do dolného bajtu `io_in`, dolný bajt `io_out` ide na LED |
 
@@ -64,6 +65,17 @@ Výstup UART ide cez USB-UART prevodník na doske, takže netreba žiadny ďalš
 Program v `fpga/prog.hex` je echo: procesor počká na prijatý bajt (`rx_ready` na `0xFF04`), prečíta ho z `0xFF03`, počká na `busy` = 0 a pošle ho späť.
 Všetko, čo v termináli napíšeš, sa objaví znova, takže písmená na obrazovke dokazujú, že prijímač, procesor aj vysielač fungujú.
 Starší program, ktorý v slučke posiela `Hello World`, je uložený v `fpga/prog_hello.hex`; skopíruj ho cez `prog.hex` a spusti `make flash`.
+
+## Nahrávanie programu
+
+S bootloaderom sa nový program dostane na dosku bez nového bitstreamu:
+
+```
+cd fpga && make flash
+python3 ../tools/upload.py prog_hello.hex
+```
+
+`tools/upload.py` prečíta hex súbor (jedno 16-bitové slovo na riadok), poskladá paket opísaný v [Architektúre](architecture.html) a pošle ho na `/dev/ttyUSB1` rýchlosťou 115200 baud. Iný port sa dá zadať ako druhý argument. Odmietne programy s 0 alebo viac ako 256 slovami. Program ostane len do vypnutia, po zapnutí doska znova spustí `prog.hex` z bitstreamu.
 
 ## Programy, ktoré bežali na doske
 

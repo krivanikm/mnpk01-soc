@@ -34,7 +34,8 @@ File: `fpga/top.sv`. It contains only the glue around `system_top`:
 | Part | What it does |
 |---|---|
 | reset | a 4-bit counter holds `rst` high for 15 clocks after power-up (the board has no reset button) |
-| program memory | a 256 × 16 array filled from `prog.hex` with `$readmemh`, addressed by `pc` |
+| program memory | a 256 × 16 array filled from `prog.hex` with `$readmemh`, addressed by `pc`; the bootloader can overwrite it through a write port |
+| bootloader | listens on the UART pin, holds the CPU in reset (`rst \| cpu_rst`) while a program is being loaded |
 | input synchronizer | two registers in a row for the switches, so the CPU never sees a signal that changes right at the clock edge |
 | ports | the inverted switch value goes to the low byte of `io_in`, the low byte of `io_out` goes to the LEDs |
 
@@ -64,6 +65,17 @@ The UART output goes through the USB-UART bridge on the board, so no extra hardw
 The program in `fpga/prog.hex` is an echo: the CPU waits for a received byte (`rx_ready` on `0xFF04`), reads it from `0xFF03`, waits until `busy` = 0 and sends it back.
 Everything typed in the terminal appears again, so the picture of letters on the screen proves that the receiver, the CPU and the transmitter all work.
 The older program that sends `Hello World` in a loop is kept in `fpga/prog_hello.hex`; copy it over `prog.hex` and run `make flash` to use it.
+
+## Uploading a program
+
+With the bootloader, a new program goes to the board without a new bitstream:
+
+```
+cd fpga && make flash
+python3 ../tools/upload.py prog_hello.hex
+```
+
+`tools/upload.py` reads a hex file (one 16-bit word per line), builds the packet described in [Architecture](architecture.html) and sends it to `/dev/ttyUSB1` at 115200 baud. A different port can be given as the second argument. It refuses programs of 0 or more than 256 words. The program stays only until the next power-off, after power-up the board runs `prog.hex` from the bitstream again.
 
 ## Programs that ran on the board
 

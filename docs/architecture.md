@@ -178,6 +178,36 @@ wait:  LOAD  R6, [R2]      ; R2 = 0xFF04, R6 = rx_ready
        LOAD  R7, [R3]      ; R3 = 0xFF03, R7 = the received byte
 ```
 
+## Bootloader
+
+File: `rtl/boot/bootloader.sv`
+
+The bootloader loads a program into the program memory over the UART, so the bitstream does not have to be rebuilt for every program. It has its own `uart_rx` on the same `rx` pin as the CPU.
+
+| Signal | Direction | Meaning |
+|---|---|---|
+| `clk`, `rst` | input | clock, synchronous reset |
+| `rx` | input | serial line |
+| `cpu_rst` | output | 1 while the program is being loaded, holds the CPU in reset |
+| `we`, `waddr[7:0]`, `wdata[15:0]` | output | write port of the program memory |
+| `done_ok` | output | 1 after a program with a correct checksum was loaded |
+| `done_err` | output | 1 after a wrong checksum or a rejected length |
+
+The packet, sent at 115200 baud (8N1):
+
+| Bytes | Meaning |
+|---|---|
+| `M N P K` | start marker (ASCII) |
+| 2 | number of words `n`, high byte first; allowed 1 to 256 |
+| 2 * n | the program, each word high byte first |
+| 1 | checksum: XOR of all the data bytes (not of the marker and the length) |
+
+The FSM waits in `IDLE -> GOT_M -> GOT_N -> GOT_P` for the marker. A wrong byte returns it to `IDLE`, an `M` in any of the marker states starts the marker again, so `MMNPK` works too. After `K` it sets `cpu_rst` = 1 and clears `done_ok` and `done_err`.
+Then `LEN_HI` and `LEN_LO` read the length. If it is 0 or more than 256, it sets `done_err` and returns to `IDLE` (the CPU stays in reset). Otherwise `DATA_HI` and `DATA_LO` collect a word, write it to the next address (`we` = 1 for one clock) and XOR both bytes into the checksum.
+`CHK` compares the last byte with the checksum. If they are equal, `done_ok` = 1 and `cpu_rst` = 0, so the CPU starts from address 0 with the new program. If not, `done_err` = 1 and the CPU stays in reset until a new, correct packet arrives.
+
+While `cpu_rst` = 1, the UART receiver of the CPU is in reset too, so it does not see the bytes of the packet. The tests are in `rtl/boot/tb_bootloader.cpp` (`make boot` in `rtl/`): marker variants, programs of 1, 3 and 256 words, a wrong checksum, lengths 0 and 257, and two uploads in a row.
+
 ## Control unit
 
 File: `rtl/control-unit/controlunit.sv`
