@@ -46,8 +46,8 @@ module bootloader #(
       state <= IDLE;
       cpu_rst <= 0;
       we <= 0;
-      done_ok <=0;
-      done_err <=0;
+      done_ok <= 0;
+      done_err <= 0;
     end else begin
       we <= 0;
       if (rx_valid) begin
@@ -85,7 +85,7 @@ module bootloader #(
               cpu_rst <= 1;
               done_ok <= 0;
               done_err <= 0;
-              state   <= LEN_HI;
+              state <= LEN_HI;
             end else if (rx_byte == "M") begin
               state <= GOT_M;
             end else begin
@@ -126,14 +126,14 @@ module bootloader #(
 
           end
           CHK: begin
-            if(rx_byte == chk)begin
-              done_ok <=1;
-              cpu_rst <=0;
+            if (rx_byte == chk) begin
+              done_ok <= 1;
+              cpu_rst <= 0;
 
             end else begin
-              done_err <=1;
+              done_err <= 1;
             end
-            state <=IDLE;
+            state <= IDLE;
           end
           default: state <= IDLE;
         endcase
@@ -141,12 +141,6 @@ module bootloader #(
     end
 
   end
-
-
-
-
-
-
 endmodule
 
 
