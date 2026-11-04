@@ -75,7 +75,8 @@ graph TD
 | JMP + 6 conditional jumps | ✅ done – loops and decisions |
 | LOAD/STORE + 4K × 16 data RAM | ✅ done |
 | I/O: 16-bit ports (LEDs, switches) + UART TX and RX | ✅ done – "Hello World" and an echo program over UART on the Tang Nano 9K |
-| New instructions (HLT, BR, ADDI, JAL), program loader over UART | 🔨 next |
+| Program loader over UART (`tools/upload.py`) | ✅ done – no bitstream rebuild per program |
+| New instructions (HLT, BR, ADDI, JAL) | 🔨 next |
 | Assembler | 📋 planned |
 | FPGA (Tang Nano 9K) | ✅ done |
 | PCB | 📋 planned |

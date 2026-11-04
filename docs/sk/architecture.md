@@ -179,6 +179,36 @@ wait:  LOAD  R6, [R2]      ; R2 = 0xFF04, R6 = rx_ready
        LOAD  R7, [R3]      ; R3 = 0xFF03, R7 = prijatý bajt
 ```
 
+## Bootloader
+
+Súbor: `rtl/boot/bootloader.sv`
+
+Bootloader nahrá program do pamäte programu cez UART, takže netreba pre každý program znova zostavovať bitstream. Má vlastný `uart_rx` na rovnakom pine `rx` ako procesor.
+
+| Signál | Smer | Význam |
+|---|---|---|
+| `clk`, `rst` | vstup | hodiny, synchrónny reset |
+| `rx` | vstup | sériová linka |
+| `cpu_rst` | výstup | 1 počas nahrávania programu, drží procesor v resete |
+| `we`, `waddr[7:0]`, `wdata[15:0]` | výstup | zápisový port pamäte programu |
+| `done_ok` | výstup | 1 po nahratí programu so správnym checksumom |
+| `done_err` | výstup | 1 po zlom checksume alebo zamietnutej dĺžke |
+
+Paket, posielaný rýchlosťou 115200 baud (8N1):
+
+| Bajty | Význam |
+|---|---|
+| `M N P K` | začiatočná značka (ASCII) |
+| 2 | počet slov `n`, najprv horný bajt; povolené 1 až 256 |
+| 2 * n | program, každé slovo najprv horným bajtom |
+| 1 | checksum: XOR všetkých dátových bajtov (nie značky a dĺžky) |
+
+Automat čaká v stavoch `IDLE -> GOT_M -> GOT_N -> GOT_P` na značku. Zlý bajt ho vráti do `IDLE`, `M` v ktoromkoľvek stave značky začne značku odznova, takže funguje aj `MMNPK`. Po `K` nastaví `cpu_rst` = 1 a vynuluje `done_ok` a `done_err`.
+Potom `LEN_HI` a `LEN_LO` načítajú dĺžku. Ak je 0 alebo viac ako 256, nastaví `done_err` a vráti sa do `IDLE` (procesor ostáva v resete). Inak `DATA_HI` a `DATA_LO` poskladajú slovo, zapíšu ho na ďalšiu adresu (`we` = 1 na jeden takt) a oba bajty XORujú do checksumu.
+`CHK` porovná posledný bajt s checksumom. Ak sa rovnajú, `done_ok` = 1 a `cpu_rst` = 0, takže procesor štartuje od adresy 0 s novým programom. Ak nie, `done_err` = 1 a procesor ostáva v resete, kým nepríde nový, správny paket.
+
+Kým je `cpu_rst` = 1, je v resete aj UART prijímač procesora, takže bajty paketu nevidí. Testy sú v `rtl/boot/tb_bootloader.cpp` (`make boot` v `rtl/`): varianty značky, programy s 1, 3 a 256 slovami, zlý checksum, dĺžky 0 a 257 a dve nahratia po sebe.
+
 ## Control unit
 
 Súbor: `rtl/control-unit/controlunit.sv`

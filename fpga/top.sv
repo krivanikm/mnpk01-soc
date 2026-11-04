@@ -7,12 +7,18 @@ module top (
     input wire       uart_rx
 );
 
-    reg [3:0] rst_cnt = 0;
-    wire      rst     = ~&rst_cnt;
-    always @(posedge clk) if (rst) rst_cnt <= rst_cnt + 1;
+    wire        boot_we;
+    wire [7:0]  boot_waddr;
+    wire [15:0] boot_wdata;
+    wire        cpu_rst;
 
     reg [15:0] rom [0:255];
     initial $readmemh("prog.hex", rom);
+
+    reg [3:0] rst_cnt = 0;
+    wire      rst     = ~&rst_cnt;
+    always @(posedge clk) if (rst) rst_cnt <= rst_cnt + 1;
+    always @(posedge clk) if (boot_we) rom[boot_waddr] <= boot_wdata;
 
     wire [15:0] pc;
     wire [15:0] io_out;
@@ -26,7 +32,7 @@ module top (
 
     system_top cpu (
         .clk(clk),
-        .rst(rst),
+        .rst(rst | cpu_rst),
         .rom_data(rom[pc[7:0]]),
         .io_in({8'h00, ~dip_s2}),
         .state_out(),
@@ -39,6 +45,18 @@ module top (
         .io_out(io_out),
         .uart_tx_pin(uart_tx),
         .uart_rx_pin(uart_rx)
+    );
+
+    bootloader boot (
+      .clk(clk),
+      .rst(rst),
+      .rx(uart_rx),
+      .cpu_rst(cpu_rst),
+      .we(boot_we),
+      .waddr(boot_waddr),
+      .wdata(boot_wdata),
+      .done_ok(),
+      .done_err()
     );
 
     assign ext = io_out[7:0];
