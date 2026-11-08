@@ -22,9 +22,13 @@ module top (
 
     wire [15:0] pc;
     wire [15:0] io_out;
+    wire        w_halted;
 
     reg [7:0] dip_s1 = 8'hFF;
     reg [7:0] dip_s2 = 8'hFF;
+
+    assign led = {5'b11111, ~w_halted};
+
     always @(posedge clk) begin
         dip_s1 <= dip;
         dip_s2 <= dip_s1;
@@ -44,7 +48,8 @@ module top (
         .pc(pc),
         .io_out(io_out),
         .uart_tx_pin(uart_tx),
-        .uart_rx_pin(uart_rx)
+        .uart_rx_pin(uart_rx),
+        .halted(w_halted)
     );
 
     bootloader boot (
@@ -60,6 +65,5 @@ module top (
     );
 
     assign ext = io_out[7:0];
-    assign led = 6'b111111;
 
 endmodule

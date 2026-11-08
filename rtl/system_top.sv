@@ -14,7 +14,8 @@ module system_top (
     output wire [15:0] reg_q_out,
     output wire [15:0] pc,
     output reg [15:0] io_out,
-    output wire        uart_tx_pin 
+    output wire        uart_tx_pin,
+    output wire        halted
 );
 
     wire        w_pc_inc;
@@ -46,6 +47,7 @@ module system_top (
     wire        uart_start;
     wire [7:0]  rx_byte;
     wire        rx_valid;
+    wire        w_halted;
     localparam S_LOAD_WRITE = 5'd15;
 
     wire        io_sel = (w_mem_addr[15:8] == 8'hFF);
@@ -54,6 +56,7 @@ module system_top (
     assign reg_addr     = w_reg_addr;
     assign reg_data     = w_reg_data;
     assign reg_q_out    = w_reg_q_out;
+    assign halted       = w_halted;
 
     always @(posedge clk)begin
 
@@ -127,7 +130,8 @@ module system_top (
         .mem_addr(w_mem_addr),
         .mem_wdata(w_mem_wdata),
         .mem_we(w_mem_we),
-        .mem_rdata(w_mem_rdata)
+        .mem_rdata(w_mem_rdata),
+        .halted(w_halted)
     );
 
     // Instancia Register File

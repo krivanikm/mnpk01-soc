@@ -1,8 +1,8 @@
-# NOP a neznáme opcode (0x8 – 0xF) sa nesmú zaseknúť ani pokaziť ďalšiu inštrukciu.
+# NOP a neznáme opcode (0xE, 0xF) sa nesmú zaseknúť ani pokaziť ďalšiu inštrukciu.
 1101    ; MVI r1, 1
 0000    ; NOP
 1202    ; MVI r2, 2
-8000    ; neznámy opcode 0x8 (ako NOP)
+E000    ; neznámy opcode 0xE (ako NOP)
 1303    ; MVI r3, 3
 F123    ; neznámy opcode 0xF (ako NOP)
 1404    ; MVI r4, 4

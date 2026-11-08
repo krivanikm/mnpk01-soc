@@ -6,6 +6,8 @@
     `define OP_STORE 4'h5
     `define OP_JMP   4'h6
     `define OP_ALU   4'h7
+    `define OP_HLT   4'h8
+
     
 
     module controlunit (
@@ -29,7 +31,8 @@
         output reg  [15:0] mem_addr,
         output reg  [15:0] mem_wdata,
         output reg mem_we,
-        input wire [15:0] mem_rdata
+        input wire [15:0] mem_rdata,
+        output wire         halted
     );
 
         typedef enum reg [4:0] {
@@ -54,7 +57,9 @@
 
         S_LOAD_ADDR,
         S_LOAD_WAIT,
-        S_LOAD_WRITE
+        S_LOAD_WRITE,
+
+        S_HLT
 
         }state_t;
 
@@ -64,7 +69,7 @@
         reg [15:0] temp_reg;
         reg [2:0] flags;            // [2] = Z, [1] = C, [0] = N
 
-        // Platí podmienka skoku? Podmienka je v ir[11:8] (JMP 0110 cccc rrrr xxxx).
+        
         reg cond_ok;
 
         always @(*) begin
@@ -76,12 +81,14 @@
                 4'b0100: cond_ok = !flags[1];   // JNC  – C = 0  (po CMP: a <= b)
                 4'b0101: cond_ok = flags[0];    // JN   – N = 1  (po CMP: a <  b)
                 4'b0110: cond_ok = !flags[0];   // JNN  – N = 0  (po CMP: a >= b)
-                default: cond_ok = 1'b0;        // neznáma podmienka – neskáč
+                default: cond_ok = 1'b0;        
             endcase
         end
 
-        // Prepojenie vnútorného stavu na výstup pre testbench
+        
         assign state_out = state;
+
+        assign halted = (state == S_HLT);
 
         always @(posedge clk or posedge rst) begin
             if (rst) begin
@@ -100,7 +107,6 @@
                 mem_wdata           <= 16'h0;
                 mem_we              <= 1'b0;
             end else begin
-                // predvolené hodnoty - pulzné signály trvajú 1 takt
                 pc_inc              <= 1'b0;
                 write_reg_en        <= 2'b00;
                 pc_load             <= 1'b0;
@@ -142,6 +148,11 @@
                             default:begin // NOP + neznámy opcode: prázdny takt, kým sa PC posunie
                                 state <= S_NOP;
                             end
+                            `OP_HLT: begin
+                                state <=S_HLT;
+                            end
+
+
                         endcase
                     end
 
@@ -223,7 +234,10 @@
                         reg_data <= mem_rdata;
                         write_reg_en <= 2'b11;
                         state <= S_FETCH;
-                     end
+                    end
+                    S_HLT: begin
+                        state <=S_HLT;
+                    end
 
             
 

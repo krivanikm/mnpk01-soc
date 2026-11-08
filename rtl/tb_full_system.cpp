@@ -168,7 +168,7 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
     if (verbose)
         std::printf("  --- %s ROM ---\n", sync_rom ? "synchrónna" : "kombinačná");
 
-    // Beží, kým CU nechce načítať inštrukciu za koncom programu.
+    // Beží, kým CU nechce načítať inštrukciu za koncom programu, alebo kým nevykoná HLT.
     // Na hrane tohto taktu sa ešte zapíše výsledok poslednej inštrukcie
     // (write_reg_en je registrovaný), preto sa končí až po nej.
     int cycle = 0;
@@ -179,7 +179,7 @@ static bool run(const Test& t, bool sync_rom, bool verbose) {
         top->rom_data = sync_rom ? rom_reg : rom_at(pc);
         top->eval();
 
-        bool done = top->state_out == S_FETCH && pc >= (int)t.rom.size();
+        bool done = (top->state_out == S_FETCH && pc >= (int)t.rom.size()) || top->halted;
 
         if (verbose)
             std::printf("  cyklus %3d | PC=%3d ROM=0x%04X | stav=%2d | pc_inc=%d we=%d%d addr=%2d data=0x%04X\n",
