@@ -1,0 +1,24 @@
+start:
+	MVI R2, 0
+	MVI R3, 0xFF
+	MVI R4, 0x00
+	MVIB R4, 0xFF
+	MVI R13, {loop}
+	MVI R14, {delay}
+loop:
+	STORE R2, [R4]
+	MVI R5, 0xFF
+	MVIB R5, 0xFF
+	MVI R1, DEC
+delay:
+	ALU R5, R0, R5
+	JNZ R14
+
+	MVI R1, INC
+	ALU R2, R0, R2
+	MVI R1, CMP
+	ALU R2, R3, R2
+	JNZ R13
+
+	STORE R2 [R4]
+	HLT

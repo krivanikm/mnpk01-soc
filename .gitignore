@@ -25,3 +25,6 @@ abc.history
 # dočasné súbory z make schematics
 docs/assets/schematics/*.dot
 docs/assets/schematics/*.new
+
+# assembler binárka
+tools/asm/mnasm
