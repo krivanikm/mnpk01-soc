@@ -32,8 +32,9 @@ Každá inštrukcia je jedno 16-bitové slovo:
 | `0x5` | STORE | `0101 ssss aaaa xxxx` | `RAM[Ra] = Rs` | 4 |
 | `0x6` | JMP | `0110 cccc rrrr xxxx` | ak platí podmienka `cccc`: `PC = Rr` | 5 so skokom / 3 bez |
 | `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd = Ra (operácia z R1) Rb`, 16-bitovo – pozri [ALU](alu.html) | 4 |
+| `0x8` | HLT | `1000 xxxx xxxx xxxx` | zastaví procesor až do resetu | – |
 
-Opcode `0x8` – `0xF` sú voľné pre budúce inštrukcie; dovtedy sa správajú ako NOP.
+Opcode `0x9` – `0xF` sú voľné pre budúce inštrukcie; dovtedy sa správajú ako NOP.
 
 ### 16-bitová konštanta
 
@@ -133,7 +134,6 @@ JNZ  R14            ; 0x62E0
 
 | Inštrukcia | Nápad | Prečo |
 |---|---|---|
-| HLT | zastaví procesor | programy aj testy majú jasný koniec |
 | BR | relatívny skok `PC = PC + offset` | netreba vopred nahrávať cieľovú adresu do registra |
 | ADDI | `Rd = Rd + konštanta` | počítadlá a ukazovatele jednou inštrukciou |
 | JAL | `Rd = PC`, `PC = Rt` | podprogramy (návrat je obyčajný `JMP Rd`) |

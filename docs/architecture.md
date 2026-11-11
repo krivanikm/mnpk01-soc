@@ -6,8 +6,8 @@ title: Architecture
 
 ```
               +-----------------+
-   SPI flash  |  Program memory | 16-bit instruction
-  ----------> |     (BRAM)      | ------------------+
+   UART boot- |  Program memory | 16-bit instruction
+   loader --> |     (BRAM)      | ------------------+
               +-----------------+                   |
                        ^ 16-bit address             v
               +-----------------+          +-----------------+  address, data  +-----------------+

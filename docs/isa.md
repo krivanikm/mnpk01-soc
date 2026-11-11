@@ -31,8 +31,9 @@ Every instruction is a single 16-bit word:
 | `0x5` | STORE | `0101 ssss aaaa xxxx` | `RAM[Ra] = Rs` | 4 |
 | `0x6` | JMP | `0110 cccc rrrr xxxx` | if condition `cccc` holds: `PC = Rr` | 5 taken / 3 not taken |
 | `0x7` | ALU | `0111 aaaa bbbb dddd` | `Rd = Ra (operation from R1) Rb`, 16-bit – see [ALU](alu.html) | 4 |
+| `0x8` | HLT | `1000 xxxx xxxx xxxx` | stop the CPU until reset | – |
 
-Opcodes `0x8` – `0xF` are free for future instructions; until then they behave like NOP.
+Opcodes `0x9` – `0xF` are free for future instructions; until then they behave like NOP.
 
 ### 16-bit constant
 
@@ -132,7 +133,6 @@ JNZ  R14            ; 0x62E0
 
 | Instruction | Idea | Why |
 |---|---|---|
-| HLT | stop the processor | programs and tests get a clear end |
 | BR | relative jump `PC = PC + offset` | no need to load the target address into a register first |
 | ADDI | `Rd = Rd + constant` | counters and pointers in one instruction |
 | JAL | `Rd = PC`, `PC = Rt` | subroutines (the return is a plain `JMP Rd`) |

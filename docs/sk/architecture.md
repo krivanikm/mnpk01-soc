@@ -7,8 +7,8 @@ lang: sk
 
 ```
               +-----------------+
-   SPI flash  |  Pamäť programu | 16-bit inštrukcia
-  ----------> |     (BRAM)      | ------------------+
+   UART boot- |  Pamäť programu | 16-bit inštrukcia
+   loader --> |     (BRAM)      | ------------------+
               +-----------------+                   |
                        ^ 16-bit adresa              v
               +-----------------+          +-----------------+   adresa, dáta  +-----------------+

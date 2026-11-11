@@ -26,7 +26,7 @@ graph TD
     classDef routing fill:#118ab2,stroke:#000,stroke-width:2px,color:#fff;
 
     subgraph Boot_Configuration [Boot Storage]
-        FLASH[SPI Flash - External] -.->|Boot / Load| BRAM[FPGA Memory / BRAM]
+        UARTLD[UART Bootloader] -.->|Program upload| BRAM[FPGA Memory / BRAM]
     end
 
     subgraph Instruction_Fetch [Instruction Fetch Unit]
@@ -57,7 +57,7 @@ graph TD
 
     %% Applying Styles
     class CU control;
-    class FLASH,BRAM,RAM,REGS storage;
+    class UARTLD,BRAM,RAM,REGS storage;
     class ALU compute;
     class PC routing;
 ```
@@ -70,14 +70,15 @@ graph TD
 |---|---|
 | ALU (16-bit, 14 operations) | ✅ done – ~40 million checks |
 | Register file (16 × 16-bit) | ✅ done |
-| Control unit: all 8 instructions | ✅ done – 28/28 system tests, also with synchronous FPGA BRAM |
+| Control unit: all 9 instructions | ✅ done – 28/28 system tests, also with synchronous FPGA BRAM |
 | Program counter | ✅ done, connected in `system_top` |
 | JMP + 6 conditional jumps | ✅ done – loops and decisions |
 | LOAD/STORE + 4K × 16 data RAM | ✅ done |
 | I/O: 16-bit ports (LEDs, switches) + UART TX and RX | ✅ done – "Hello World" and an echo program over UART on the Tang Nano 9K |
 | Program loader over UART (`tools/upload.py`) | ✅ done – no bitstream rebuild per program |
-| New instructions (HLT, BR, ADDI, JAL) | 🔨 next |
-| Assembler | 📋 planned |
+| HLT instruction | ✅ done – halted LED on the board |
+| Assembler `mnasm` (C++, `tools/asm/`) | ✅ done – two passes, labels, output matches the hand-written `counter` program |
+| New instructions (BR, ADDI, JAL) | 🔨 next |
 | FPGA (Tang Nano 9K) | ✅ done |
 | PCB | 📋 planned |
 
@@ -107,6 +108,8 @@ rtl/
   tests/            system test programs (*.txt)
   system_top.sv     top level
   tb_full_system.cpp
+tools/asm/          mnasm assembler (C++)
+programs/           example programs (.asm + .hex)
 docs/               documentation website (GitHub Pages, EN + SK)
 ```
 

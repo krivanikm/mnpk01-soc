@@ -20,7 +20,7 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | Dátová pamäť | RAM 4096 × 16 bitov (bloková pamäť FPGA), adresovaná po slovách |
 | Architektúra | Harvardská – oddelená pamäť programu a dát |
 | Vstup / výstup | memory-mapped na `0xFF00` – `0xFFFF`: 16-bitový výstupný port, 16-bitový vstupný port, vysielač a prijímač UART |
-| Program | BRAM vo FPGA, naplnená z hex súboru (plánované: pri štarte načítaná z externej SPI flash) |
+| Program | BRAM vo FPGA, naplnená z hex súboru v bitstreame, nové programy sa nahrávajú cez UART |
 
 ## Stav projektu
 
@@ -29,7 +29,7 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | ALU | hotová, 16-bitová, 14 operácií, ~40 miliónov kontrol (hraničné a náhodné hodnoty) |
 | Register file | hotový |
 | Program counter | hotový, zapojený v `system_top` |
-| Control unit | fungujú všetky 8 inštrukcie (NOP, MVI, MOV, MVIB, LOAD, STORE, JMP, ALU), aj s BRAM vo FPGA |
+| Control unit | funguje všetkých 9 inštrukcií (NOP, MVI, MOV, MVIB, LOAD, STORE, JMP, ALU, HLT), aj s BRAM vo FPGA |
 | ALU inštrukcia (cez register R1) | hotová |
 | Skoky (JMP + 6 podmienok) | hotové – fungujú slučky aj rozhodovanie |
 | LOAD/STORE + dátová RAM | hotové – fungujú polia v pamäti |
@@ -38,7 +38,9 @@ overenie simuláciou, nasadenie na FPGA a nakoniec vlastnú dosku plošných spo
 | Vysielač UART | hotový – `STORE` na `0xFF01` odošle bajt, `LOAD` z `0xFF02` číta `busy`, na doske beží „Hello World“ |
 | Prijímač UART | hotový – `LOAD` z `0xFF04` číta `rx_ready`, `LOAD` z `0xFF03` číta bajt, na doske beží echo program |
 | Loader programov cez UART | hotový – paket `MNPK` s dĺžkou a XOR checksumom, `tools/upload.py` nahrá program na bežiacu dosku |
-| Nové inštrukcie, assembler | plánované |
+| Inštrukcia HLT | hotová – zastaví procesor, na doske to ukáže LED |
+| Assembler (`tools/asm/mnasm`) | hotový – C++, dva prechody, návestia |
+| Nové inštrukcie (BR, ADDI, JAL) | ďalšie na rade |
 | Syntéza (Yosys) | návrh sa zmestí do Tang Nano 9K, zaberie ~14 % LUT a 4 z 26 blokov pamäte, pozri [Schémy](schematics.html) |
 | FPGA | hotové – procesor beží na Tang Nano 9K (LED, spínače a UART cez I/O port), pozri [FPGA](fpga.html) |
 | Plošný spoj | plánované |
